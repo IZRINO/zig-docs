@@ -1,0 +1,35 @@
+---
+import { Icon } from '@astrojs/starlight/components';
+import { currentDocument, docHref, labels } from '../lib/content';
+
+const { locale, id } = currentDocument(Astro.url.pathname);
+---
+
+<zig-language-select class="language-control">
+  <Icon name="translate" size="1.1rem" />
+  <select aria-label={labels[locale].language}>
+    <option value={docHref('zh-cn', id)} selected={locale === 'zh-cn'}
+      >中文</option
+    >
+    <option value={docHref('en', id)} selected={locale === 'en'}>English</option
+    >
+  </select>
+</zig-language-select>
+
+<script>
+  class ZigLanguageSelect extends HTMLElement {
+    constructor() {
+      super();
+      this.querySelector('select')?.addEventListener('change', (event) => {
+        if (!(event.target instanceof HTMLSelectElement)) return;
+        const destination = new URL(event.target.value, location.origin);
+        destination.hash = location.hash;
+        destination.search = location.search;
+        location.assign(destination.href);
+      });
+    }
+  }
+  if (!customElements.get('zig-language-select')) {
+    customElements.define('zig-language-select', ZigLanguageSelect);
+  }
+</script>

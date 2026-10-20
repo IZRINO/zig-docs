@@ -1,0 +1,12 @@
+{
+  "e8d43d647cabf725184d": {
+    "reason": "原文 linkage 条件的内联代码反引号未闭合；译文补齐闭合符号，条件内容不变。",
+    "sourceSha256": "e8d43d647cabf725184dc835c8018315078b1f49a16672edc13d762b30d27eaa",
+    "translationSha256": "ce4fa274d9192030d27d5c4df3340a3f8c15ccffaafcf787dbc45756b05fa3a2"
+  },
+  "464c3138df9d1f13ac6a": {
+    "reason": "原文内联代码反引号未闭合；补齐闭合符号，标识符保持不变。",
+    "sourceSha256": "464c3138df9d1f13ac6aead9d08b57b593f3f1a85719b1e7969580722fca2c85",
+    "translationSha256": "fcfed902769be33e8d4396ba6348102ad095dad448b7b4ab9c3bf3527fd16167"
+  }
+}

@@ -1,0 +1,1037 @@
+{
+  "version": "0.17.0",
+  "reviewedAt": "2026-10-20T08:50:50.592407+00:00",
+  "scope": "标准库已提取注释单元；本报告不等同于全部译文的逐项语义复核。",
+  "sampling": {
+    "seed": 1700,
+    "algorithm": "Python random.Random(1700).sample；从 catalog.json 原有数组顺序生成候选列表后，无放回抽样。",
+    "candidatePattern": "\\b(?:ownership|owner|allocator|free|freed|freeing|thread|threads|undefined|overflow|overflows|error propagation)\\b",
+    "caseInsensitive": true,
+    "candidateCount": 806,
+    "sampleCount": 60,
+    "sourceCharacters": 13453,
+    "checks": [
+      "是否漏句",
+      "否定词方向",
+      "条件与分支",
+      "所有权及释放主体",
+      "分配与释放时机",
+      "线程同步和生命周期",
+      "未定义行为",
+      "错误传播与处理条件",
+      "数值边界及溢出语义"
+    ],
+    "result": "60 项均已逐条对照原文；未发现漏句、否定反转、条件、所有权主体或数值边界错译；修正其中 3 项术语。",
+    "units": [
+      {
+        "id": "afd591876fb6e3ad4cee",
+        "locations": [
+          {
+            "path": "std/c.zig",
+            "line": 529
+          },
+          {
+            "path": "std/os/linux.zig",
+            "line": 3914
+          },
+          {
+            "path": "std/os/linux.zig",
+            "line": 4205
+          }
+        ],
+        "sourceSha256": "afd591876fb6e3ad4cee4f7cf1561223008b21cda74f8d67faf8732a840de01e",
+        "reviewedTranslationSha256": "3a6171b931c9a33602a2e283697a939eab98f9bb24dbb91dc3af658eb8987e1c",
+        "result": "no semantic discrepancy found in this review"
+      },
+      {
+        "id": "9d10487cf56c3f1d1981",
+        "locations": [
+          {
+            "path": "std/math/complex/cosh.zig",
+            "line": 56
+          },
+          {
+            "path": "std/math/complex/sinh.zig",
+            "line": 56
+          }
+        ],
+        "sourceSha256": "9d10487cf56c3f1d1981350468458b956726961f8c163ba88c69dc86f27ff2be",
+        "reviewedTranslationSha256": "29d3abdd418dbbca1e5021c334e1777a3a4af1114f8d048f809fc12c115d9ed1",
+        "result": "no semantic discrepancy found in this review"
+      },
+      {
+        "id": "69fc5fe8b410959b596f",
+        "locations": [
+          {
+            "path": "std/atomic.zig",
+            "line": 364
+          }
+        ],
+        "sourceSha256": "69fc5fe8b410959b596ff976b19f3f9795528faf9558ed2fd1f81fcb83d5c412",
+        "reviewedTranslationSha256": "cc966f6ea9cafe4a64509653cf972459f2d9b4868ab893cf7e9f0d102d332c61",
+        "result": "no semantic discrepancy found in this review"
+      },
+      {
+        "id": "a9b2ece66e93340097d9",
+        "locations": [
+          {
+            "path": "std/Io/Threaded.zig",
+            "line": 18858
+          }
+        ],
+        "sourceSha256": "a9b2ece66e93340097d9449685b834ff70ce9a1fc5f189de87138e0cd12ef5c0",
+        "reviewedTranslationSha256": "e69a137d08c949f7c7fb8085249d4011e09ec47f7c0c90bb5c188a7fa579e7ca",
+        "result": "terminology clarified"
+      },
+      {
+        "id": "ba5eb22c6883bc765b10",
+        "locations": [
+          {
+            "path": "std/os/windows/ntstatus.zig",
+            "line": 2147
+          }
+        ],
+        "sourceSha256": "ba5eb22c6883bc765b100e05d1ac4d60e35934fc115464def43e8e935e70629d",
+        "reviewedTranslationSha256": "842548ed9b2437d24d8bb74c2a451bc7e203ca1f655507126492745d0b05c74d",
+        "result": "no semantic discrepancy found in this review"
+      },
+      {
+        "id": "4cddb796a45830d8d5ed",
+        "locations": [
+          {
+            "path": "std/testing.zig",
+            "line": 1070
+          }
+        ],
+        "sourceSha256": "4cddb796a45830d8d5ed4df4bba78eeec2651166444c1df166fe9b9560d03c42",
+        "reviewedTranslationSha256": "1f867f5417ace476a0d50047640d7991d0daa06d834b1ef1302b81c56edb6500",
+        "result": "no semantic discrepancy found in this review"
+      },
+      {
+        "id": "e4cad79436ce6f7e9237",
+        "locations": [
+          {
+            "path": "std/heap/SafeAllocator.zig",
+            "line": 1149
+          }
+        ],
+        "sourceSha256": "e4cad79436ce6f7e9237356a750754f43d8ba0f3eda24bc6bc147a6b5f2908d0",
+        "reviewedTranslationSha256": "eea93513e917ac035f5c38c18b8ba085e08ec021662e383a0f7392548005564f",
+        "result": "no semantic discrepancy found in this review"
+      },
+      {
+        "id": "0bd2c44cea5297558ed3",
+        "locations": [
+          {
+            "path": "std/math/gamma.zig",
+            "line": 216
+          }
+        ],
+        "sourceSha256": "0bd2c44cea5297558ed3dd23bdafe3fcb5f51d263e9abd1694b151c25de9e2fb",
+        "reviewedTranslationSha256": "ffdf2a119642b0ece7a605a81575590d33dd286ebd57dd96d87f548be6cde085",
+        "result": "no semantic discrepancy found in this review"
+      },
+      {
+        "id": "120d453fbbc0a41fc073",
+        "locations": [
+          {
+            "path": "std/buf_map.zig",
+            "line": 14
+          }
+        ],
+        "sourceSha256": "120d453fbbc0a41fc0732e319f8d83190cfd3b613980d10775edaebd0cad0570",
+        "reviewedTranslationSha256": "2f16bcb7acd093b3cbb654517fd746ab20f1384355b10430ab9d3c34997fa499",
+        "result": "no semantic discrepancy found in this review"
+      },
+      {
+        "id": "801f814f17d0eec1dbad",
+        "locations": [
+          {
+            "path": "std/zig/Zir.zig",
+            "line": 5230
+          }
+        ],
+        "sourceSha256": "801f814f17d0eec1dbad7bd043127c86d0e4d3f71fe1c21f88618243e7117fe5",
+        "reviewedTranslationSha256": "c1b0cc2907a4e0095dbcdd5af82938321ce77a69857f99a63cb0fdb2a1e506a3",
+        "result": "no semantic discrepancy found in this review"
+      },
+      {
+        "id": "7327de2f400233112171",
+        "locations": [
+          {
+            "path": "std/buf_map.zig",
+            "line": 33
+          }
+        ],
+        "sourceSha256": "7327de2f4002331121714500b1f99449a18f0fdd2ffd63b667dcd647d1d93f66",
+        "reviewedTranslationSha256": "cfa1ad53db0312ccb18f7291004dde9c55aa90abd3e06745e609b691be90138a",
+        "result": "no semantic discrepancy found in this review"
+      },
+      {
+        "id": "1c0109c182eb190e598c",
+        "locations": [
+          {
+            "path": "std/os/linux/tls.zig",
+            "line": 638
+          }
+        ],
+        "sourceSha256": "1c0109c182eb190e598c49167d79c9f1a555f25b25b2c1e256e6dc48b8bdad8f",
+        "reviewedTranslationSha256": "a4c06ed2c29b4d09b2a387dcb22e787da7171009c9dc2926e5c25f7d12a1a905",
+        "result": "no semantic discrepancy found in this review"
+      },
+      {
+        "id": "b00a658050f1e8a5710f",
+        "locations": [
+          {
+            "path": "std/os/windows/win32error.zig",
+            "line": 2298
+          }
+        ],
+        "sourceSha256": "b00a658050f1e8a5710f287428078d30bb2382d2fdccb20776d1ddb69202f7a7",
+        "reviewedTranslationSha256": "ebec18f1fa59d9021cfe7d741fe58ce253a122b0f86dee286351b5f4f50fd699",
+        "result": "no semantic discrepancy found in this review"
+      },
+      {
+        "id": "99b73d92dd7c773a8d35",
+        "locations": [
+          {
+            "path": "std/math/complex/sqrt.zig",
+            "line": 74
+          }
+        ],
+        "sourceSha256": "99b73d92dd7c773a8d35591776ba643a2ff2a6eb11a232b0b45e4d58fe82504b",
+        "reviewedTranslationSha256": "0603a1c9a67c9883a1e0a84518bf5bcf208d947a75fc7504be64238c753bd1c1",
+        "result": "no semantic discrepancy found in this review"
+      },
+      {
+        "id": "b4acedf7e6f2478e9bae",
+        "locations": [
+          {
+            "path": "std/Io/Threaded.zig",
+            "line": 660
+          }
+        ],
+        "sourceSha256": "b4acedf7e6f2478e9baed2064ab19103c255d58d1665eb5951956b7e52e040b6",
+        "reviewedTranslationSha256": "854add2944ace92e2df4ad92a1c15d652179676c9f1d078164e2b7d3cecc6803",
+        "result": "no semantic discrepancy found in this review"
+      },
+      {
+        "id": "a541b7e950b3f942ca11",
+        "locations": [
+          {
+            "path": "std/array_list.zig",
+            "line": 191
+          },
+          {
+            "path": "std/array_list.zig",
+            "line": 846
+          }
+        ],
+        "sourceSha256": "a541b7e950b3f942ca11c15c368d55a5f37acda38e2bb6fad69c79efa5f766e1",
+        "reviewedTranslationSha256": "c843bb2111d42989848643b297c069de66593c8a1990d3e3757ab7d05ed6d7d7",
+        "result": "no semantic discrepancy found in this review"
+      },
+      {
+        "id": "6c1a790183381ad42e05",
+        "locations": [
+          {
+            "path": "std/mem/Allocator.zig",
+            "line": 263
+          }
+        ],
+        "sourceSha256": "6c1a790183381ad42e05ed362a53a65d4f99dba5f964418fe5e56c6af49c52fa",
+        "reviewedTranslationSha256": "b01338c02cc0327b883ccc7e901b8150f0ab0bbaaadefcdc716796feccc2069a",
+        "result": "no semantic discrepancy found in this review"
+      },
+      {
+        "id": "968da6ec8409bde331eb",
+        "locations": [
+          {
+            "path": "std/array_hash_map.zig",
+            "line": 174
+          }
+        ],
+        "sourceSha256": "968da6ec8409bde331eb9a88c51c3ccda143d7ddfaddc0d099e4b497eeccd76d",
+        "reviewedTranslationSha256": "a661f6937eac0d4eda1cc49d08524eb9e6dd1aacd6831b165e8d55d02f7e43a0",
+        "result": "no semantic discrepancy found in this review"
+      },
+      {
+        "id": "894faa64938ad0692f37",
+        "locations": [
+          {
+            "path": "std/enums.zig",
+            "line": 757
+          }
+        ],
+        "sourceSha256": "894faa64938ad0692f3741799e01af1ec6b4939c52f74f748e329d3de0f4981d",
+        "reviewedTranslationSha256": "9a26d668d77f3002fbf4dfb02f0a0150400a9ebb60abea25dc2f74836eb407e9",
+        "result": "no semantic discrepancy found in this review"
+      },
+      {
+        "id": "f6b0802722ecc1ec3f7d",
+        "locations": [
+          {
+            "path": "std/testing/Smith.zig",
+            "line": 187
+          }
+        ],
+        "sourceSha256": "f6b0802722ecc1ec3f7da06594c41ca6f6bc16bc69b5b23230d29fc673dbef1b",
+        "reviewedTranslationSha256": "e1fcd54ee23671dc2baa36efe110baac21ec1d9ca02fb9317549380682961277",
+        "result": "no semantic discrepancy found in this review"
+      },
+      {
+        "id": "5c7c7a80729cd633356d",
+        "locations": [
+          {
+            "path": "std/os/windows/ntstatus.zig",
+            "line": 2144
+          }
+        ],
+        "sourceSha256": "5c7c7a80729cd633356d4ab5530315ec0d554b0f88b416482aca56a9c870e25a",
+        "reviewedTranslationSha256": "3fd1853d53b123a6d4e667ce191ddf8ad278c8a96b54de55d85525fcd4e8a11e",
+        "result": "no semantic discrepancy found in this review"
+      },
+      {
+        "id": "c5caa34f5f307f2a0ea1",
+        "locations": [
+          {
+            "path": "std/Thread.zig",
+            "line": 340
+          }
+        ],
+        "sourceSha256": "c5caa34f5f307f2a0ea16e896daa17258124ab02b9a2d811a860344060edfd9c",
+        "reviewedTranslationSha256": "f8bb34fbed5e8bbb9aaa30a230d1ab0c3800ea64481ee6732164ecc8f8222de3",
+        "result": "no semantic discrepancy found in this review"
+      },
+      {
+        "id": "c987aa77fd9e3c4fa0dc",
+        "locations": [
+          {
+            "path": "std/math/big/int.zig",
+            "line": 2751
+          }
+        ],
+        "sourceSha256": "c987aa77fd9e3c4fa0dc6598170d3a0309cadfb829e44f31e30341f3fe164244",
+        "reviewedTranslationSha256": "aece658d668280384ce041c8b7ca0f3394cfe2287b470546982e49e5ea068f8d",
+        "result": "no semantic discrepancy found in this review"
+      },
+      {
+        "id": "5221f7ce250a04adb585",
+        "locations": [
+          {
+            "path": "std/os/windows/win32error.zig",
+            "line": 899
+          },
+          {
+            "path": "std/os/windows/ntstatus.zig",
+            "line": 199
+          }
+        ],
+        "sourceSha256": "5221f7ce250a04adb585eb5cdcca87febb0c11471baac6348a516d810f6cb35d",
+        "reviewedTranslationSha256": "ac9649630b5a82ec07dcbdedea8663311c1577556ccc0745b6d067b174a3ee3e",
+        "result": "no semantic discrepancy found in this review"
+      },
+      {
+        "id": "8055020bbc39f2ad1235",
+        "locations": [
+          {
+            "path": "std/math/complex/cosh.zig",
+            "line": 124
+          },
+          {
+            "path": "std/math/complex/sinh.zig",
+            "line": 123
+          }
+        ],
+        "sourceSha256": "8055020bbc39f2ad12350d5aeb657e0a041365f63c71b09d62dc0ffa6804c64c",
+        "reviewedTranslationSha256": "e156c35fdf2f02e927e35fca641ce29f7357688aa68f8493f54d519a4c36e2d2",
+        "result": "no semantic discrepancy found in this review"
+      },
+      {
+        "id": "50f5b9d1237389cd1080",
+        "locations": [
+          {
+            "path": "std/sort.zig",
+            "line": 13
+          }
+        ],
+        "sourceSha256": "50f5b9d1237389cd10804e1e857cf0ce7f55d8541cc6bf5df554db38235900a3",
+        "reviewedTranslationSha256": "b8a59cff8fb52b7b015abad0b35b3fa4f2780d53f844a72d16e0f2c72cb0cb14",
+        "result": "no semantic discrepancy found in this review"
+      },
+      {
+        "id": "be3905c2c7b0891ab0d3",
+        "locations": [
+          {
+            "path": "std/fmt.zig",
+            "line": 452
+          }
+        ],
+        "sourceSha256": "be3905c2c7b0891ab0d3210382dd833974cbf55887b0599a7efafaf677e58d83",
+        "reviewedTranslationSha256": "8d827548bdecc82a272fb9d8e9b50094bdf7f389785ce278d729ec33628c78bd",
+        "result": "no semantic discrepancy found in this review"
+      },
+      {
+        "id": "5f2fdd76d47d9a90dde3",
+        "locations": [
+          {
+            "path": "std/crypto/ml_kem.zig",
+            "line": 571
+          }
+        ],
+        "sourceSha256": "5f2fdd76d47d9a90dde33df831eb78940a885b3f8e9eacf8402cfb113cf00727",
+        "reviewedTranslationSha256": "aeff719e15aeb68eb0a5746d3e7b0d1dbc98c2ea44e977057a6b3f5ee23201ac",
+        "result": "no semantic discrepancy found in this review"
+      },
+      {
+        "id": "605d4a1248e400d1aa68",
+        "locations": [
+          {
+            "path": "std/Io/Threaded.zig",
+            "line": 18297
+          }
+        ],
+        "sourceSha256": "605d4a1248e400d1aa6831879e5bd3cbc5ea8e09ee03f5746b045d49baac3d25",
+        "reviewedTranslationSha256": "882234f541d69f13c8227ea3d137e9bb4a866f7020dc43429013cd9f6923a74f",
+        "result": "no semantic discrepancy found in this review"
+      },
+      {
+        "id": "b74e3ac1566d2cadb2bf",
+        "locations": [
+          {
+            "path": "std/os/windows/win32error.zig",
+            "line": 1578
+          }
+        ],
+        "sourceSha256": "b74e3ac1566d2cadb2bfdbfc5abcba8daf6f8578cf21516f3cef55193e033a85",
+        "reviewedTranslationSha256": "017bb429eb8b88405d25fe4788bfe31ab31f7b8bff900fed92db7e100ab53801",
+        "result": "no semantic discrepancy found in this review"
+      },
+      {
+        "id": "544c1dcf29efe145509f",
+        "locations": [
+          {
+            "path": "std/math/big/int.zig",
+            "line": 767
+          }
+        ],
+        "sourceSha256": "544c1dcf29efe145509f8931a77ee3882bc091ae87c763977173698e58c70e9f",
+        "reviewedTranslationSha256": "b3aac4f053c8c1b083c00ec4a4a60c1a50e9f1ac8bb72fcdb53bb456b3353455",
+        "result": "terminology clarified"
+      },
+      {
+        "id": "ebc61be4371dc789a801",
+        "locations": [
+          {
+            "path": "std/math/complex/exp.zig",
+            "line": 61
+          },
+          {
+            "path": "std/math/complex/exp.zig",
+            "line": 112
+          }
+        ],
+        "sourceSha256": "ebc61be4371dc789a8017a55688760ac9a1e93cddf4925bbc237489bb6b232e4",
+        "reviewedTranslationSha256": "7ba64a9f6f5705d42c1315ec5e8a656b3da53d80c56b033872ed8d6c90d526d9",
+        "result": "no semantic discrepancy found in this review"
+      },
+      {
+        "id": "4e4b563e429e587fa8f8",
+        "locations": [
+          {
+            "path": "std/testing/FailingAllocator.zig",
+            "line": 1
+          }
+        ],
+        "sourceSha256": "4e4b563e429e587fa8f8130c3e18bda62a6edf6927f7e6b322e02f53373431e3",
+        "reviewedTranslationSha256": "0a1dd468da4fb3236bb5f5bcd9bcb7f021f0b79ef68418807818dbf1476089c5",
+        "result": "no semantic discrepancy found in this review"
+      },
+      {
+        "id": "032b9159ee6d611b009c",
+        "locations": [
+          {
+            "path": "std/Thread.zig",
+            "line": 100
+          }
+        ],
+        "sourceSha256": "032b9159ee6d611b009ca3a2a971d1305d25ebd37ee128ae7f0c744cd164c0c9",
+        "reviewedTranslationSha256": "c1ac0fc0c007f2108f221c5f19e4cedb961dd96d4d6e5e8ecc81bc26f564199c",
+        "result": "no semantic discrepancy found in this review"
+      },
+      {
+        "id": "39937bc5d8d21b412320",
+        "locations": [
+          {
+            "path": "std/SemanticVersion.zig",
+            "line": 262
+          }
+        ],
+        "sourceSha256": "39937bc5d8d21b4123205ce13b16116785d328cda404528a1af802ed14bdbffc",
+        "reviewedTranslationSha256": "ce20cc1266c6be1fcfca31ea804bea9f332f9d9aad8b12f3047b496f48a0bc3c",
+        "result": "no semantic discrepancy found in this review"
+      },
+      {
+        "id": "5e8c12895832da572065",
+        "locations": [
+          {
+            "path": "std/Thread.zig",
+            "line": 952
+          }
+        ],
+        "sourceSha256": "5e8c12895832da572065d12b7733b90cb6acd2766fbadc88a4b222dbfaa82231",
+        "reviewedTranslationSha256": "d4ec0b088c1f349461806f5b8ed59e522fae31147adfb8835d4a46a62de85a30",
+        "result": "no semantic discrepancy found in this review"
+      },
+      {
+        "id": "c356da48edc52dc74cff",
+        "locations": [
+          {
+            "path": "std/os/windows/ntstatus.zig",
+            "line": 578
+          }
+        ],
+        "sourceSha256": "c356da48edc52dc74cff5d160bad50466bd0d8eced25717d784379a71fe89d71",
+        "reviewedTranslationSha256": "45cae1048429417c544044791be1c397c6effc5b4bd4a26246a017c6a0d17fef",
+        "result": "no semantic discrepancy found in this review"
+      },
+      {
+        "id": "5b72812433309bf7e259",
+        "locations": [
+          {
+            "path": "std/heap/SafeAllocator.zig",
+            "line": 2119
+          }
+        ],
+        "sourceSha256": "5b72812433309bf7e2595a111d8d992e154d3b865f638386fa26923608262def",
+        "reviewedTranslationSha256": "0000899c46a6904ab8da3843f7dba4407f52b399383564391adf3f7c1d57ef9e",
+        "result": "no semantic discrepancy found in this review"
+      },
+      {
+        "id": "d1737e1ba230027eca4f",
+        "locations": [
+          {
+            "path": "std/math/gamma.zig",
+            "line": 208
+          }
+        ],
+        "sourceSha256": "d1737e1ba230027eca4f59d40e74cdfb7aa14d71759cc39a9f3f50d218b5dfeb",
+        "reviewedTranslationSha256": "d90ac40a7588b9a7f45f18beec93277b3a00c6ddb930fbd47ea0ac7f76476dc8",
+        "result": "no semantic discrepancy found in this review"
+      },
+      {
+        "id": "2308f2e76461fbd85cdf",
+        "locations": [
+          {
+            "path": "std/Io/Dir.zig",
+            "line": 1114
+          }
+        ],
+        "sourceSha256": "2308f2e76461fbd85cdf518c25e0a43f5b49f1d44a03b52db409083980f85fc9",
+        "reviewedTranslationSha256": "1881dbb12a2ab8c4601cb3a49ef54b38f868e85a98f63fb2e5a971fbf9a2cdef",
+        "result": "no semantic discrepancy found in this review"
+      },
+      {
+        "id": "93690d73cb55486added",
+        "locations": [
+          {
+            "path": "std/os/uefi/tables/boot_services.zig",
+            "line": 348
+          }
+        ],
+        "sourceSha256": "93690d73cb55486addedbca0bdf59763c5fdcc124c5b5aa5e63f881d9e875a84",
+        "reviewedTranslationSha256": "28f2415b04acb229a5e6d779574a75ba8960826531ca1a2a514f97d7e283f302",
+        "result": "no semantic discrepancy found in this review"
+      },
+      {
+        "id": "40105f08be4cbf1927e3",
+        "locations": [
+          {
+            "path": "std/heap/ArenaAllocator.zig",
+            "line": 483
+          }
+        ],
+        "sourceSha256": "40105f08be4cbf1927e3c736ac7995bc944311b69930a31dcb11089f094f8348",
+        "reviewedTranslationSha256": "2e2a7f1c258752b50d61e2fd8fdcf93bbfd16e0ec43f6734da52bca340e44a86",
+        "result": "terminology clarified"
+      },
+      {
+        "id": "e2e0808541aa3d445ff0",
+        "locations": [
+          {
+            "path": "std/Io/Threaded.zig",
+            "line": 15496
+          },
+          {
+            "path": "std/Io/Threaded.zig",
+            "line": 16330
+          },
+          {
+            "path": "std/Io/Threaded.zig",
+            "line": 16377
+          },
+          {
+            "path": "std/Io/Threaded.zig",
+            "line": 16432
+          },
+          {
+            "path": "std/Io/Threaded.zig",
+            "line": 18126
+          },
+          {
+            "path": "std/Io/Threaded.zig",
+            "line": 18154
+          }
+        ],
+        "sourceSha256": "e2e0808541aa3d445ff043342f082b37c4052f16c4ce48175aad5dcafafb3661",
+        "reviewedTranslationSha256": "55a865d4f07ea56d41ec34fcd4b2c63bb463c898222260ddde51277d97100cc8",
+        "result": "no semantic discrepancy found in this review"
+      },
+      {
+        "id": "90f25afe8e1da010578a",
+        "locations": [
+          {
+            "path": "std/Thread.zig",
+            "line": 353
+          }
+        ],
+        "sourceSha256": "90f25afe8e1da010578abd568104b875ce59737aa01200d10c109d4312c033f9",
+        "reviewedTranslationSha256": "f816b7d24659f8e5d3ba28f2f53c6c73b39c054d7a69050b0bb83321a6f4372e",
+        "result": "no semantic discrepancy found in this review"
+      },
+      {
+        "id": "2ca7148a64ff732b2b7c",
+        "locations": [
+          {
+            "path": "std/heap/ArenaAllocator.zig",
+            "line": 227
+          }
+        ],
+        "sourceSha256": "2ca7148a64ff732b2b7c89904ef111d3e0cca700ca6ccd711ee6cdf9902fbb01",
+        "reviewedTranslationSha256": "07c87e55afbd948a826684792ac0a617ce19083021b7e6f989bd8a48bb4475f5",
+        "result": "no semantic discrepancy found in this review"
+      },
+      {
+        "id": "674573e289a5f585e351",
+        "locations": [
+          {
+            "path": "std/heap/ArenaAllocator.zig",
+            "line": 421
+          }
+        ],
+        "sourceSha256": "674573e289a5f585e35150f0ccbca1c4060a7a33b16d2a29e947c0da7b9b6c47",
+        "reviewedTranslationSha256": "166ee5e657541df3b1f7ed2c0788dfb8b3ab053d0640b219934e563840ceadb0",
+        "result": "no semantic discrepancy found in this review"
+      },
+      {
+        "id": "d071bd425c5ae8ecd1d9",
+        "locations": [
+          {
+            "path": "std/crypto/hkdf.zig",
+            "line": 26
+          }
+        ],
+        "sourceSha256": "d071bd425c5ae8ecd1d98588836a7db2e8fb998c8db2be5434bd061b5d5be51e",
+        "reviewedTranslationSha256": "8d8ea34eb42baf97d35659fe87c82a4b5b0e826ac81835e8b143aabeb6a4138f",
+        "result": "no semantic discrepancy found in this review"
+      },
+      {
+        "id": "f94033eda31b1ae5e669",
+        "locations": [
+          {
+            "path": "std/crypto/pbkdf2.zig",
+            "line": 261
+          }
+        ],
+        "sourceSha256": "f94033eda31b1ae5e669791bdf596e8fe68686c21459d862531ae2932d7afa76",
+        "reviewedTranslationSha256": "25c63ec0cd46f3c6f04bfc86bceb4db179715de605aff515a921d27a93877b0e",
+        "result": "no semantic discrepancy found in this review"
+      },
+      {
+        "id": "d2f414c41f5860473998",
+        "locations": [
+          {
+            "path": "std/Io.zig",
+            "line": 2381
+          }
+        ],
+        "sourceSha256": "d2f414c41f586047399822044193d2b3a3b140e20e18c7cc32408e8f277dd48a",
+        "reviewedTranslationSha256": "43499347d603b01958e484702e7e930b7f31cde6f37dc82d6ce506a5a0acad39",
+        "result": "no semantic discrepancy found in this review"
+      },
+      {
+        "id": "6b3e78f0cdf2716a36a8",
+        "locations": [
+          {
+            "path": "std/json/Scanner.zig",
+            "line": 63
+          },
+          {
+            "path": "std/json/Scanner.zig",
+            "line": 1578
+          }
+        ],
+        "sourceSha256": "6b3e78f0cdf2716a36a812426a452ba377150ab5c1f58a24b74a99c14ee42915",
+        "reviewedTranslationSha256": "41cb0170d0a9e40bc171e813ed10fdcd5432146539245d4f4ff30ad01c679758",
+        "result": "no semantic discrepancy found in this review"
+      },
+      {
+        "id": "26b88befa43a32521134",
+        "locations": [
+          {
+            "path": "std/hash_map.zig",
+            "line": 225
+          }
+        ],
+        "sourceSha256": "26b88befa43a32521134a15d603f0dd2a39ad4cb4742a5dcdccd3c2cc58833af",
+        "reviewedTranslationSha256": "67f64b807c073d3febdc6f58b1bd98b3616327d2ac83569eee1ae146d00b6bc2",
+        "result": "no semantic discrepancy found in this review"
+      },
+      {
+        "id": "24b352e11b332156b83d",
+        "locations": [
+          {
+            "path": "std/atomic.zig",
+            "line": 525
+          }
+        ],
+        "sourceSha256": "24b352e11b332156b83d90d98534d181a9213c8d53f0c932cf618aa5db757af0",
+        "reviewedTranslationSha256": "1198ecdfc8fbd4cbd4531fcad3dce956caf3f81cc9e4436a647d39614e872853",
+        "result": "no semantic discrepancy found in this review"
+      },
+      {
+        "id": "2509ac064f789b705391",
+        "locations": [
+          {
+            "path": "std/heap/SafeAllocator.zig",
+            "line": 1
+          }
+        ],
+        "sourceSha256": "2509ac064f789b70539109205727513fe37742a8bcf89a1f672abdf2fb897197",
+        "reviewedTranslationSha256": "6408a9f7c278a7acabd1074749bbacc6a4d3b8203c72b13dbcffde63db05d551",
+        "result": "no semantic discrepancy found in this review"
+      },
+      {
+        "id": "6a72c33a3003c1c8b413",
+        "locations": [
+          {
+            "path": "std/os/windows/ntstatus.zig",
+            "line": 2114
+          }
+        ],
+        "sourceSha256": "6a72c33a3003c1c8b413cf1fb8b3dd8ac7956dc20935d7654bb3edae79634196",
+        "reviewedTranslationSha256": "3cf9808a701c4eba26b318aba32ec0a9fef2e5f6613e65e22dd0e51e12ad2726",
+        "result": "no semantic discrepancy found in this review"
+      },
+      {
+        "id": "fb28454c7e63b0959128",
+        "locations": [
+          {
+            "path": "std/Io/Threaded.zig",
+            "line": 24
+          }
+        ],
+        "sourceSha256": "fb28454c7e63b0959128bb218546753fa63c404b7c134494ae3711f552e2641d",
+        "reviewedTranslationSha256": "85607ea730643f87f01b3ab402e7c163488a8474aa15a030c76daf0605551654",
+        "result": "no semantic discrepancy found in this review"
+      },
+      {
+        "id": "6b1e367361f05b537739",
+        "locations": [
+          {
+            "path": "std/Io/Threaded.zig",
+            "line": 862
+          }
+        ],
+        "sourceSha256": "6b1e367361f05b537739eacdbeb3191a99e84475b7796e91b14ef456ee18397b",
+        "reviewedTranslationSha256": "ad1420b43c7cad5f88c704904d9b5a56e53d0a02f608b8e8d915253aba9c57b5",
+        "result": "no semantic discrepancy found in this review"
+      },
+      {
+        "id": "f5b1b9124058a9136bd3",
+        "locations": [
+          {
+            "path": "std/Thread.zig",
+            "line": 1
+          }
+        ],
+        "sourceSha256": "f5b1b9124058a9136bd392966dbe9c3c87c51f6909c8d7d83e5be032911dd77b",
+        "reviewedTranslationSha256": "d8ef010ae4fef9d43a6f3db085ecbd1935d60a1c47b58226920c912f8eb35025",
+        "result": "no semantic discrepancy found in this review"
+      },
+      {
+        "id": "0973b475270ecbc501ac",
+        "locations": [
+          {
+            "path": "std/Io/Threaded.zig",
+            "line": 18190
+          }
+        ],
+        "sourceSha256": "0973b475270ecbc501ac5f0fff73a967277052cb0511d49cc8c59949ebbd980f",
+        "reviewedTranslationSha256": "a06675721a1c388ed9fc22316c83ecb1e4d1deefa0bfc4b8e64f8dc1b497234c",
+        "result": "no semantic discrepancy found in this review"
+      },
+      {
+        "id": "ca2163f26293794cfa72",
+        "locations": [
+          {
+            "path": "std/priority_queue.zig",
+            "line": 41
+          }
+        ],
+        "sourceSha256": "ca2163f26293794cfa728319111192c9846aebbc835aedcf41255cd071ee1bf9",
+        "reviewedTranslationSha256": "301ea1d441c6d760833fad47002799b9e02184a81254b3b3c23c12a31886a476",
+        "result": "no semantic discrepancy found in this review"
+      },
+      {
+        "id": "6ab1adef66174e785243",
+        "locations": [
+          {
+            "path": "std/mem/Allocator.zig",
+            "line": 524
+          }
+        ],
+        "sourceSha256": "6ab1adef66174e785243247ec0a2ea240976748ef02d39bf2d78f448d1520b86",
+        "reviewedTranslationSha256": "fa6bf16fba388b17c5182970c1eb089c5a3ea6dffe6f37b9addbaa0651328612",
+        "result": "no semantic discrepancy found in this review"
+      }
+    ]
+  },
+  "englishResidualScan": {
+    "scannedUnits": 21237,
+    "methods": [
+      {
+        "method": "排除已登记原样单元、内联代码、URL；围栏内仅检查 // 注释；筛选无汉字且包含至少五个英文词的行。",
+        "candidateMatches": 64
+      },
+      {
+        "method": "包含已登记原样单元，筛选无汉字、至少三个英文词且含常见英语语法词的行；逐项审阅并排除代码及数学表达式。",
+        "candidateMatches": 52
+      },
+      {
+        "method": "排除已登记原样单元、内联代码、URL，扫描包含汉字的行中连续五个或更多英文词。",
+        "candidateMatches": 10
+      },
+      {
+        "method": "进一步扫描连续三个或更多英文词且含常见语法词的片段；用于发现混合中文行中的短标签残留。",
+        "candidateMatches": 15
+      }
+    ],
+    "uniqueCandidateLinesReviewed": 116,
+    "uniqueCandidateUnitsReviewed": 81,
+    "candidateUnitIds": [
+      "077de25d79f559416265",
+      "09a19f89f7588c2abf94",
+      "0ff753d1b11fb0f1a166",
+      "1280f2582b0886771cfb",
+      "12e2cf033f102cfe804a",
+      "16067a76f0c23a8c427d",
+      "18ed493fd774471fc121",
+      "1919ce3705c28c9d1e46",
+      "22a3a79199a0c03046bf",
+      "2812652dae0cd7900a98",
+      "284dea593fb1fae97701",
+      "2cdb3e6f6f692e41395c",
+      "3765764090b80c58965d",
+      "38c276a1d0470c3bcda8",
+      "3a8dcf77232ecab1eb3a",
+      "3d39d270d08818260cba",
+      "40e1c2595b232f9aa97e",
+      "45f7e25012dfabe1e64d",
+      "47a170a48277da0bc44c",
+      "492d60e14209355fb4f4",
+      "4b83e9b297269911ad32",
+      "4ee268e6263ca81bd63b",
+      "4f3028d0864c76a5dd83",
+      "4fc6a4438f384562277c",
+      "55e22b67d73097ab1c72",
+      "569449fef5d013b3d912",
+      "5796a8699e84904a8064",
+      "5c2b8e163666dd00cfb3",
+      "5dd8a2a37c29151a341b",
+      "6228254d77f355a3f4f6",
+      "622e0d50e6d0c7adc6b7",
+      "6682ae607976b27a7420",
+      "66d0696d67ab076b212c",
+      "67545f3c9c7d5be9eb76",
+      "74b11de4433763df2977",
+      "76f020613d53bfbed12e",
+      "78ee5d8957c522aaec74",
+      "7b92f75c69bb2029befd",
+      "7fc5dc8d377333ffa277",
+      "82b5bc9cc4c30682adac",
+      "83c334e7d39409c5d032",
+      "8d0788ef5f4f3fd596e9",
+      "938095173aa70bf26cba",
+      "97217567d75e2a886373",
+      "9a95e4a1e164212b4f3d",
+      "a014f7dad9e6a875c8b9",
+      "a3d3818dab0918e618af",
+      "a43ce26db71d538050e1",
+      "a5e6605f2a9176484eff",
+      "abe5b1893137bf5ab411",
+      "b06716a3a42b0e3ac02b",
+      "b3539b63fe94a1e629df",
+      "b431f33cd79dcdada3df",
+      "b819c7f2f7bc7f906af5",
+      "bacebec75abbbfacf019",
+      "bc61a8fcbdbb101f11ae",
+      "bf1fe6cebd7da37555ec",
+      "c3280bad9ed3a11d85db",
+      "c53fd5b06fdce3843223",
+      "c6fbe2432526098627be",
+      "c8f3dbe498c209b89456",
+      "c9f0cd33039f3478ba84",
+      "ce673bfae00d7b577f39",
+      "ce817db9d065a8649dfc",
+      "cf019eaab59861f379ab",
+      "d9643c1890d5c95c1480",
+      "dc38601e60304abc9165",
+      "ddbeb10212bc4f15e7a1",
+      "e21338a5abf219b76f10",
+      "e8ed2cf7e9a01787f0c7",
+      "e9e4bac534372fe82e87",
+      "f3d20da5bee81b93c392",
+      "f534717ef25a166514fe",
+      "f5ac9c7eab672c55d944",
+      "f77ce78140e33aaeb6fa",
+      "f8659fbc0b6fd2143135",
+      "f95c40cae3eaaa30efd9",
+      "fbf524752f1bc80a54fc",
+      "fc2092d1b0941b385a02",
+      "fcb681e97e7c9b212017",
+      "fe8e526bad3b281cff04"
+    ],
+    "followup": "针对 LLVM 位码标志说明检查同一模块的相邻条目，另发现 version 标签残留。",
+    "findingsFixed": 3,
+    "excludedContent": [
+      "可执行代码及伪代码",
+      "数学表达式",
+      "命令与路径",
+      "图示索引及表达式",
+      "标准或工具专名",
+      "必须保留的输出字符串",
+      "已登记的原样保留内容"
+    ],
+    "result": "候选逐项审阅并排除后修复 3 个注释单元中的自然语言标签残留；扫描未证明所有短语均已翻译。"
+  },
+  "findings": [
+    {
+      "id": "a9b2ece66e93340097d9",
+      "locations": [
+        {
+          "path": "std/Io/Threaded.zig",
+          "line": 18858
+        }
+      ],
+      "category": "terminology clarification",
+      "before": "这可能发生在罕见的竞态中：线程可能被伪唤回，\n因而已观察到状态变化，随后\n退出。这没有问题，因为线程已按预期醒来。",
+      "after": "这可能发生在罕见的竞态中：线程可能被伪唤醒，\n因而已观察到状态变化，随后\n退出。这没有问题，因为线程已按预期醒来。",
+      "translationFile": "translations/std/batch-2.zh.json",
+      "sourceSha256": "a9b2ece66e93340097d9449685b834ff70ce9a1fc5f189de87138e0cd12ef5c0",
+      "translationSha256": "e69a137d08c949f7c7fb8085249d4011e09ec47f7c0c90bb5c188a7fa579e7ca",
+      "status": "fixed and translation validator passed"
+    },
+    {
+      "id": "544c1dcf29efe145509f",
+      "locations": [
+        {
+          "path": "std/math/big/int.zig",
+          "line": 767
+        }
+      ],
+      "category": "terminology clarification",
+      "before": "r = a - b，采用二进制补码回绕语义。返回是否发生溢出。\n\nr、a 和 b 可以指向同一内存。\n断言结果可存入 `r`。r 所需肢数量的上界为\n`calcTwosCompLimbCount(bit_count)`。",
+      "after": "r = a - b，采用二进制补码回绕语义。返回是否发生溢出。\n\nr、a 和 b 可以指向同一内存。\n断言结果可存入 `r`。r 所需 limb 数量的上界为\n`calcTwosCompLimbCount(bit_count)`。",
+      "translationFile": "translations/std/batch-2.zh.json",
+      "sourceSha256": "544c1dcf29efe145509f8931a77ee3882bc091ae87c763977173698e58c70e9f",
+      "translationSha256": "b3aac4f053c8c1b083c00ec4a4a60c1a50e9f1ac8bb72fcdb53bb456b3353455",
+      "status": "fixed and translation validator passed"
+    },
+    {
+      "id": "40105f08be4cbf1927e3",
+      "locations": [
+        {
+          "path": "std/heap/ArenaAllocator.zig",
+          "line": 483
+        }
+      ],
+      "category": "terminology clarification",
+      "before": "完成从自由链表中移除节点。",
+      "after": "完成从空闲链表中移除节点。",
+      "translationFile": "translations/std/batch-4.zh.json",
+      "sourceSha256": "40105f08be4cbf1927e3c736ac7995bc944311b69930a31dcb11089f094f8348",
+      "translationSha256": "2e2a7f1c258752b50d61e2fd8fdcf93bbfd16e0ec43f6734da52bca340e44a86",
+      "status": "fixed and translation validator passed"
+    },
+    {
+      "id": "94209c4bf62c16754891",
+      "locations": [
+        {
+          "path": "std/zig/llvm/ir.zig",
+          "line": 1868
+        },
+        {
+          "path": "std/zig/llvm/ir.zig",
+          "line": 1882
+        },
+        {
+          "path": "std/zig/llvm/ir.zig",
+          "line": 1946
+        }
+      ],
+      "category": "untranslated natural-language label",
+      "before": "为 distinct | version",
+      "after": "是否为 distinct | 版本",
+      "translationFile": "translations/std/batch-5.zh.json",
+      "sourceSha256": "94209c4bf62c16754891e42fb8c2296f3ceb376b6a1662b0d143149e6c526c42",
+      "translationSha256": "61ba71d7c3b87d8cd541ed30d2b48f4a2919ad89a1daf39d0581392b01f4c555",
+      "status": "fixed and translation validator passed"
+    },
+    {
+      "id": "a5e6605f2a9176484eff",
+      "locations": [
+        {
+          "path": "std/zig/llvm/ir.zig",
+          "line": 1835
+        }
+      ],
+      "category": "untranslated natural-language label",
+      "before": "为 distinct | has no old type refs",
+      "after": "是否为 distinct | 不含旧式类型引用",
+      "translationFile": "translations/std/batch-7.zh.json",
+      "sourceSha256": "a5e6605f2a9176484eff91b6eb63b0fdfab16c481516cc00ea53322b31bb431e",
+      "translationSha256": "b5be589f242f604e936a1609b2ad87944062c0170ac3b378caf3d8b30bbb9737",
+      "status": "fixed and translation validator passed"
+    },
+    {
+      "id": "4f3028d0864c76a5dd83",
+      "locations": [
+        {
+          "path": "std/zig/llvm/ir.zig",
+          "line": 1681
+        }
+      ],
+      "category": "untranslated natural-language label",
+      "before": "为 distinct | has sp flags | has flags",
+      "after": "是否为 distinct | 含 sp 标志 | 含标志",
+      "translationFile": "translations/std/batch-7.zh.json",
+      "sourceSha256": "4f3028d0864c76a5dd8329fab12f2c92ace497f8f42a992bccfe0e12bc003e12",
+      "translationSha256": "07b8156cb4f5d0a6ba93bd63b1ece70fa2f30e15486bdedc3d4083f45ab0955b",
+      "status": "fixed and translation validator passed"
+    }
+  ],
+  "validation": {
+    "command": "node scripts/validate-translations.mjs",
+    "result": "Validated 21237/21237 existing translations; 0 remain.",
+    "exitCode": 0,
+    "meaning": "校验覆盖率、保护片段及代码标记约束；不作为全量语义复核的替代。"
+  },
+  "limitations": [
+    "抽查只有 60 个单元，不能证明其余单元语义正确。",
+    "关键词候选与固定种子随机抽样不保证覆盖所有高风险概念和模块。",
+    "英文扫描使用启发式规则，可能漏过短标签、混合标识符或不符合规则的英文残留。",
+    "未改变上游原文的已知疑点，具体记录见 reports/upstream-notes.json。",
+    "未编辑生成器或已生成内容；本报告对应最终译文文件，后续需重新生成并运行网站整体验证。"
+  ]
+}

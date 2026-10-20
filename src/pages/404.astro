@@ -1,0 +1,61 @@
+---
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>页面未找到 · Zig Docs</title>
+    <link rel="icon" href={`${base}/favicon.svg`} type="image/svg+xml" />
+  </head>
+  <body>
+    <main>
+      <p class="status">404</p>
+      <h1>页面未找到</h1>
+      <p lang="en">The requested documentation page could not be found.</p>
+      <nav aria-label="返回文档首页">
+        <a href={`${base}/zh-cn/`}>中文文档</a>
+        <a href={`${base}/en/`} lang="en">English documentation</a>
+      </nav>
+    </main>
+  </body>
+</html>
+
+<style>
+  :global(html) {
+    color-scheme: light dark;
+  }
+  body {
+    margin: 0;
+    font:
+      1rem/1.7 system-ui,
+      sans-serif;
+  }
+  main {
+    max-width: 42rem;
+    margin: 15vh auto;
+    padding: 2rem;
+  }
+  .status {
+    color: #c65b1d;
+    font-size: 3rem;
+    margin-bottom: 0;
+  }
+  h1 {
+    font-size: 2rem;
+    margin: 0;
+  }
+  nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+  a {
+    color: #c65b1d;
+    text-underline-offset: 0.2em;
+  }
+</style>

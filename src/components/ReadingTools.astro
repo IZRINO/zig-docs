@@ -1,0 +1,83 @@
+---
+import { labels, type Locale } from '../lib/content';
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const t = labels[locale];
+---
+
+<zig-reading-tools
+  data-copy={t.copy}
+  data-copied={t.copied}
+  data-failed={t.copyFailed}
+>
+  <span class="sr-only" role="status" aria-live="polite"></span>
+</zig-reading-tools>
+
+<script>
+  class ZigReadingTools extends HTMLElement {
+    revealSource = () => {
+      let id;
+      try {
+        id = decodeURIComponent(location.hash.slice(1));
+      } catch {
+        return;
+      }
+      if (!id) return;
+      const target = document.getElementById(id);
+      const details = target?.closest('details');
+      if (details) {
+        details.open = true;
+        requestAnimationFrame(() =>
+          target?.scrollIntoView({ block: 'center' }),
+        );
+      }
+    };
+
+    connectedCallback() {
+      this.revealSource();
+      window.addEventListener('hashchange', this.revealSource);
+      const status = this.querySelector<HTMLElement>('[role="status"]');
+      document
+        .querySelectorAll<HTMLElement>('.doc-content pre')
+        .forEach((pre) => {
+          if (pre.hasAttribute('data-copy-ignore')) return;
+          if (pre.querySelector('.copy-code')) return;
+          const code = pre.querySelector('code');
+          const button = document.createElement('button');
+          button.className = 'copy-code';
+          button.type = 'button';
+          button.textContent = this.dataset.copy || 'Copy code';
+          button.setAttribute('aria-label', this.dataset.copy || 'Copy code');
+          button.addEventListener('click', async () => {
+            try {
+              const clone = (code ?? pre).cloneNode(true) as HTMLElement;
+              clone
+                .querySelectorAll(
+                  '.copy-code, [data-line-number], [aria-hidden="true"], .line-number, .line-numbers',
+                )
+                .forEach((node) => node.remove());
+              await navigator.clipboard.writeText(clone.textContent ?? '');
+              button.textContent = this.dataset.copied || 'Copied';
+              if (status) status.textContent = button.textContent;
+              window.setTimeout(() => {
+                button.textContent = this.dataset.copy || 'Copy code';
+              }, 1800);
+            } catch {
+              button.textContent = this.dataset.failed || 'Copy failed';
+              if (status) status.textContent = button.textContent;
+            }
+          });
+          pre.append(button);
+        });
+    }
+
+    disconnectedCallback() {
+      window.removeEventListener('hashchange', this.revealSource);
+    }
+  }
+  if (!customElements.get('zig-reading-tools')) {
+    customElements.define('zig-reading-tools', ZigReadingTools);
+  }
+</script>

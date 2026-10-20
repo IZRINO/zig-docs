@@ -1,0 +1,19 @@
+---
+import { currentDocument, labels } from '../lib/content';
+const { locale } = currentDocument(Astro.url.pathname);
+const t = labels[locale];
+---
+
+<footer class="document-footer" data-pagefind-ignore>
+  <p>{t.attribution}</p>
+  <div>
+    <span>{t.disclaimer}</span>
+    <a href="https://github.com/IZRINO/zig-docs">{t.repository}</a>
+    <a href="https://ziglang.org/documentation/0.17.0/">ziglang.org</a>
+    <a
+      href={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/licenses/zig-LICENSE.txt`}
+    >
+      {locale === 'en' ? 'Upstream license' : '上游许可证'}
+    </a>
+  </div>
+</footer>

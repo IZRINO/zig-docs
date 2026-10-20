@@ -1,0 +1,6 @@
+* text=auto eol=lf
+upstream/** -text
+*.wasm binary
+*.tar binary
+*.png binary
+*.ico binary

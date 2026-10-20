@@ -1,0 +1,117 @@
+---
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+import { Icon } from '@astrojs/starlight/components';
+import ReadingTools from '../../components/ReadingTools.astro';
+import Overview from '../../components/Overview.astro';
+import {
+  locales,
+  manifest,
+  readDocument,
+  docHref,
+  labels,
+  makeSidebar,
+  type Locale,
+  type DocumentMeta,
+} from '../../lib/content';
+
+export async function getStaticPaths() {
+  const paths = [];
+  for (const locale of locales) {
+    const docs = await manifest(locale);
+    paths.push({
+      params: { locale, slug: undefined },
+      props: { locale, meta: null },
+    });
+    for (const meta of docs)
+      paths.push({
+        params: { locale, slug: meta.id },
+        props: { locale, meta },
+      });
+  }
+  return paths;
+}
+
+interface Props {
+  locale: Locale;
+  meta: DocumentMeta | null;
+}
+const { locale, meta } = Astro.props;
+const t = labels[locale];
+const docs = await manifest(locale);
+const page = meta ? await readDocument(locale, meta) : null;
+const reference = docs.filter((entry) => entry.kind !== 'std');
+const chapterIndex = meta
+  ? reference.findIndex((entry) => entry.id === meta.id)
+  : -1;
+const previous = reference[chapterIndex - 1];
+const next = chapterIndex >= 0 ? reference[chapterIndex + 1] : undefined;
+const title =
+  meta?.title ??
+  (locale === 'zh-cn' ? 'Zig 0.17.0 文档' : 'Zig 0.17.0 documentation');
+const headings = meta?.headings ?? [
+  { depth: 2, slug: 'language-reference', text: t.reference },
+  { depth: 2, slug: 'standard-library', text: t.library },
+];
+---
+
+<StarlightPage
+  lang={locale === 'en' ? 'en' : 'zh-CN'}
+  frontmatter={{
+    title,
+    description: meta
+      ? `${title} · Zig 0.17.0 ${meta.kind === 'std' ? t.library : t.reference}`
+      : t.siteDescription,
+    pagefind: true,
+  }}
+  headings={headings}
+  sidebar={makeSidebar(locale, docs, meta?.id)}
+>
+  {
+    meta && page ? (
+      <>
+        <div class="document-meta" data-pagefind-ignore>
+          <span class="document-kind">
+            {meta.kind === 'std' ? t.library : t.reference}
+          </span>
+          <span class="document-version">Zig 0.17.0</span>
+          <a href={meta.sourceUrl} title={t.viewSource}>
+            {t.source}
+            <Icon name="external" size="0.85rem" />
+          </a>
+        </div>
+        {meta.sourcePath && (
+          <div class="source-path" data-pagefind-ignore>
+            <span>{t.sourceCode}</span>
+            <code>{meta.sourcePath}</code>
+          </div>
+        )}
+        <article class="doc-content" set:html={page.html} />
+        {(previous || next) && (
+          <nav
+            class="chapter-pagination"
+            aria-label={locale === 'en' ? 'Chapter navigation' : '章节导航'}
+            data-pagefind-ignore
+          >
+            {previous ? (
+              <a href={docHref(locale, previous.id)}>
+                <span>{t.previous}</span>
+                <strong>{previous.title}</strong>
+              </a>
+            ) : (
+              <span />
+            )}
+            {next && (
+              <a class="next-chapter" href={docHref(locale, next.id)}>
+                <span>{t.next}</span>
+                <strong>{next.title}</strong>
+              </a>
+            )}
+          </nav>
+        )}
+        <ReadingTools locale={locale} />
+      </>
+    ) : (
+      <Overview locale={locale} docs={docs} />
+    )
+  }
+</StarlightPage>

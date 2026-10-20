@@ -1,0 +1,59 @@
+---
+import { currentDocument, docHref, labels, manifest } from '../lib/content';
+
+const { locale, id } = currentDocument(Astro.url.pathname);
+const t = labels[locale];
+const parts = id.split('/').filter(Boolean);
+const isLibrary = parts[0] === 'std';
+const moduleIds = new Set(
+  isLibrary
+    ? (await manifest(locale))
+        .filter((doc) => doc.kind === 'std')
+        .map((doc) => doc.id)
+    : [],
+);
+const ancestors = parts.slice(1, -1).map((label, index) => ({
+  label,
+  id: parts.slice(0, index + 2).join('/'),
+}));
+---
+
+<div class="document-heading">
+  <nav
+    class="breadcrumbs"
+    aria-label={locale === 'en' ? 'Breadcrumbs' : '面包屑导航'}
+    data-pagefind-ignore
+  >
+    <a href={docHref(locale)}>{t.home}</a>
+    {parts.length > 0 && <span aria-hidden="true">/</span>}
+    {
+      parts.length > 0 && (
+        <a
+          href={
+            isLibrary
+              ? docHref(locale, 'std')
+              : `${docHref(locale)}#language-reference`
+          }
+        >
+          {isLibrary ? t.library : t.reference}
+        </a>
+      )
+    }
+    {
+      isLibrary &&
+        ancestors.map((ancestor) => (
+          <>
+            <span aria-hidden="true">/</span>
+            {moduleIds.has(ancestor.id) ? (
+              <a href={docHref(locale, ancestor.id)}>{ancestor.label}</a>
+            ) : (
+              <span>{ancestor.label}</span>
+            )}
+          </>
+        ))
+    }
+  </nav>
+  <h1 id="_top" data-pagefind-meta="title">
+    {Astro.locals.starlightRoute.entry.data.title}
+  </h1>
+</div>

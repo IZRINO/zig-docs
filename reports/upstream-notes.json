@@ -1,0 +1,89 @@
+{
+  "version": "0.17.0",
+  "source": "upstream/0.17.0/std/sources.tar",
+  "notes": [
+    {
+      "file": "std/zig/Zir.zig",
+      "lines": [
+        596,
+        601,
+        606,
+        611
+      ],
+      "observation": "文档注释称返回目标为 callee；相邻 ret_* 字段语义可能指 caller。翻译保留上游原文，未据此修改接口语义。",
+      "status": "upstream wording retained; verify with Zig maintainers"
+    },
+    {
+      "file": "std/Target/Query.zig",
+      "line": 3,
+      "observation": "原文写作 does reference any resources；根据上下文可能缺少 not。翻译保留上游原文，未补写否定。",
+      "status": "upstream wording retained; verify with Zig maintainers"
+    },
+    {
+      "file": "upstream/0.17.0/langref.html",
+      "section": "Operators",
+      "observation": "不等比较的描述原文仍写 equal；中文保留该语义并记录来源，没有擅自更正。",
+      "status": "upstream wording retained; verify with Zig maintainers"
+    },
+    {
+      "file": "std/os/linux.zig",
+      "line": 7532,
+      "observation": "原文先要求设置 COOP_TASKRUN，末尾又称不能与 COOP_TASKRUN 同用，条件前后矛盾；译文保留两处条件并注明原文如此。",
+      "status": "upstream wording retained; verify with Zig maintainers"
+    },
+    {
+      "file": "std/multi_array_list.zig",
+      "line": 150,
+      "observation": "切片说明将范围写作 arr[off..len]，但边界断言采用 off + len <= s.len，终点与长度的含义不一致；译文保留全部内联代码。",
+      "status": "upstream wording retained; verify with Zig maintainers"
+    },
+    {
+      "file": "std/fmt/parse_float/convert_eisel_lemire.zig",
+      "line": 123,
+      "observation": "原文声称整数近似覆盖 non-finite decimal exponents，非有限指数的措辞存疑；译文保留原意并注明原文如此。",
+      "status": "upstream wording retained; verify with Zig maintainers"
+    },
+    {
+      "file": "std/Io/Dir.zig",
+      "line": 547,
+      "observation": "开头称设置是否等待加锁后返回，但 true 分支又返回 error.WouldBlock，false 分支才等待；译文忠实保留布尔条件。",
+      "status": "upstream wording retained; verify with Zig maintainers"
+    },
+    {
+      "file": "std/Io/Dir.zig",
+      "line": 623,
+      "observation": "开头称设置是否等待加锁后返回，但 true 分支又返回 error.WouldBlock，false 分支才等待；译文忠实保留布尔条件。",
+      "status": "upstream wording retained; verify with Zig maintainers"
+    },
+    {
+      "file": "std/process.zig",
+      "line": 303,
+      "observation": "原文将 not already a file path 解释为 contains /，与常规 PATH 查找条件相反；译文未反转否定，并注明原文如此。",
+      "status": "upstream wording retained; verify with Zig maintainers"
+    },
+    {
+      "file": "std/os/windows/ntstatus.zig",
+      "line": 116,
+      "observation": "首句描述线程亲和性改变，末句却称未恢复 priority；译文保留优先级措辞并注明原文如此。",
+      "status": "upstream wording retained; verify with Zig maintainers"
+    },
+    {
+      "file": "std/Build/Cache.zig",
+      "line": 2150,
+      "observation": "上游 addDiscoveredPath 的行内反引号未闭合；译文只补齐 Markdown 定界符，接口名称保持不变，已登记校验摘要例外。",
+      "status": "upstream wording retained; verify with Zig maintainers"
+    },
+    {
+      "file": "std/coff.zig",
+      "line": 1858,
+      "observation": "原文写目标为 16-bit aligned，但又称位移低 4 位均为零；对齐单位表述存疑，译文保留 16 位并注明原文如此。",
+      "status": "upstream wording retained; verify with Zig maintainers"
+    },
+    {
+      "file": "std/crypto/salsa20.zig",
+      "line": 518,
+      "observation": "原文将接收者私钥参数同样标注为 public_key，导致 public_key 出现两次；译文保留次数并注明原文如此。",
+      "status": "upstream wording retained; verify with Zig maintainers"
+    }
+  ]
+}

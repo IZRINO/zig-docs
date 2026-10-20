@@ -1,0 +1,87 @@
+---
+import DefaultMobileTableOfContents from '@astrojs/starlight/components/MobileTableOfContents.astro';
+import { Icon } from '@astrojs/starlight/components';
+import ApiIndex from './ApiIndex.astro';
+import { currentDocument, manifest } from '../lib/content';
+
+const { locale, id } = currentDocument(Astro.url.pathname);
+const meta = (await manifest(locale)).find((doc) => doc.id === id);
+const compact = meta?.kind === 'std' && (meta.symbols?.length ?? 0) > 200;
+const title = locale === 'en' ? 'API index' : '接口索引';
+---
+
+{
+  compact ? (
+    <zig-mobile-api-toc>
+      <nav
+        class="compact-mobile-api-toc"
+        aria-labelledby="api-index-mobile-title"
+      >
+        <details id="zig-mobile-api-index">
+          <summary id="api-index-mobile-title">
+            <span>{title}</span>
+            <Icon name="right-caret" size="1rem" />
+          </summary>
+          <div class="api-index-dropdown">
+            <div class="api-index-sections">
+              <a href="#_top">{locale === 'en' ? 'Overview' : '概览'}</a>
+              <a href="#source">{locale === 'en' ? 'Source code' : '源码'}</a>
+            </div>
+            <ApiIndex
+              locale={locale}
+              rootAnchor={meta.symbols![0].anchor}
+              mobile
+            />
+          </div>
+        </details>
+      </nav>
+    </zig-mobile-api-toc>
+  ) : (
+    <DefaultMobileTableOfContents />
+  )
+}
+
+<script>
+  class ZigMobileApiToc extends HTMLElement {
+    controller?: AbortController;
+
+    connectedCallback() {
+      this.controller?.abort();
+      this.controller = new AbortController();
+      const options = { signal: this.controller.signal };
+      const details = this.querySelector('details');
+      if (!details) return;
+      this.addEventListener(
+        'click',
+        (event) => {
+          if ((event.target as Element).closest('a')) details.open = false;
+        },
+        options,
+      );
+      window.addEventListener(
+        'click',
+        (event) => {
+          if (!this.contains(event.target as Node)) details.open = false;
+        },
+        options,
+      );
+      window.addEventListener(
+        'keydown',
+        (event) => {
+          if (event.key !== 'Escape' || !details.open) return;
+          const focused = details.contains(document.activeElement);
+          details.open = false;
+          if (focused) details.querySelector('summary')?.focus();
+        },
+        options,
+      );
+    }
+
+    disconnectedCallback() {
+      this.controller?.abort();
+    }
+  }
+
+  if (!customElements.get('zig-mobile-api-toc'))
+    customElements.define('zig-mobile-api-toc', ZigMobileApiToc);
+</script>

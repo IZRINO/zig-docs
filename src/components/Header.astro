@@ -1,0 +1,30 @@
+---
+import Search from '@astrojs/starlight/components/Search.astro';
+import ThemeSelect from '@astrojs/starlight/components/ThemeSelect.astro';
+import LanguageSelect from './LanguageSelect.astro';
+import { Icon } from '@astrojs/starlight/components';
+import { currentDocument, docHref, labels } from '../lib/content';
+
+const { locale } = currentDocument(Astro.url.pathname);
+const t = labels[locale];
+---
+
+<div class="site-header">
+  <a class="site-brand" href={docHref(locale)} aria-label="Zig Docs">
+    <span class="brand-mark" aria-hidden="true">Z</span>
+    <span class="brand-name">Zig <span>Docs</span></span>
+    <span class="version-badge">0.17.0</span>
+  </a>
+  <div class="header-search"><Search /></div>
+  <div class="header-controls">
+    <a
+      class="repository-link"
+      href="https://github.com/IZRINO/zig-docs"
+      aria-label={t.repository}
+    >
+      <Icon name="github" size="1.2rem" />
+    </a>
+    <div class="desktop-theme"><ThemeSelect /></div>
+    <LanguageSelect />
+  </div>
+</div>

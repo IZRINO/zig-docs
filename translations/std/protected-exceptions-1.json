@@ -1,0 +1,24 @@
+{
+  "0ffba21cc3faa8c1c628": {
+    "reason": "上游 std.os.SYS 前的反引号未闭合；中文补齐为 `std.os.SYS`，并保留 arch_bits 和 os/linux.zig 的原有出现次序。",
+    "sourceSha256": "0ffba21cc3faa8c1c62825cc45e0e486e7a18dfd111ab826204f80248636321c",
+    "translationSha256": "14cec7a64144ac4dbaeb9107e351a9dd7395911ba971815e2909bfabbfd57368"
+  },
+  "143583edff0814014bda": {
+    "reason": "排序 ASCII 图示中的自然语言标签已翻译；保留 null、索引、布尔值、比较值、连接线及箭头位置。上游 lowerBound 行内反引号未闭合，译文保留既有补齐修正。",
+    "sourceSha256": "143583edff0814014bda2649cc577b05b56bd299aa15b3bd996eb6b1a81317d9",
+    "translationSha256": "9b3ea00d9946f89fce603f4379e8b3da9be426db4022d7d3bbd124963da768cc",
+    "renderedTextBlocks": true
+  },
+  "ef3412c409384e59634c": {
+    "reason": "排序 ASCII 图示中的自然语言标签已翻译；保留 null、索引、布尔值、比较值、连接线及箭头位置。上游 lowerBound 行内反引号未闭合，译文保留既有补齐修正。",
+    "sourceSha256": "ef3412c409384e59634c69c34245ffdca95fe2e397a647463b460dc63d178386",
+    "translationSha256": "db9271fd7ab1a6a25563d02dbbbb41972f50ab0b14edc4c8985b2f72444d054e",
+    "renderedTextBlocks": true
+  },
+  "5de9c76d7845cfeceb5a": {
+    "reason": "上游为未标注语言的 Zig 示例围栏；仅翻译其中两行 // 注释，所有非注释代码保持原样。",
+    "sourceSha256": "5de9c76d7845cfeceb5ab5e9030e92f4d5caf234c975ca56e9511fb8a7301438",
+    "translationSha256": "94f1390182ad65999b98344ef8d1b35792deb828a051b93a6bdccbe23d339290"
+  }
+}

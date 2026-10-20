@@ -1,0 +1,8 @@
+{
+  "49909280dd258389e7be": {
+    "reason": "排序 ASCII 图示中的自然语言标签已翻译；保留 null、索引、布尔值、比较值、连接线及箭头位置。",
+    "sourceSha256": "49909280dd258389e7bef4818b00feebbd1e3c74d53d6c3f20b14cb9474c2820",
+    "translationSha256": "b31708d2c0d23a149b430b8f6d33bd497c4c48264bcd47665f8c374637365fa3",
+    "renderedTextBlocks": true
+  }
+}

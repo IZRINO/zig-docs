@@ -1,0 +1,111 @@
+---
+import {
+  docHref,
+  labels,
+  type Locale,
+  type DocumentMeta,
+} from '../lib/content';
+import { Icon } from '@astrojs/starlight/components';
+interface Props {
+  locale: Locale;
+  docs: DocumentMeta[];
+}
+const { locale, docs } = Astro.props;
+const t = labels[locale];
+const reference = docs.filter((doc) => doc.kind !== 'std');
+const standardLibrary = docs.filter((doc) => doc.kind === 'std');
+---
+
+<p class="overview-intro">{t.siteDescription}</p>
+<div class="overview-entrypoints" data-pagefind-ignore>
+  {
+    reference[0] && (
+      <a class="primary-entrypoint" href={docHref(locale, reference[0].id)}>
+        {t.readReference}
+        <Icon name="right-arrow" size="1.1rem" />
+      </a>
+    )
+  }
+  <a class="secondary-entrypoint" href={docHref(locale, 'std')}
+    >{t.browseLibrary}<Icon name="right-arrow" size="1.1rem" /></a
+  >
+</div>
+
+<section class="index-section" aria-labelledby="language-reference">
+  <div class="index-section-heading">
+    <h2 id="language-reference">{t.reference}</h2><span
+      >{reference.length} {t.chapterCount}</span
+    >
+  </div>
+  <p>{t.referenceDescription}</p>
+  <ol class="chapter-index">
+    {
+      reference.map((doc, index) => (
+        <li>
+          <a href={docHref(locale, doc.id)}>
+            <>
+              <span class="chapter-number" aria-hidden="true">
+                {String(index + 1).padStart(2, '0')}
+              </span>
+              <span>{doc.title}</span>
+            </>
+          </a>
+        </li>
+      ))
+    }
+  </ol>
+</section>
+
+<section class="index-section" aria-labelledby="standard-library">
+  <div class="index-section-heading">
+    <h2 id="standard-library">{t.library}</h2><span
+      >{standardLibrary.length} {t.moduleCount}</span
+    >
+  </div>
+  <p>{t.libraryDescription}</p>
+  <zig-module-index data-empty={t.noModules}>
+    <label class="module-filter"
+      ><span>{t.filterModules}</span><input
+        type="search"
+        placeholder="std.Io.Writer"
+        autocomplete="off"
+        spellcheck="false"
+        aria-label={t.filterModules}
+      /></label
+    >
+    <p class="module-empty" hidden role="status">{t.noModules}</p>
+    <ul class="module-index">
+      {
+        standardLibrary.map((doc) => (
+          <li data-module={doc.id.replaceAll('/', '.').toLowerCase()}>
+            <a href={docHref(locale, doc.id)}>
+              <code>{doc.id.replaceAll('/', '.')}</code>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </zig-module-index>
+</section>
+
+<script>
+  class ZigModuleIndex extends HTMLElement {
+    constructor() {
+      super();
+      const input = this.querySelector('input');
+      const items = [...this.querySelectorAll<HTMLElement>('[data-module]')];
+      const empty = this.querySelector<HTMLElement>('.module-empty');
+      input?.addEventListener('input', () => {
+        const query = input.value.trim().toLowerCase().replaceAll('/', '.');
+        let count = 0;
+        items.forEach((item) => {
+          item.hidden = !item.dataset.module?.includes(query);
+          if (!item.hidden) count += 1;
+        });
+        if (empty) empty.hidden = count > 0;
+      });
+    }
+  }
+  if (!customElements.get('zig-module-index'))
+    customElements.define('zig-module-index', ZigModuleIndex);
+</script>

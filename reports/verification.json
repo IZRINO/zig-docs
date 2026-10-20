@@ -1,0 +1,76 @@
+{
+  "version": "0.17.0",
+  "scope": "Local production build before initial publication",
+  "verifiedAt": "2026-10-20T09:24:31.377Z",
+  "environment": {
+    "node": "24.22.0",
+    "astro": "7.4.1",
+    "starlight": "0.42.6",
+    "browser": "Chromium via Playwright 1.58.2",
+    "platform": "Windows"
+  },
+  "content": {
+    "referenceChapters": 53,
+    "referenceTranslationUnits": 2962,
+    "standardLibraryModules": 538,
+    "standardLibraryDeclarations": 37803,
+    "standardLibraryTranslationUnits": 21237,
+    "missingTranslations": 0,
+    "bilingualDocumentPairs": 591,
+    "codeBlockPairs": 86430,
+    "generatedHtmlPages": 1186,
+    "uniqueInternalLinkTargets": 989849,
+    "officiallyUnresolvableReferences": 4978,
+    "unresolvedReferenceReport": "reports/upstream-links.json"
+  },
+  "checks": {
+    "contentValidation": "passed",
+    "snapshotChecksums": "passed",
+    "nonCommentCodeTokens": "passed using the Zig 0.17.0 tokenizer",
+    "unitTests": {
+      "passed": 37,
+      "failed": 0,
+      "skipped": 0
+    },
+    "typeCheck": {
+      "files": 43,
+      "errors": 0,
+      "warnings": 0,
+      "hints": 0
+    },
+    "prettier": "passed",
+    "productionBuild": "passed",
+    "internalLinks": "passed",
+    "browserTests": {
+      "passed": 33,
+      "failed": 0,
+      "skipped": 0,
+      "flaky": 0,
+      "sampleSeed": 1700
+    }
+  },
+  "largeModulePerformance": [
+    {
+      "route": "/zig-docs/en/std/os/linux/",
+      "lcpMs": 360,
+      "domContentLoadedMs": 1557.2,
+      "decodedHtmlBytes": 3247930
+    },
+    {
+      "route": "/zig-docs/zh-cn/std/c/",
+      "lcpMs": 2468,
+      "domContentLoadedMs": 2126.2,
+      "decodedHtmlBytes": 3784904
+    }
+  ],
+  "performanceBudget": {
+    "lcpMsLessThan": 5000,
+    "domContentLoadedMsLessThan": 5000,
+    "decodedHtmlBytesLessThan": 5242880,
+    "note": "Local measurements are not measurements of production network latency."
+  },
+  "semanticReview": {
+    "report": "reports/semantic-review.json",
+    "note": "Translation coverage and token equality do not prove semantic correctness. The additional sensitive-semantics sample and corrections are recorded separately."
+  }
+}

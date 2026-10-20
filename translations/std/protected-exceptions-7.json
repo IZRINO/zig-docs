@@ -1,0 +1,7 @@
+{
+  "6e4059a848c9f8a4a807": {
+    "reason": "上游内联代码反引号未闭合；译文补齐反引号，条件及代码内容保持不变。",
+    "sourceSha256": "6e4059a848c9f8a4a807469738388bfcd4b93a5495f43ba2189b182394b14051",
+    "translationSha256": "303c57d544df3f9e4fd1936e8fe865a4faeb717cc97330118c4a6ca675badabe"
+  }
+}

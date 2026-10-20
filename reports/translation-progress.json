@@ -1,0 +1,15 @@
+{
+  "version": "0.17.0",
+  "reference": {
+    "expected": 2962,
+    "translated": 2962,
+    "missing": 0
+  },
+  "standardLibrary": {
+    "expected": 21237,
+    "translated": 21237,
+    "missing": 0,
+    "sourceCharacters": 1957090,
+    "translatedSourceCharacters": 1957090
+  }
+}

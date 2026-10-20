@@ -1,0 +1,24 @@
+{
+  "4fb2daea703690f02227": {
+    "reason": "上游以内联代码开反引号、单引号关闭，导致保护器将两个代码标识符之间的自然语言误判为代码。保留struct ar_hdr和ar_size原样，仅翻译自然语言。",
+    "sourceSha256": "4fb2daea703690f02227676586eb1a5c607ba678308448e8ebb542f6f42b5030",
+    "translationSha256": "7ddf3870441fd9a07e06f9b861632f8a11e0d5135969c24e8cfcea6fa135579f"
+  },
+  "355d3082efc389695ff6": {
+    "reason": "上游反引号未闭合，导致a与b之间的自然语言误判为代码；将两标识符规范为闭合的内联代码并翻译自然语言，公式不变。",
+    "sourceSha256": "355d3082efc389695ff6a191995d757e2ea37492fce3768b3ba8e9215252e43e",
+    "translationSha256": "d71869785b96f479b0ca0e52288f44ccae920c5727cb6d2a6f433ee96677f991"
+  },
+  "fa774610bf73539cb1f4": {
+    "reason": "排序 ASCII 图示中的自然语言标签已翻译；保留 null、索引、布尔值、比较值、连接线及箭头位置。",
+    "sourceSha256": "fa774610bf73539cb1f425f51df231a7cac1528e111677c00562d766b8e3fc3a",
+    "translationSha256": "71271500fdb6542370142e6af7c57f0cc7a7d5bddf8d8ff0c1feded77c9db15b",
+    "renderedTextBlocks": true
+  },
+  "454f3147f4a4504bb21f": {
+    "reason": "排序 ASCII 图示中的自然语言标签已翻译；保留 null、索引、布尔值、比较值、连接线及箭头位置。",
+    "sourceSha256": "454f3147f4a4504bb21feefb27ab007a6f2e835100b10a8019eef07cceedff51",
+    "translationSha256": "fdff566da987d05f97cc89fcb6261ecb45ff4e234e7c92ffbe6e4420bc6bf509",
+    "renderedTextBlocks": true
+  }
+}

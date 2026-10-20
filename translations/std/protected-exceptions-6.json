@@ -1,0 +1,7 @@
+{
+  "831c4d3a2ca5f01fb3cc": {
+    "reason": "上游 addDiscoveredPath 的行内反引号未闭合；译文补齐闭合反引号，保留接口名称。",
+    "sourceSha256": "831c4d3a2ca5f01fb3ccf21ad7ced1b36c1384abe6a218e49c132f9b77d1d4e0",
+    "translationSha256": "316977260d22795c5270d3e7b4ed437524a85c7963376bcdd7a0399a47a3ba9d"
+  }
+}

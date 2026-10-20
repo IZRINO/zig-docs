@@ -1,0 +1,238 @@
+---
+import type { Locale } from '../lib/content';
+
+interface Props {
+  locale: Locale;
+  rootAnchor: string;
+  mobile?: boolean;
+}
+const { locale, rootAnchor, mobile = false } = Astro.props;
+const text =
+  locale === 'en'
+    ? {
+        filter: 'Filter APIs',
+        results: 'APIs',
+        previous: 'Previous page',
+        next: 'Next page',
+        page: 'Page number',
+        empty: 'No matching APIs',
+      }
+    : {
+        filter: '筛选接口',
+        results: '个接口',
+        previous: '上一页',
+        next: '下一页',
+        page: '页码',
+        empty: '没有匹配的接口',
+      };
+---
+
+<zig-api-index
+  class:list={['api-index', { 'api-index-mobile': mobile }]}
+  data-root-anchor={rootAnchor}
+  data-results-label={text.results}
+  data-empty-label={text.empty}
+  data-page-size="40"
+  data-pagefind-ignore
+>
+  <label class="api-index-filter">
+    <span>{text.filter}</span>
+    <input type="search" placeholder={`${rootAnchor}.…`} autocomplete="off" />
+  </label>
+  <p class="api-index-status" role="status" aria-live="polite"></p>
+  <div class="api-index-pagination">
+    <button
+      type="button"
+      data-page-prev
+      aria-label={text.previous}
+      title={text.previous}>←</button
+    >
+    <label>
+      <span class="sr-only">{text.page}</span>
+      <input type="number" min="1" value="1" inputmode="numeric" />
+      <span data-page-total></span>
+    </label>
+    <button
+      type="button"
+      data-page-next
+      aria-label={text.next}
+      title={text.next}>→</button
+    >
+  </div>
+  <ul class="api-index-results" data-api-results></ul>
+</zig-api-index>
+
+<script>
+  interface ApiItem {
+    name: string;
+    anchor: string;
+  }
+
+  const indexes = new WeakMap<Element, ApiItem[]>();
+
+  function readIndex(): ApiItem[] {
+    const article = document.querySelector('.doc-content');
+    if (!article) return [];
+    const cached = indexes.get(article);
+    if (cached) return cached;
+    const items: ApiItem[] = [];
+    article.querySelectorAll<HTMLElement>('.api-entry[id]').forEach((entry) => {
+      const name = entry.querySelector(':scope > h3')?.textContent?.trim();
+      if (name) items.push({ name, anchor: entry.id });
+    });
+    indexes.set(article, items);
+    return items;
+  }
+
+  class ZigApiIndex extends HTMLElement {
+    items: ApiItem[] = [];
+    filtered: ApiItem[] = [];
+    page = 0;
+    pageSize = 40;
+    controller?: AbortController;
+
+    connectedCallback() {
+      this.controller?.abort();
+      this.controller = new AbortController();
+      const options = { signal: this.controller.signal };
+      this.items = readIndex();
+      this.filtered = this.items;
+      this.pageSize = Number(this.dataset.pageSize) || 40;
+      this.dataset.total = String(this.items.length);
+      const search = this.querySelector<HTMLInputElement>(
+        'input[type="search"]',
+      );
+      search?.addEventListener(
+        'input',
+        () => {
+          const query = search.value.trim().toLocaleLowerCase();
+          this.filtered = this.items.filter((item) =>
+            item.name.toLocaleLowerCase().includes(query),
+          );
+          this.page = 0;
+          this.render();
+        },
+        options,
+      );
+      search?.addEventListener(
+        'keydown',
+        (event) => {
+          if (event.key === 'ArrowDown') {
+            event.preventDefault();
+            this.querySelector<HTMLAnchorElement>(
+              '[data-api-results] a',
+            )?.focus();
+          }
+        },
+        options,
+      );
+      this.querySelector('[data-page-prev]')?.addEventListener(
+        'click',
+        () => {
+          this.page--;
+          this.render();
+        },
+        options,
+      );
+      this.querySelector('[data-page-next]')?.addEventListener(
+        'click',
+        () => {
+          this.page++;
+          this.render();
+        },
+        options,
+      );
+      const pageInput = this.querySelector<HTMLInputElement>(
+        'input[type="number"]',
+      );
+      const jump = () => {
+        this.page = Number(pageInput?.value) - 1;
+        this.render();
+      };
+      pageInput?.addEventListener('change', jump, options);
+      pageInput?.addEventListener(
+        'keydown',
+        (event) => {
+          if (event.key === 'Enter') {
+            event.preventDefault();
+            jump();
+          }
+        },
+        options,
+      );
+      window.addEventListener('hashchange', this.syncHash, options);
+      this.syncHash();
+      this.dataset.ready = 'true';
+    }
+
+    disconnectedCallback() {
+      this.controller?.abort();
+    }
+
+    currentAnchor() {
+      try {
+        return decodeURIComponent(location.hash.slice(1));
+      } catch {
+        return '';
+      }
+    }
+
+    syncHash = () => {
+      const anchor = this.currentAnchor();
+      const index = this.filtered.findIndex((item) => item.anchor === anchor);
+      if (index >= 0) this.page = Math.floor(index / this.pageSize);
+      this.render();
+    };
+
+    render() {
+      const total = this.filtered.length;
+      const pages = Math.max(1, Math.ceil(total / this.pageSize));
+      this.page = Math.max(
+        0,
+        Math.min(
+          pages - 1,
+          Number.isFinite(this.page) ? Math.trunc(this.page) : 0,
+        ),
+      );
+      const start = this.page * this.pageSize;
+      const end = Math.min(total, start + this.pageSize);
+      const list = this.querySelector('[data-api-results]');
+      const fragment = document.createDocumentFragment();
+      const current = this.currentAnchor();
+      for (const item of this.filtered.slice(start, end)) {
+        const row = document.createElement('li');
+        const link = document.createElement('a');
+        link.href = `#${encodeURIComponent(item.anchor)}`;
+        link.textContent = item.name;
+        if (item.anchor === current)
+          link.setAttribute('aria-current', 'location');
+        row.append(link);
+        fragment.append(row);
+      }
+      list?.replaceChildren(fragment);
+      const status = this.querySelector('[role="status"]');
+      if (status)
+        status.textContent = total
+          ? `${start + 1}–${end} / ${total} ${this.dataset.resultsLabel}`
+          : (this.dataset.emptyLabel ?? '');
+      const input = this.querySelector<HTMLInputElement>(
+        'input[type="number"]',
+      );
+      if (input) {
+        input.value = String(this.page + 1);
+        input.max = String(pages);
+        input.disabled = total === 0;
+      }
+      const pageTotal = this.querySelector('[data-page-total]');
+      if (pageTotal) pageTotal.textContent = `/ ${pages}`;
+      const previous =
+        this.querySelector<HTMLButtonElement>('[data-page-prev]');
+      const next = this.querySelector<HTMLButtonElement>('[data-page-next]');
+      if (previous) previous.disabled = this.page === 0;
+      if (next) next.disabled = this.page >= pages - 1;
+    }
+  }
+
+  if (!customElements.get('zig-api-index'))
+    customElements.define('zig-api-index', ZigApiIndex);
+</script>
