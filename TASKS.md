@@ -5,7 +5,7 @@
 - [x] 翻译全文及代码注释，建立可追踪的双语内容清单。
 - [x] 完成 Astro/Starlight 站点、语言切换、搜索、主题与移动端导航。
 - [x] 完成内容、代码标记、链接、类型、构建、浏览器与性能验证。
-- [ ] 创建 IZRINO/zig-docs，推送并部署 GitHub Pages，验证线上站点。
+- [x] 创建 IZRINO/zig-docs，推送并部署 GitHub Pages，验证线上站点。
 
 ## 内容接口
 

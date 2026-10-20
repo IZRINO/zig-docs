@@ -1,0 +1,30 @@
+{
+  "version": "0.17.0",
+  "repository": "https://github.com/IZRINO/zig-docs",
+  "deployedCommit": "7db294c2f19da5f2153ba55928ac90f5e3782559",
+  "workflow": {
+    "url": "https://github.com/IZRINO/zig-docs/actions/runs/39400889119",
+    "conclusion": "success",
+    "build": "success",
+    "deploy": "success",
+    "reproducibleContentCheck": "passed",
+    "unitTestsPassed": 37,
+    "browserTestsPassed": 33
+  },
+  "liveVerification": {
+    "site": "https://izrino.github.io/zig-docs/",
+    "checkedAt": "2026-10-20T09:38:27.036Z",
+    "checks": [
+      "Project root redirects to the Chinese home page",
+      "zh-cn: production search and navigation for 内存",
+      "zh-cn: production search and navigation for std.Io.Writer",
+      "en: production search and navigation for allocator",
+      "en: production search and navigation for std.Io.Writer",
+      "Builtin deep link survives refresh and language change with query and anchor",
+      "Nested API, source-line deep link, refresh and language change",
+      "Mobile navigation and large-module API filter under repository base path"
+    ],
+    "failedResourceRequests": [],
+    "scriptErrors": []
+  }
+}
