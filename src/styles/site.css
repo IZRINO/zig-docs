@@ -31,6 +31,7 @@
   --doc-code-bg: #211f1c;
   --doc-code-string: #9bc27c;
   --doc-code-type: #c5a0db;
+  --doc-line-number: #a8a39a;
   --doc-accent-text: #eda468;
   --doc-font-scale: 1;
   color-scheme: dark;
@@ -54,6 +55,7 @@
   --doc-code-bg: #f5f3ef;
   --doc-code-string: #456c2c;
   --doc-code-type: #82529d;
+  --doc-line-number: #6f6a62;
   --doc-accent-text: #a34512;
   color-scheme: light;
 }
@@ -474,6 +476,9 @@ body {
   grid-template-columns: auto minmax(0, 1fr);
   max-height: 40rem;
   overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--sl-color-gray-5) transparent;
+  overscroll-behavior: contain;
 }
 
 .doc-content .source-grid pre {
@@ -482,15 +487,20 @@ body {
 }
 
 .doc-content .source-grid .line-numbers {
+  position: sticky;
+  inset-inline-start: 0;
+  z-index: 2;
+  background: var(--doc-code-bg);
+  box-shadow: 1px 0 0 var(--sl-color-gray-5);
   user-select: none;
   text-align: end;
-  padding-top: 2.75rem;
+  padding-block-start: 1.1rem;
   padding-inline: 0.7rem;
 }
 
 .source-grid .line-numbers a {
   text-decoration: none;
-  color: var(--sl-color-gray-3);
+  color: var(--doc-line-number);
   scroll-margin-block: calc(var(--sl-nav-height) + 1.5rem);
 }
 
@@ -590,10 +600,17 @@ body {
 }
 
 .doc-content .source-code > summary {
-  padding: 0.55rem 0.8rem;
+  position: relative;
+  padding: 0.55rem 6.5rem 0.55rem 0.8rem;
   font-size: 0.8rem;
   cursor: pointer;
   color: var(--sl-color-gray-2);
+}
+
+.doc-content .source-code > summary .copy-code {
+  position: absolute;
+  inset-block-start: 0.35rem;
+  inset-inline-end: 0.55rem;
 }
 
 .doc-content .source-code pre {
@@ -934,6 +951,14 @@ body {
   }
 }
 
+@media print {
+  .doc-content .expressive-code .frame.is-long pre,
+  .doc-content .source-grid {
+    max-height: none;
+    overflow: visible;
+  }
+}
+
 /* Reading pass: make the hierarchy legible before adding decoration. */
 body {
   font-family: var(--sl-font);
@@ -1108,7 +1133,7 @@ pre {
 }
 
 .doc-content .expressive-code pre:has(.copy-code) {
-  padding-top: 1rem;
+  padding-top: 2.75rem;
 }
 
 .doc-content .expressive-code pre code {
@@ -1165,52 +1190,52 @@ pre {
 
 .doc-content .expressive-code pre {
   counter-reset: ec-line;
+  scrollbar-width: thin;
+  scrollbar-color: var(--sl-color-gray-5) transparent;
+  overscroll-behavior-x: contain;
+}
+
+.doc-content .expressive-code .frame.is-long pre {
+  max-height: min(44rem, 70vh);
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
 }
 
 .doc-content .expressive-code pre code::before {
   content: none;
 }
 
+.doc-content .expressive-code .ec-line .code {
+  padding-inline-start: 3.1rem;
+}
+
 .doc-content .expressive-code .ec-line .code::before {
   content: counter(ec-line);
   counter-increment: ec-line;
-  position: absolute;
+  position: sticky;
   inset-inline-start: 0;
-  width: 2rem;
+  display: inline-block;
+  inline-size: 2.6rem;
+  margin-inline-start: -3.1rem;
   padding-inline-end: 0.5rem;
-  color: var(--sl-color-gray-3);
+  background: var(--doc-code-bg);
+  box-shadow: 1px 0 0 var(--sl-color-gray-5);
+  color: var(--doc-line-number);
   font-family: var(--ec-codeFontFml);
   font-size: calc(0.75rem * var(--doc-font-scale));
   line-height: inherit;
   text-align: end;
   pointer-events: none;
   user-select: none;
+  z-index: 1;
 }
 
-.doc-content .expressive-code .ec-line .code {
-  padding-inline-start: 2.6rem;
+.doc-content .expressive-code .frame.is-terminal .ec-line .code {
+  padding-inline-start: 0;
 }
 
 .doc-content .expressive-code .frame.is-terminal .ec-line .code::before {
   content: none;
-}
-
-.doc-content .expressive-code .ec-line .gutter {
-  counter-increment: ec-line;
-  min-width: 2ch;
-  padding-inline-end: 0.9rem;
-  text-align: end;
-}
-
-.doc-content .expressive-code .ec-line .gutter::before {
-  content: counter(ec-line);
-  font-family: var(--ec-codeFontFml);
-  font-size: calc(0.8125rem * var(--doc-font-scale));
-  line-height: inherit;
-}
-
-.doc-content .expressive-code .frame.is-terminal .ec-line .gutter {
-  display: none;
 }
 
 .doc-content pre:not([data-code-frame]) {
@@ -1254,12 +1279,29 @@ zig-reading-tools {
   font-size: 0.7rem;
 }
 
+.reading-type-value {
+  display: inline-block;
+  inline-size: 2.6rem;
+  color: var(--sl-color-gray-2);
+  font-size: 0.7rem;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
 @media (max-width: 49.99rem) {
-  .reading-type-label {
+  .reading-type-label,
+  .reading-type-value {
     display: none;
   }
   .reading-type-controls {
     gap: 0.1rem;
+  }
+}
+
+@media (min-width: 75rem) {
+  .chapter-index,
+  .module-index {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 

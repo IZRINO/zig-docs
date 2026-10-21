@@ -55,7 +55,9 @@ export async function rewriteContentLinks(reference, libraries) {
         `../../content/${locale}/${meta.file}`,
         import.meta.url,
       );
-      const page = JSON.parse(await readFile(file, 'utf8'));
+      const raw = await readFile(file, 'utf8');
+      if (meta.kind === 'std' && !raw.includes(officialRoot)) continue;
+      const page = JSON.parse(raw);
       page.html = rewriteDocumentationLinks(
         page.html,
         page.sourceUrl,
@@ -64,7 +66,8 @@ export async function rewriteContentLinks(reference, libraries) {
         symbolPages,
         unresolved,
       );
-      await writeFile(file, `${JSON.stringify(page)}\n`);
+      const next = `${JSON.stringify(page)}\n`;
+      if (next !== raw) await writeFile(file, next);
     }
   }
   return [...unresolved].sort();

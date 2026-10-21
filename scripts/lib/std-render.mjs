@@ -1,5 +1,5 @@
 import { load } from 'cheerio';
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { categories, symbolHref } from './std-runtime.mjs';
 
 export function pageId(path) {
@@ -169,7 +169,7 @@ export function renderDeclaration(
     );
   }
   parts.push(
-    `<p class="api-source" data-pagefind-ignore><a href="#L${declaration.sourceLine}">${locale === 'en' ? 'Source line' : '源码行'} ${declaration.sourceLine}</a></p>`,
+    `<p class="api-source" data-pagefind-ignore><a href="#L${declaration.sourceLine}">${locale === 'en' ? `Source line ${declaration.sourceLine}` : `第 ${declaration.sourceLine} 行`}</a></p>`,
   );
   const docs = string(ex.decl_docs_html(id, false));
   if (docs) parts.push(`<div class="api-description">${docs}</div>`);
@@ -350,8 +350,12 @@ export async function renderStandardLibrary(runtime, locale = 'en') {
       `../../content/${locale}/${meta.file}`,
       import.meta.url,
     );
-    await mkdir(new URL('./', target), { recursive: true });
-    await writeFile(target, `${JSON.stringify({ ...meta, html })}\n`);
+    const serialized = `${JSON.stringify({ ...meta, html })}\n`;
+    const current = await readFile(target, 'utf8').catch(() => null);
+    if (current !== serialized) {
+      await mkdir(new URL('./', target), { recursive: true });
+      await writeFile(target, serialized);
+    }
     manifest.push(meta);
   }
   return {

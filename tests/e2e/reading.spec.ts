@@ -145,6 +145,98 @@ test('字号控件同步调整正文与代码并在刷新后保留', async ({ pa
     .toBe(before);
 });
 
+test('长代码框限制高度，行号在横向滚动时保持可见', async ({ page }) => {
+  await page.goto(`${base}/zh-cn/reference/Appendix/`);
+  const frame = page.locator('.expressive-code .frame').first();
+  await expect(frame).toHaveClass(/is-long/);
+  await expect(frame).toHaveAttribute('data-code-lines', '701');
+  const pre = frame.locator('pre');
+  await expect(pre).toHaveAttribute('tabindex', '0');
+  const metrics = await pre.evaluate((el) => {
+    const code = el.querySelector('.ec-line .code')!;
+    const before = getComputedStyle(code, '::before');
+    return {
+      maxHeight: getComputedStyle(el).maxHeight,
+      scrollHeight: el.scrollHeight,
+      clientHeight: el.clientHeight,
+      position: before.position,
+      left: before.left,
+    };
+  });
+  expect(metrics.maxHeight).not.toBe('none');
+  expect(metrics.scrollHeight).toBeGreaterThan(metrics.clientHeight);
+  expect(metrics.position).toBe('sticky');
+  expect(metrics.left).toBe('0px');
+  const before = await pre.evaluate((el) => ({
+    pre: el.getBoundingClientRect().left,
+    code: el.querySelector('.ec-line .code')!.getBoundingClientRect().left,
+  }));
+  await pre.evaluate((el) => {
+    el.scrollLeft = 160;
+  });
+  await expect
+    .poll(() => pre.evaluate((el) => el.scrollLeft))
+    .toBeGreaterThan(0);
+  const after = await pre.evaluate((el) => ({
+    pre: el.getBoundingClientRect().left,
+    code: el.querySelector('.ec-line .code')!.getBoundingClientRect().left,
+  }));
+  expect(after.code).toBeLessThan(before.code);
+  expect(after.pre).toBe(before.pre);
+});
+
+test('标准库源码行号固定在左侧，复制按钮位于源码标题栏', async ({
+  page,
+  context,
+}) => {
+  await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+  await page.goto(`${base}/zh-cn/std/ascii/`);
+  const details = page.locator('details.source-code');
+  await details.locator('summary').click();
+  const grid = details.locator('.source-grid');
+  const numbers = details.locator('.line-numbers');
+  await expect(grid).toHaveAttribute('tabindex', '0');
+  await expect(grid).toHaveAttribute('role', 'region');
+  const before = await numbers.boundingBox();
+  await grid.evaluate((el) => {
+    el.scrollLeft = 160;
+  });
+  await expect
+    .poll(() => grid.evaluate((el) => el.scrollLeft))
+    .toBeGreaterThan(0);
+  const after = await numbers.boundingBox();
+  expect(after!.x).toBeCloseTo(before!.x, 0);
+  await expect(details.locator('summary .copy-code')).toHaveCount(1);
+  await expect(details.locator('pre .copy-code')).toHaveCount(0);
+  const expected = await details
+    .locator('.source-grid > pre:not(.line-numbers) code')
+    .textContent();
+  await details.locator('summary .copy-code').click();
+  await expect(details).toHaveAttribute('open', '');
+  expect(
+    (await page.evaluate(() => navigator.clipboard.readText())).replaceAll(
+      '\r\n',
+      '\n',
+    ),
+  ).toBe(expected);
+  await expect(page.locator('.api-source a').first()).toHaveText(/^第 \d+ 行$/);
+});
+
+test('字号控件显示当前百分比并保留语义状态', async ({ page }) => {
+  await page.goto(`${base}/zh-cn/reference/Slices/`);
+  await page.evaluate(() => localStorage.removeItem('zig-docs-font-scale'));
+  await page.reload();
+  const output = page.locator('.reading-type-value');
+  const status = page.locator('zig-reading-tools [role="status"]');
+  await expect(output).toHaveText('100%');
+  await page.getByRole('button', { name: '增大字号' }).click();
+  await expect(output).toHaveText('105%');
+  await expect(status).toHaveText('字号 105%');
+  await expect(
+    page.locator('.reading-type-controls button[aria-pressed]'),
+  ).toHaveCount(0);
+});
+
 for (const width of [390, 768, 1004, 1440]) {
   test(`${width}px 开源字体、双语布局、主题和资源载荷`, async ({
     page,

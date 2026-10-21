@@ -11,27 +11,36 @@ const t = labels[locale];
   data-copy={t.copy}
   data-copied={t.copied}
   data-failed={t.copyFailed}
+  data-size-label={locale === 'en' ? 'Text size' : '字号'}
+  data-source-label={t.sourceCode}
   data-locale={locale}
 >
   <div
     class="reading-type-controls"
+    role="group"
     aria-label={locale === 'en' ? 'Text size' : '字号'}
   >
-    <span class="reading-type-label">{locale === 'en' ? 'Text size' : '字号'}</span>
+    <span class="reading-type-label"
+      >{locale === 'en' ? 'Text size' : '字号'}</span
+    >
+    <span class="reading-type-value" aria-hidden="true">100%</span>
     <button
       type="button"
       data-font-action="decrease"
+      title={locale === 'en' ? 'Decrease text size' : '减小字号'}
       aria-label={locale === 'en' ? 'Decrease text size' : '减小字号'}
       >A−</button
     >
     <button
       type="button"
       data-font-action="reset"
+      title={locale === 'en' ? 'Reset text size' : '重置为 100%'}
       aria-label={locale === 'en' ? 'Reset text size' : '重置字号'}>A</button
     >
     <button
       type="button"
       data-font-action="increase"
+      title={locale === 'en' ? 'Increase text size' : '增大字号'}
       aria-label={locale === 'en' ? 'Increase text size' : '增大字号'}
       >A+</button
     >
@@ -66,18 +75,38 @@ const t = labels[locale];
       window.addEventListener('hashchange', this.revealSource);
       const status = this.querySelector<HTMLElement>('[role="status"]');
       document
+        .querySelectorAll<HTMLElement>('details.source-code .source-grid')
+        .forEach((grid) => {
+          grid.tabIndex = 0;
+          grid.setAttribute('role', 'region');
+          grid.setAttribute(
+            'aria-label',
+            this.dataset.sourceLabel || 'Source code',
+          );
+        });
+      document
         .querySelectorAll<HTMLElement>('.doc-content pre')
         .forEach((pre) => {
           if (pre.hasAttribute('data-copy-ignore')) return;
           const frame = pre.closest('.expressive-code .frame');
-          if ((frame ?? pre).querySelector('.copy-code')) return;
+          const details = pre.closest('details.source-code');
+          const host =
+            frame?.querySelector('.header') ??
+            details?.querySelector('summary') ??
+            pre;
+          if (host.querySelector('.copy-code')) return;
           const code = pre.querySelector('code');
           const button = document.createElement('button');
           button.className = 'copy-code';
           button.type = 'button';
+          button.dataset.pagefindIgnore = '';
           button.textContent = this.dataset.copy || 'Copy code';
           button.setAttribute('aria-label', this.dataset.copy || 'Copy code');
-          button.addEventListener('click', async () => {
+          button.title = this.dataset.copy || 'Copy code';
+          button.addEventListener('click', async (event) => {
+            // The source-code copy button lives in a <summary>; keep the
+            // disclosure from toggling when the button is used.
+            event.stopPropagation();
             try {
               const clone = (code ?? pre).cloneNode(true) as HTMLElement;
               clone
@@ -97,7 +126,7 @@ const t = labels[locale];
               if (status) status.textContent = button.textContent;
             }
           });
-          (frame?.querySelector('.header') ?? pre).append(button);
+          host.append(button);
         });
     }
 
@@ -105,24 +134,22 @@ const t = labels[locale];
       const root = document.documentElement;
       const buttons =
         this.querySelectorAll<HTMLButtonElement>('[data-font-action]');
+      const output = this.querySelector<HTMLElement>('.reading-type-value');
+      const status = this.querySelector<HTMLElement>('[role="status"]');
+      const label = this.dataset.sizeLabel || 'Text size';
       const stored = Number.parseFloat(
         localStorage.getItem(this.fontKey) || '1',
       );
-      const apply = (value: number) => {
+      const apply = (value: number, announce = false) => {
         const scale = Math.min(
           1.25,
           Math.max(0.9, Math.round(value * 20) / 20),
         );
+        const percent = Math.round(scale * 100);
         root.style.setProperty('--doc-font-scale', String(scale));
         localStorage.setItem(this.fontKey, String(scale));
-        buttons.forEach((button) =>
-          button.setAttribute(
-            'aria-pressed',
-            button.dataset.fontAction === 'reset' && scale === 1
-              ? 'true'
-              : 'false',
-          ),
-        );
+        if (output) output.textContent = `${percent}%`;
+        if (announce && status) status.textContent = `${label} ${percent}%`;
       };
       apply(Number.isFinite(stored) ? stored : 1);
       buttons.forEach((button) =>
@@ -138,6 +165,7 @@ const t = labels[locale];
               : action === 'decrease'
                 ? current - 0.05
                 : 1,
+            true,
           );
         }),
       );

@@ -52,6 +52,9 @@ export async function renderCodeFrame(
   });
   if (pre.text() !== code)
     throw new Error(`Code frame changed source text: ${title}`);
+  const frame = $('.frame').first();
+  if (lines.length > 96)
+    frame.addClass('is-long').attr('data-code-lines', String(lines.length));
   return $('.expressive-code').first().prop('outerHTML');
 }
 
@@ -70,7 +73,10 @@ export async function enhanceCodeBlocks(html, { locale = 'en' } = {}) {
       ? locale === 'en'
         ? 'Terminal'
         : '命令行'
-      : node.find('cite.file').text().trim();
+      : (
+          node.find('cite.file').first().text() ||
+          node.find('figcaption cite').first().text()
+        ).trim();
     const language = terminal
       ? 'shellsession'
       : /\.[ch]$/.test(title)

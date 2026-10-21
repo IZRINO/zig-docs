@@ -122,6 +122,6 @@
   "reference/Assembly::comment:63": "// 因为已知内核系统调用不会保留这些寄存器。",
   "reference/Atomics::text:1": "待补充：@atomic 读改写操作",
   "reference/Atomics::text:2": "待补充：内置原子内存顺序枚举",
-  "reference/Async-Functions::text:1": "异步函数支持在 0.11.0 发布时发生退步。目前的计划是将其作为支撑输入输出实现的低层原语重新引入。",
-  "reference/Async-Functions::text:2": "跟踪议题：<0>提案：将无栈协程作为低层原语</0>"
+  "reference/Async-Functions::text:1": "异步函数支持在 0.11.0 发布时发生退步。目前的计划是将其作为支撑输入输出实现的底层原语重新引入。",
+  "reference/Async-Functions::text:2": "跟踪议题：<0>提案：将无栈协程作为底层原语</0>"
 }

@@ -34,6 +34,7 @@ test('reference frames keep anchors and distinguish C, JavaScript and shell exam
   const html = `<h2 id="chapter">Title</h2>
 <figure id="sample"><figcaption id="caption"><cite class="file">test.c</cite></figcaption><pre id="code"><code>int main(void) { return 0; }\n</code></pre></figure>
 <figure><figcaption><cite class="file">test.js</cite></figcaption><pre><code>console.log("ok");\n</code></pre></figure>
+<figure><figcaption class="zig-cap"><cite>@import("builtin")</cite></figcaption><pre><code>const std = @import("std");\n</code></pre></figure>
 <figure><figcaption class="shell-cap">Terminal</figcaption><pre><samp>$ zig version\n0.17.0\n</samp></pre></figure>`;
   const original = load(html, null, false);
   const result = load(await enhanceCodeBlocks(html), null, false);
@@ -57,7 +58,8 @@ test('reference frames keep anchors and distinguish C, JavaScript and shell exam
     result('pre')
       .map((_, e) => result(e).attr('data-language'))
       .get(),
-    ['c', 'javascript', 'shellsession'],
+    ['c', 'javascript', 'zig', 'shellsession'],
   );
+  assert.equal(result('.frame .title').eq(2).text(), '@import("builtin")');
   assert.equal(result('.frame.is-terminal .title').text(), 'Terminal');
 });

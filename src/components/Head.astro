@@ -1,0 +1,21 @@
+---
+import Default from '@astrojs/starlight/components/Head.astro';
+import sourceSansLatin from '@fontsource-variable/source-sans-3/files/source-sans-3-latin-wght-normal.woff2?url';
+import sourceSansLatinExt from '@fontsource-variable/source-sans-3/files/source-sans-3-latin-ext-wght-normal.woff2?url';
+---
+
+<Default />
+<link
+  rel="preload"
+  href={sourceSansLatin}
+  as="font"
+  type="font/woff2"
+  crossorigin="anonymous"
+/>
+<link
+  rel="preload"
+  href={sourceSansLatinExt}
+  as="font"
+  type="font/woff2"
+  crossorigin="anonymous"
+/>

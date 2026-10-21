@@ -105,7 +105,7 @@ export const labels = {
     siteDescription:
       'Language reference and standard library, in Chinese and English.',
     referenceDescription:
-      'Syntax, types, and memory semantics through compile-time execution and builtins.',
+      'From syntax, types, and memory semantics to compile-time execution and builtins.',
     libraryDescription:
       'Explore APIs, parameters, fields, errors, and source by module.',
     referenceIndex: 'Chapter index',

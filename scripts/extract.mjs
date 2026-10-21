@@ -59,8 +59,11 @@ for (const [id, declaration] of englishRuntime.declarations) {
     );
 }
 const reference = await extractLangref();
+console.log(`Extracted ${reference.en.length} reference chapters.`);
 const en = await renderStandardLibrary(englishRuntime, 'en');
+console.log(`Rendered ${en.manifest.length} English standard library modules.`);
 const zh = await renderStandardLibrary(chineseRuntime, 'zh-cn');
+console.log(`Rendered ${zh.manifest.length} Chinese standard library modules.`);
 const unresolved = await rewriteContentLinks(reference.en, [
   ['en', [...reference.en, ...en.manifest], en.symbolPages],
   ['zh-cn', [...reference.zh, ...zh.manifest], zh.symbolPages],

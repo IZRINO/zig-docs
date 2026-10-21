@@ -26,6 +26,7 @@ export default defineConfig({
       ],
       customCss: ['./src/styles/site.css'],
       components: {
+        Head: './src/components/Head.astro',
         Header: './src/components/Header.astro',
         PageTitle: './src/components/PageTitle.astro',
         LanguageSelect: './src/components/LanguageSelect.astro',

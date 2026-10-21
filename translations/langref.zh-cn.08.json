@@ -67,7 +67,7 @@
   "reference/Builtin-Functions::text:190": "向下取整除法，朝负无穷舍入。对于无符号整数，与 <0/> 相同。调用者保证 <1/> 且 <2/>。",
   "reference/Builtin-Functions::text:197": "截断除法，朝零舍入。对于无符号整数，与 <0/> 相同。调用者保证 <1/> 且 <2/>。",
   "reference/Builtin-Functions::text:204": "向上取整除法，朝正无穷舍入。调用者保证 <0/> 且 <1/>。",
-  "reference/Builtin-Functions::text:211": "返回编译时常量指针，指向以空字节终止的定长数组，其长度等于 <0/> 指定文件的字节数。数组内容即文件内容，等价于包含文件内容的<1>字符串字面量</1>。",
+  "reference/Builtin-Functions::text:211": "返回编译时常量指针，指向以 null 结尾的定长数组，其长度等于 <0/> 指定文件的字节数。数组内容即文件内容，等价于包含文件内容的<1>字符串字面量</1>。",
   "reference/Builtin-Functions::text:212": "与 <1/> 一样，<0/> 可以是绝对路径，也可以相对于当前文件。",
   "reference/Builtin-Functions::text:216": "已弃用。请改用 <0>@fromBackingInt</0> 或 <1>@bitCast</1>。",
   "reference/Builtin-Functions::text:217": "将整数转换为 <0>enum</0> 值，返回类型为推导出的结果类型。",

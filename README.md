@@ -53,9 +53,9 @@ npm run test:e2e
 
 ### 阅读界面与代码框
 
-正文使用自托管的 Source Sans 3 与 Noto Sans SC（思源黑体），代码使用 JetBrains Mono，中文注释回退至 Noto Sans SC。三种字体均采用 SIL Open Font License 1.1；随站分发的许可证见 `public/licenses/fonts-OFL.txt`。字体通过 Fontsource 的 Unicode 范围分片按需加载，使用 `font-display: swap`，不请求外部字体服务。
+正文使用自托管的 Source Sans 3 与 Noto Sans SC（思源黑体），代码使用 JetBrains Mono，中文注释回退至 Noto Sans SC。三种字体均采用 SIL Open Font License 1.1；随站分发的许可证见 `public/licenses/fonts-OFL.txt`。字体通过 Fontsource 的 Unicode 范围分片按需加载，使用 `font-display: swap`，并通过 `src/components/Head.astro` 预加载常用的拉丁字型分片，避免字体切换造成正文重排；不请求外部字体服务。
 
-语言参考的完整示例与命令输出使用 Starlight 已包含的 Expressive Code，在生成内容时执行 Shiki 高亮。标准库的短签名与完整源码保留上游高亮、行号与源码锚点，避免大型模块重复渲染。`scripts/lib/code-frame.mjs` 保留原始空白、选择示例语言，并断言渲染后文本逐字一致；运行 `npm run extract` 同时重生成并格式化 `src/styles/expressive-code.css`。日常构建直接使用已提交的 HTML 与样式。
+语言参考的完整示例与命令输出使用 Starlight 已包含的 Expressive Code，在生成内容时执行 Shiki 高亮。标准库的短签名与完整源码保留上游高亮、行号与源码锚点，避免大型模块重复渲染。代码行号在横向滚动时固定在左侧；超过 96 行的示例限制高度并可纵向滚动。标准库源码框的复制按钮位于折叠标题栏，复制结果仍不包含行号。`scripts/lib/code-frame.mjs` 保留原始空白、选择示例语言，并断言渲染后文本逐字一致；运行 `npm run extract` 同时重生成并格式化 `src/styles/expressive-code.css`。日常构建直接使用已提交的 HTML 与样式。
 
 界面验收包括 390、768、1004、1440 像素下的双语排版、字体实际加载、明暗主题、逐字复制、布局偏移和字体载荷；对应测试位于 `tests/e2e/reading.spec.ts`。完整内容校验还会把语言参考中的英文代码逐块与官方快照比较。
 
