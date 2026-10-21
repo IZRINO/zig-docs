@@ -11,12 +11,37 @@ const t = labels[locale];
   data-copy={t.copy}
   data-copied={t.copied}
   data-failed={t.copyFailed}
+  data-locale={locale}
 >
+  <div
+    class="reading-type-controls"
+    aria-label={locale === 'en' ? 'Text size' : '字号'}
+  >
+    <span class="reading-type-label">{locale === 'en' ? 'Text size' : '字号'}</span>
+    <button
+      type="button"
+      data-font-action="decrease"
+      aria-label={locale === 'en' ? 'Decrease text size' : '减小字号'}
+      >A−</button
+    >
+    <button
+      type="button"
+      data-font-action="reset"
+      aria-label={locale === 'en' ? 'Reset text size' : '重置字号'}>A</button
+    >
+    <button
+      type="button"
+      data-font-action="increase"
+      aria-label={locale === 'en' ? 'Increase text size' : '增大字号'}
+      >A+</button
+    >
+  </div>
   <span class="sr-only" role="status" aria-live="polite"></span>
 </zig-reading-tools>
 
 <script>
   class ZigReadingTools extends HTMLElement {
+    fontKey = 'zig-docs-font-scale';
     revealSource = () => {
       let id;
       try {
@@ -37,6 +62,7 @@ const t = labels[locale];
 
     connectedCallback() {
       this.revealSource();
+      this.setupFontControls();
       window.addEventListener('hashchange', this.revealSource);
       const status = this.querySelector<HTMLElement>('[role="status"]');
       document
@@ -73,6 +99,48 @@ const t = labels[locale];
           });
           (frame?.querySelector('.header') ?? pre).append(button);
         });
+    }
+
+    setupFontControls() {
+      const root = document.documentElement;
+      const buttons =
+        this.querySelectorAll<HTMLButtonElement>('[data-font-action]');
+      const stored = Number.parseFloat(
+        localStorage.getItem(this.fontKey) || '1',
+      );
+      const apply = (value: number) => {
+        const scale = Math.min(
+          1.25,
+          Math.max(0.9, Math.round(value * 20) / 20),
+        );
+        root.style.setProperty('--doc-font-scale', String(scale));
+        localStorage.setItem(this.fontKey, String(scale));
+        buttons.forEach((button) =>
+          button.setAttribute(
+            'aria-pressed',
+            button.dataset.fontAction === 'reset' && scale === 1
+              ? 'true'
+              : 'false',
+          ),
+        );
+      };
+      apply(Number.isFinite(stored) ? stored : 1);
+      buttons.forEach((button) =>
+        button.addEventListener('click', () => {
+          const current =
+            Number.parseFloat(
+              getComputedStyle(root).getPropertyValue('--doc-font-scale'),
+            ) || 1;
+          const action = button.dataset.fontAction;
+          apply(
+            action === 'increase'
+              ? current + 0.05
+              : action === 'decrease'
+                ? current - 0.05
+                : 1,
+          );
+        }),
+      );
     }
 
     disconnectedCallback() {

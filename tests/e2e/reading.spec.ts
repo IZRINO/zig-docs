@@ -108,6 +108,43 @@ for (const locale of ['en', 'zh-cn']) {
   });
 }
 
+test('字号控件同步调整正文与代码并在刷新后保留', async ({ page }) => {
+  await page.goto(`${base}/zh-cn/reference/Slices/`);
+  await page.evaluate(() => localStorage.removeItem('zig-docs-font-scale'));
+  await page.reload();
+  const paragraph = page.locator('.doc-content > p').first();
+  const code = page.locator('.expressive-code pre > code').first();
+  const before = await paragraph.evaluate((node) =>
+    parseFloat(getComputedStyle(node).fontSize),
+  );
+  const codeBefore = await code.evaluate((node) =>
+    parseFloat(getComputedStyle(node).fontSize),
+  );
+  await page.getByRole('button', { name: '增大字号' }).click();
+  await expect
+    .poll(() =>
+      paragraph.evaluate((node) => parseFloat(getComputedStyle(node).fontSize)),
+    )
+    .toBeGreaterThan(before);
+  await expect
+    .poll(() =>
+      code.evaluate((node) => parseFloat(getComputedStyle(node).fontSize)),
+    )
+    .toBeGreaterThan(codeBefore);
+  await page.reload();
+  await expect
+    .poll(() =>
+      paragraph.evaluate((node) => parseFloat(getComputedStyle(node).fontSize)),
+    )
+    .toBeGreaterThan(before);
+  await page.getByRole('button', { name: '重置字号' }).click();
+  await expect
+    .poll(() =>
+      paragraph.evaluate((node) => parseFloat(getComputedStyle(node).fontSize)),
+    )
+    .toBe(before);
+});
+
 for (const width of [390, 768, 1004, 1440]) {
   test(`${width}px 开源字体、双语布局、主题和资源载荷`, async ({
     page,
@@ -169,8 +206,8 @@ for (const width of [390, 768, 1004, 1440]) {
         expect(metrics.fonts).toContain('Noto Sans SC Variable');
         expect(['normal', '0px']).toContain(metrics.tracking);
       }
-      expect(metrics.bodySize).toBe(width < 800 ? 16 : 17);
-      expect(metrics.codeSize).toBe(width < 800 ? 13 : 14);
+      expect(metrics.bodySize).toBe(width < 800 ? 17 : 18);
+      expect(metrics.codeSize).toBe(width < 800 ? 14 : 15);
       expect(metrics.overflow).toBe(false);
       expect(metrics.cls).toBeLessThan(0.1);
       expect(metrics.fontBytes).toBeLessThan(1.5 * 1024 * 1024);

@@ -32,6 +32,7 @@
   --doc-code-string: #9bc27c;
   --doc-code-type: #c5a0db;
   --doc-accent-text: #eda468;
+  --doc-font-scale: 1;
   color-scheme: dark;
 }
 
@@ -949,8 +950,8 @@ pre {
 }
 
 .sl-markdown-content {
-  font-size: 1.0625rem;
-  line-height: 1.78;
+  font-size: 1.125rem;
+  line-height: 1.8;
   text-wrap: pretty;
 }
 
@@ -980,8 +981,8 @@ pre {
 }
 
 .doc-content {
-  font-size: 1.0625rem;
-  line-height: 1.78;
+  font-size: calc(1.125rem * var(--doc-font-scale));
+  line-height: 1.8;
 }
 
 .doc-content > :is(p, ul, ol, dl) {
@@ -1034,7 +1035,7 @@ pre {
   --ec-brdWd: 1px;
   --ec-brdCol: var(--sl-color-gray-5);
   --ec-codeFontFml: var(--sl-font-mono);
-  --ec-codeFontSize: 0.875rem;
+  --ec-codeFontSize: calc(0.9375rem * var(--doc-font-scale));
   --ec-codeFontWg: 450;
   --ec-codeLineHt: 1.65;
   --ec-codePadBlk: 1rem;
@@ -1043,6 +1044,7 @@ pre {
   --ec-codeFg: var(--sl-color-gray-1);
   --ec-gtrFg: var(--sl-color-gray-3);
   --ec-gtrBrdCol: var(--sl-color-gray-5);
+  --ec-gtrBrdWd: 0px;
   --ec-frm-frameBoxShdCssVal: none;
   --ec-frm-edActTabBg: var(--sl-color-gray-6);
   --ec-frm-edActTabFg: var(--sl-color-gray-2);
@@ -1101,8 +1103,8 @@ pre {
   padding-inline: 0;
   background: var(--doc-code-bg);
   color: var(--sl-color-gray-1);
-  font-size: 0.875rem;
-  line-height: 1.65;
+  font-size: calc(0.9375rem * var(--doc-font-scale));
+  line-height: 1.7;
 }
 
 .doc-content .expressive-code pre:has(.copy-code) {
@@ -1161,15 +1163,111 @@ pre {
   background: var(--sl-color-black);
 }
 
+.doc-content .expressive-code pre {
+  counter-reset: ec-line;
+}
+
+.doc-content .expressive-code pre code::before {
+  content: none;
+}
+
+.doc-content .expressive-code .ec-line .code::before {
+  content: counter(ec-line);
+  counter-increment: ec-line;
+  position: absolute;
+  inset-inline-start: 0;
+  width: 2rem;
+  padding-inline-end: 0.5rem;
+  color: var(--sl-color-gray-3);
+  font-family: var(--ec-codeFontFml);
+  font-size: calc(0.75rem * var(--doc-font-scale));
+  line-height: inherit;
+  text-align: end;
+  pointer-events: none;
+  user-select: none;
+}
+
+.doc-content .expressive-code .ec-line .code {
+  padding-inline-start: 2.6rem;
+}
+
+.doc-content .expressive-code .frame.is-terminal .ec-line .code::before {
+  content: none;
+}
+
+.doc-content .expressive-code .ec-line .gutter {
+  counter-increment: ec-line;
+  min-width: 2ch;
+  padding-inline-end: 0.9rem;
+  text-align: end;
+}
+
+.doc-content .expressive-code .ec-line .gutter::before {
+  content: counter(ec-line);
+  font-family: var(--ec-codeFontFml);
+  font-size: calc(0.8125rem * var(--doc-font-scale));
+  line-height: inherit;
+}
+
+.doc-content .expressive-code .frame.is-terminal .ec-line .gutter {
+  display: none;
+}
+
 .doc-content pre:not([data-code-frame]) {
-  font-size: 0.875rem;
+  font-size: calc(0.9375rem * var(--doc-font-scale));
+}
+
+.reading-type-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.125rem;
+  color: var(--sl-color-gray-3);
+  font-size: 0.75rem;
+}
+
+zig-reading-tools {
+  display: inline-flex;
+  align-items: center;
+  margin-inline: 0.25rem;
+}
+
+.reading-type-controls button {
+  min-width: 1.9rem;
+  min-height: 1.75rem;
+  padding: 0.15rem 0.28rem;
+  border: 1px solid transparent;
+  border-radius: 0.3rem;
+  background: transparent;
+  color: var(--sl-color-gray-2);
+  cursor: pointer;
+}
+
+.reading-type-controls button:hover,
+.reading-type-controls button:focus-visible,
+.reading-type-controls button[aria-pressed='true'] {
+  border-color: var(--sl-color-accent);
+  color: var(--doc-accent-text);
+}
+
+.reading-type-label {
+  margin-inline-end: 0.2rem;
+  font-size: 0.7rem;
+}
+
+@media (max-width: 49.99rem) {
+  .reading-type-label {
+    display: none;
+  }
+  .reading-type-controls {
+    gap: 0.1rem;
+  }
 }
 
 @media (max-width: 49.99rem) {
   .sl-markdown-content,
   .doc-content {
-    font-size: 1rem;
-    line-height: 1.75;
+    font-size: 1.0625rem;
+    line-height: 1.78;
   }
 
   .document-heading h1 {
@@ -1185,11 +1283,11 @@ pre {
   }
 
   .doc-content .expressive-code pre {
-    --ec-codeFontSize: 0.8125rem;
-    font-size: 0.8125rem;
+    --ec-codeFontSize: calc(0.875rem * var(--doc-font-scale));
+    font-size: calc(0.875rem * var(--doc-font-scale));
   }
 
   .doc-content pre:not([data-code-frame]) {
-    font-size: 0.8125rem;
+    font-size: calc(0.875rem * var(--doc-font-scale));
   }
 }
