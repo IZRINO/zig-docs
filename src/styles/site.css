@@ -1,7 +1,12 @@
+@import '@fontsource-variable/source-sans-3/wght.css';
+@import '@fontsource-variable/noto-sans-sc/wght.css';
+@import '@fontsource-variable/jetbrains-mono/wght.css';
+@import './expressive-code.css';
+
 /* Starlight provides the accessible document shell; these tokens tune its reading surface. */
 :root {
-  --sl-font: 'Segoe UI', 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
-  --sl-font-mono: 'Cascadia Code', 'SFMono-Regular', Consolas, monospace;
+  --sl-font: 'Source Sans 3 Variable', 'Noto Sans SC Variable', sans-serif;
+  --sl-font-mono: 'JetBrains Mono Variable', 'Noto Sans SC Variable', monospace;
   --sl-color-accent-low: #402918;
   --sl-color-accent: #d47836;
   --sl-color-accent-high: #ffc395;
@@ -19,11 +24,13 @@
   --sl-sidebar-width: 17rem;
   --sl-content-pad-x: 2.5rem;
   --sl-nav-height: 4.5rem;
-  --sl-text-h1: clamp(1.8rem, 3vw, 2.5rem);
-  --sl-text-h2: 1.6rem;
-  --sl-text-h3: 1.2rem;
-  --sl-line-height: 1.8;
+  --sl-text-h1: 2.5rem;
+  --sl-text-h2: 1.75rem;
+  --sl-text-h3: 1.3rem;
+  --sl-line-height: 1.75;
   --doc-code-bg: #211f1c;
+  --doc-code-string: #9bc27c;
+  --doc-code-type: #c5a0db;
   --doc-accent-text: #eda468;
   color-scheme: dark;
 }
@@ -44,6 +51,8 @@
   --sl-color-bg-nav: #fefdfb;
   --sl-color-bg-sidebar: #faf9f6;
   --doc-code-bg: #f5f3ef;
+  --doc-code-string: #456c2c;
+  --doc-code-type: #82529d;
   --doc-accent-text: #a34512;
   color-scheme: light;
 }
@@ -99,7 +108,7 @@ body {
 .brand-name {
   font-weight: 750;
   font-size: 1.25rem;
-  letter-spacing: -0.05em;
+  letter-spacing: 0;
 }
 
 .brand-name span {
@@ -177,7 +186,7 @@ body {
 
 .sidebar-content summary .large {
   font-size: 0.78rem;
-  letter-spacing: 0.025em;
+  letter-spacing: 0;
 }
 
 .sidebar-content [aria-current='page'] {
@@ -378,7 +387,7 @@ body {
 .document-heading h1 {
   margin-top: 1.15rem;
   font-size: var(--sl-text-h1);
-  letter-spacing: -0.035em;
+  letter-spacing: 0;
   line-height: 1.28;
   font-weight: 650;
   overflow-wrap: anywhere;
@@ -424,7 +433,7 @@ body {
 
 .sl-markdown-content :is(h2, h3, h4, h5, h6) {
   font-weight: 650;
-  letter-spacing: -0.02em;
+  letter-spacing: 0;
   overflow-wrap: anywhere;
 }
 
@@ -553,7 +562,7 @@ body {
 
 .doc-content .tok-str,
 .doc-content .tok-string {
-  color: #628b45;
+  color: var(--doc-code-string);
 }
 
 .doc-content .tok-comment {
@@ -562,7 +571,7 @@ body {
 
 .doc-content .tok-type,
 .doc-content .tok-builtin {
-  color: #a375b3;
+  color: var(--doc-code-type);
 }
 
 .doc-content table {
@@ -921,5 +930,266 @@ body {
   *::after {
     scroll-behavior: auto !important;
     transition: none !important;
+  }
+}
+
+/* Reading pass: make the hierarchy legible before adding decoration. */
+body {
+  font-family: var(--sl-font);
+  font-weight: 450;
+  font-optical-sizing: auto;
+}
+
+code,
+kbd,
+samp,
+pre {
+  font-family: var(--sl-font-mono);
+  font-variant-ligatures: none;
+}
+
+.sl-markdown-content {
+  font-size: 1.0625rem;
+  line-height: 1.78;
+  text-wrap: pretty;
+}
+
+.sl-markdown-content :is(h2, h3, h4, h5, h6) {
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1.25;
+  text-wrap: balance;
+}
+
+.document-heading {
+  margin-top: 1.4rem;
+}
+
+.document-heading h1 {
+  margin-top: 1.35rem;
+  margin-bottom: 0;
+  font-weight: 750;
+  letter-spacing: 0;
+  line-height: 1.16;
+  text-wrap: balance;
+}
+
+.document-meta {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+}
+
+.doc-content {
+  font-size: 1.0625rem;
+  line-height: 1.78;
+}
+
+.doc-content > :is(p, ul, ol, dl) {
+  max-inline-size: 74ch;
+}
+
+.doc-content:lang(zh-CN) > :is(p, ul, ol, dl) {
+  max-inline-size: 44em;
+}
+
+:lang(zh-CN)
+  :is(.document-heading h1, .doc-content h2, .doc-content h3, .doc-content h4) {
+  letter-spacing: 0;
+}
+
+.doc-content > .chapter-anchor:first-child {
+  margin: 0;
+  padding: 0;
+  block-size: 0;
+  overflow: hidden;
+  border: 0;
+}
+
+.doc-content p {
+  margin-block: 1.1rem;
+}
+
+.doc-content :is(h2, h3, h4, h5, h6) {
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1.25;
+  text-wrap: balance;
+}
+
+.doc-content h2 {
+  margin-top: 3.25rem;
+  padding-top: 0.9rem;
+}
+
+.doc-content h3 {
+  margin-top: 2.25rem;
+}
+
+.doc-content h4 {
+  margin-top: 1.75rem;
+}
+
+.doc-content .expressive-code {
+  --ec-brdRad: 0.55rem;
+  --ec-brdWd: 1px;
+  --ec-brdCol: var(--sl-color-gray-5);
+  --ec-codeFontFml: var(--sl-font-mono);
+  --ec-codeFontSize: 0.875rem;
+  --ec-codeFontWg: 450;
+  --ec-codeLineHt: 1.65;
+  --ec-codePadBlk: 1rem;
+  --ec-codePadInl: 1.2rem;
+  --ec-codeBg: var(--doc-code-bg);
+  --ec-codeFg: var(--sl-color-gray-1);
+  --ec-gtrFg: var(--sl-color-gray-3);
+  --ec-gtrBrdCol: var(--sl-color-gray-5);
+  --ec-frm-frameBoxShdCssVal: none;
+  --ec-frm-edActTabBg: var(--sl-color-gray-6);
+  --ec-frm-edActTabFg: var(--sl-color-gray-2);
+  --ec-frm-edActTabIndHt: 0px;
+  --ec-frm-edActTabIndTopCol: transparent;
+  --ec-frm-edActTabIndBtmCol: transparent;
+  --ec-frm-edTabsMargInlStart: 0;
+  --ec-frm-edTabsMargBlkStart: 0;
+  --ec-frm-edTabBrdRad: 0.55rem;
+  --ec-frm-edTabBarBg: var(--sl-color-gray-6);
+  --ec-frm-edTabBarBrdCol: var(--sl-color-gray-5);
+  --ec-frm-edTabBarBrdBtmCol: var(--sl-color-gray-5);
+  --ec-frm-edBg: var(--doc-code-bg);
+  --ec-frm-trmTtbFg: var(--sl-color-gray-2);
+  --ec-frm-trmTtbDotsFg: var(--doc-accent-text);
+  --ec-frm-trmTtbBg: var(--sl-color-gray-6);
+  --ec-frm-trmTtbBrdBtmCol: var(--sl-color-gray-5);
+  --ec-frm-trmBg: var(--doc-code-bg);
+  --ec-uiFontFml: var(--sl-font);
+  --ec-uiFontSize: 0.78rem;
+  --ec-uiFontWg: 600;
+  --ec-uiPadBlk: 0.25rem;
+  --ec-uiPadInl: 1rem;
+  margin-block: 1.5rem;
+  overflow: hidden;
+  border-radius: 0.55rem;
+  color: var(--sl-color-gray-1);
+}
+
+.doc-content .expressive-code .frame {
+  border: 1px solid var(--sl-color-gray-5);
+  border-radius: 0.55rem;
+  overflow: hidden;
+}
+
+.doc-content .expressive-code .frame .header {
+  min-height: 2.25rem;
+  padding-inline-end: 5.5rem;
+}
+
+.doc-content .expressive-code .frame.has-title:not(.is-terminal) .title {
+  padding-block: 0.45rem;
+  color: var(--sl-color-gray-2);
+  background: var(--sl-color-gray-6);
+  border-color: transparent;
+  font-family: var(--sl-font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.doc-content .expressive-code pre {
+  min-width: 0;
+  border: 0;
+  border-radius: 0;
+  padding-block: 0;
+  padding-inline: 0;
+  background: var(--doc-code-bg);
+  color: var(--sl-color-gray-1);
+  font-size: 0.875rem;
+  line-height: 1.65;
+}
+
+.doc-content .expressive-code pre:has(.copy-code) {
+  padding-top: 1rem;
+}
+
+.doc-content .expressive-code pre code {
+  padding-block: 1rem;
+  background: transparent;
+  font-size: inherit;
+  white-space: normal;
+  tab-size: 4;
+  font-variant-ligatures: none;
+}
+
+.doc-content .expressive-code .ec-line .code {
+  min-height: 1.65em;
+  white-space: pre;
+}
+
+.doc-content .expressive-code .copy-code {
+  position: absolute;
+  inset-block-start: 0.25rem;
+  inset-inline-end: 0.65rem;
+  border-color: var(--sl-color-gray-5);
+  background: var(--sl-color-gray-6);
+  color: var(--sl-color-gray-2);
+  font-size: 0.7rem;
+  font-family: var(--sl-font);
+  font-weight: 500;
+  line-height: 1.5;
+  padding: 0.3rem 0.5rem;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+
+.doc-content .expressive-code .copy-code:hover,
+.doc-content .expressive-code .copy-code:focus-visible {
+  color: var(--sl-color-accent-high);
+  border-color: var(--sl-color-accent);
+}
+
+.doc-content .expressive-code .frame.is-terminal .header {
+  padding-block: 0.55rem;
+  font-family: var(--sl-font-mono);
+  font-size: 0.75rem;
+}
+
+.doc-content .expressive-code .frame.is-terminal .code {
+  color: var(--sl-color-gray-1);
+}
+
+.doc-content .expressive-code .frame.is-terminal pre {
+  background: var(--sl-color-black);
+}
+
+.doc-content pre:not([data-code-frame]) {
+  font-size: 0.875rem;
+}
+
+@media (max-width: 49.99rem) {
+  .sl-markdown-content,
+  .doc-content {
+    font-size: 1rem;
+    line-height: 1.75;
+  }
+
+  .document-heading h1 {
+    font-size: 2rem;
+  }
+
+  .doc-content h2 {
+    margin-top: 2.7rem;
+  }
+
+  .doc-content .expressive-code {
+    margin-inline: -0.25rem;
+  }
+
+  .doc-content .expressive-code pre {
+    --ec-codeFontSize: 0.8125rem;
+    font-size: 0.8125rem;
+  }
+
+  .doc-content pre:not([data-code-frame]) {
+    font-size: 0.8125rem;
   }
 }

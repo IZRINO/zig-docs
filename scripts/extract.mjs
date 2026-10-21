@@ -14,6 +14,20 @@ import {
 } from './lib/translations.mjs';
 import { extractLangref } from './lib/langref.mjs';
 import { rewriteContentLinks } from './lib/links.mjs';
+import { getCodeFrameStyles } from './lib/code-frame.mjs';
+import { format, resolveConfig } from 'prettier';
+
+const codeStylesUrl = new URL(
+  '../src/styles/expressive-code.css',
+  import.meta.url,
+);
+await writeFile(
+  codeStylesUrl,
+  await format(await getCodeFrameStyles(), {
+    ...(await resolveConfig(codeStylesUrl)),
+    parser: 'css',
+  }),
+);
 
 const englishRuntime = await loadRuntime();
 const tokenizer = await createTokenizer();

@@ -43,7 +43,8 @@ const t = labels[locale];
         .querySelectorAll<HTMLElement>('.doc-content pre')
         .forEach((pre) => {
           if (pre.hasAttribute('data-copy-ignore')) return;
-          if (pre.querySelector('.copy-code')) return;
+          const frame = pre.closest('.expressive-code .frame');
+          if ((frame ?? pre).querySelector('.copy-code')) return;
           const code = pre.querySelector('code');
           const button = document.createElement('button');
           button.className = 'copy-code';
@@ -58,7 +59,8 @@ const t = labels[locale];
                   '.copy-code, [data-line-number], [aria-hidden="true"], .line-number, .line-numbers',
                 )
                 .forEach((node) => node.remove());
-              await navigator.clipboard.writeText(clone.textContent ?? '');
+              const source = clone.textContent ?? '';
+              await navigator.clipboard.writeText(source);
               button.textContent = this.dataset.copied || 'Copied';
               if (status) status.textContent = button.textContent;
               window.setTimeout(() => {
@@ -69,7 +71,7 @@ const t = labels[locale];
               if (status) status.textContent = button.textContent;
             }
           });
-          pre.append(button);
+          (frame?.querySelector('.header') ?? pre).append(button);
         });
     }
 

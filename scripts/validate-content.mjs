@@ -3,7 +3,7 @@ import { createHash } from 'node:crypto';
 import { load } from 'cheerio';
 import assert from 'node:assert/strict';
 import { createTokenizer } from './lib/tokenizer.mjs';
-import { extractLangref } from './lib/langref.mjs';
+import { extractLangref, splitLangref } from './lib/langref.mjs';
 import { readTar } from './lib/std-runtime.mjs';
 import { collectCommentUnits, translateSources } from './lib/comments.mjs';
 import {
@@ -89,6 +89,11 @@ assert.equal(
   'Duplicate page identifiers',
 );
 const reference = en.filter((page) => page.kind === 'langref');
+const referenceSnapshots = new Map(
+  splitLangref(
+    await readFile(new URL('upstream/0.17.0/langref.html', root), 'utf8'),
+  ).map((page) => [page.id, page.html]),
+);
 assert.equal(reference.length, 53, 'Missing language reference chapters');
 assert.equal(
   reference.reduce((sum, page) => sum + page.headings.length, 0),
@@ -113,6 +118,26 @@ for (const meta of en) {
   );
   const e = load(english.html, null, false);
   const z = load(chinese.html, null, false);
+  if (meta.kind === 'langref') {
+    const original = load(referenceSnapshots.get(meta.id), null, false);
+    assert.deepEqual(
+      e('pre')
+        .map((_, element) => e(element).text())
+        .get(),
+      original('pre')
+        .map((_, element) => original(element).text())
+        .get(),
+      `English reference code changed: ${meta.id}`,
+    );
+    for (const element of original('[id]').toArray()) {
+      const id = original(element).attr('id');
+      assert.equal(
+        e('[id]').filter((_, el) => e(el).attr('id') === id).length,
+        1,
+        `Missing original anchor: ${meta.id}#${id}`,
+      );
+    }
+  }
   for (const [locale, $] of [
     ['en', e],
     ['zh-cn', z],

@@ -2,6 +2,7 @@ import { load } from 'cheerio';
 import { createHash } from 'node:crypto';
 import { readFile, writeFile, mkdir, readdir } from 'node:fs/promises';
 import path from 'node:path';
+import { enhanceCodeBlocks } from './code-frame.mjs';
 
 const SOURCE_URL = 'https://ziglang.org/documentation/0.17.0/';
 const BLOCKS = new Set([
@@ -322,6 +323,12 @@ export async function extractLangref(options = {}) {
         throw new Error(`Non-comment code changed: ${page.id} block ${i}`);
       if (left.split('\n').length !== right.split('\n').length)
         throw new Error(`Source line count changed: ${page.id} block ${i}`);
+    }
+    if (write) {
+      page.html = await enhanceCodeBlocks(page.html, { locale: 'en' });
+      localized.html = await enhanceCodeBlocks(localized.html, {
+        locale: 'zh-cn',
+      });
     }
     zh.push(localized);
     page.html = rewriteReferenceLinks(page.html, 'en', owners);

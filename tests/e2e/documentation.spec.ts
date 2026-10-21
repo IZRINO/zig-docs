@@ -167,7 +167,17 @@ for (const [locale, query] of [
     await expect(result).toBeVisible({ timeout: 20_000 });
     const href = await result.getAttribute('href');
     expect(href).toContain(`${base}/${locale}/`);
-    await result.click();
+    const destination = new URL(href!, page.url());
+    await Promise.all([
+      page.waitForURL(
+        (url) =>
+          url.pathname === destination.pathname &&
+          url.hash === destination.hash,
+      ),
+      result.click(),
+    ]);
+    await page.waitForLoadState('domcontentloaded');
+    await expect(page.locator('[data-open-modal]')).toBeEnabled();
     await expect(dialog).not.toBeVisible();
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
     await page.keyboard.press('Control+k');
@@ -205,10 +215,11 @@ test('主题持久化、代码复制与官方来源', async ({ page, context }) 
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
   await theme.selectOption('dark');
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
-  const code = page.locator('.doc-content pre').first();
+  const frame = page.locator('.expressive-code .frame').first();
+  const code = frame.locator('pre');
   await expect(code).toBeVisible();
-  await code.getByRole('button', { name: 'Copy code' }).click();
-  await expect(code.getByRole('button')).toHaveText('Copied');
+  await frame.getByRole('button', { name: 'Copy code' }).click();
+  await expect(frame.getByRole('button')).toHaveText('Copied');
   const clipboard = await page.evaluate(() => navigator.clipboard.readText());
   expect(clipboard.trim().length).toBeGreaterThan(10);
   expect(clipboard).not.toContain('Copy code');

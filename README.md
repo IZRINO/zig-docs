@@ -51,6 +51,18 @@ npm run test:e2e
 
 ## 手工更新与审核
 
+### 阅读界面与代码框
+
+正文使用自托管的 Source Sans 3 与 Noto Sans SC（思源黑体），代码使用 JetBrains Mono，中文注释回退至 Noto Sans SC。三种字体均采用 SIL Open Font License 1.1；随站分发的许可证见 `public/licenses/fonts-OFL.txt`。字体通过 Fontsource 的 Unicode 范围分片按需加载，使用 `font-display: swap`，不请求外部字体服务。
+
+语言参考的完整示例与命令输出使用 Starlight 已包含的 Expressive Code，在生成内容时执行 Shiki 高亮。标准库的短签名与完整源码保留上游高亮、行号与源码锚点，避免大型模块重复渲染。`scripts/lib/code-frame.mjs` 保留原始空白、选择示例语言，并断言渲染后文本逐字一致；运行 `npm run extract` 同时重生成并格式化 `src/styles/expressive-code.css`。日常构建直接使用已提交的 HTML 与样式。
+
+界面验收包括 390、768、1004、1440 像素下的双语排版、字体实际加载、明暗主题、逐字复制、布局偏移和字体载荷；对应测试位于 `tests/e2e/reading.spec.ts`。完整内容校验还会把语言参考中的英文代码逐块与官方快照比较。
+
+本次排版调整的设计依据与代码展示库取舍见 `docs/reading-experience-brief.md`，本地验收结果见 `reports/reading-experience.json`。复制测试分别核对传给剪贴板的原始字符串和系统剪贴板读回值，仅对 Windows 读回值的 CRLF 换行做等价处理。
+
+### 固定版本内容
+
 此仓库只维护 0.17.0，不跟随开发版本自动更新。维护者手工执行：
 
 ```sh
