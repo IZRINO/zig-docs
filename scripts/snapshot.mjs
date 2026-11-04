@@ -2,7 +2,9 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
 
-const version = '0.17.0';
+const version = process.argv[2] ?? '0.17.0';
+if (!['0.17.0', '0.17.1'].includes(version))
+  throw new Error('Unsupported snapshot version');
 const directory = new URL(`../upstream/${version}/`, import.meta.url);
 await mkdir(directory, { recursive: true });
 const assets = [

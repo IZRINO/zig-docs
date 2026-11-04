@@ -3,30 +3,62 @@ import {
   docHref,
   labels,
   type Locale,
+  type Version,
   type DocumentMeta,
 } from '../lib/content';
 import { Icon } from '@astrojs/starlight/components';
 interface Props {
   locale: Locale;
   docs: DocumentMeta[];
+  version: Version;
 }
-const { locale, docs } = Astro.props;
+const { locale, docs, version } = Astro.props;
 const t = labels[locale];
-const reference = docs.filter((doc) => doc.kind !== 'std');
+const intro = docs.filter((doc) => doc.kind === 'intro');
+const reference = docs.filter(
+  (doc) => doc.kind !== 'std' && doc.kind !== 'intro',
+);
 const standardLibrary = docs.filter((doc) => doc.kind === 'std');
 ---
 
 <p class="overview-intro">{t.siteDescription}</p>
+{
+  intro.length > 0 && (
+    <section class="index-section intro-index" aria-labelledby="intro-index">
+      <div class="index-section-heading">
+        <>
+          <h2 id="intro-index">{t.intro}</h2>
+          <span>{intro.length}</span>
+        </>
+      </div>
+      <ol class="chapter-index">
+        {intro.map((doc, index) => (
+          <li>
+            <a href={docHref(locale, doc.id, version)}>
+              <span class="chapter-number" aria-hidden="true">
+                {String(index + 1).padStart(2, '0')}
+              </span>
+              <span>{doc.title}</span>
+            </a>
+          </li>
+        ))}
+      </ol>
+    </section>
+  )
+}
 <div class="overview-entrypoints" data-pagefind-ignore>
   {
     reference[0] && (
-      <a class="primary-entrypoint" href={docHref(locale, reference[0].id)}>
+      <a
+        class="primary-entrypoint"
+        href={docHref(locale, reference[0].id, version)}
+      >
         {t.readReference}
         <Icon name="right-arrow" size="1.1rem" />
       </a>
     )
   }
-  <a class="secondary-entrypoint" href={docHref(locale, 'std')}
+  <a class="secondary-entrypoint" href={docHref(locale, 'std', version)}
     >{t.browseLibrary}<Icon name="right-arrow" size="1.1rem" /></a
   >
 </div>
@@ -42,7 +74,7 @@ const standardLibrary = docs.filter((doc) => doc.kind === 'std');
     {
       reference.map((doc, index) => (
         <li>
-          <a href={docHref(locale, doc.id)}>
+          <a href={docHref(locale, doc.id, version)}>
             <>
               <span class="chapter-number" aria-hidden="true">
                 {String(index + 1).padStart(2, '0')}
@@ -78,7 +110,7 @@ const standardLibrary = docs.filter((doc) => doc.kind === 'std');
       {
         standardLibrary.map((doc) => (
           <li data-module={doc.id.replaceAll('/', '.').toLowerCase()}>
-            <a href={docHref(locale, doc.id)}>
+            <a href={docHref(locale, doc.id, version)}>
               <code>{doc.id.replaceAll('/', '.')}</code>
             </a>
           </li>

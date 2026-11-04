@@ -5,16 +5,21 @@ import ThemeSelect from '@astrojs/starlight/components/ThemeSelect.astro';
 import LanguageSelect from './LanguageSelect.astro';
 import { Icon } from '@astrojs/starlight/components';
 import { currentDocument, docHref, labels } from '../lib/content';
+import VersionSelect from './VersionSelect.astro';
 
-const { locale } = currentDocument(Astro.url.pathname);
+const { locale, version } = currentDocument(Astro.url.pathname);
 const t = labels[locale];
 ---
 
 <div class="site-header">
-  <a class="site-brand" href={docHref(locale)} aria-label="Zig Docs">
+  <a
+    class="site-brand"
+    href={docHref(locale, '', version)}
+    aria-label="Zig Docs"
+  >
     <span class="brand-mark" aria-hidden="true">Z</span>
     <span class="brand-name">Zig <span>Docs</span></span>
-    <span class="version-badge">0.17.0</span>
+    <span class="version-badge">{version}</span>
   </a>
   <div class="header-search"><Search /></div>
   <div class="header-controls">
@@ -27,6 +32,7 @@ const t = labels[locale];
       <Icon name="github" size="1.2rem" />
     </a>
     <div class="desktop-theme"><ThemeSelect /></div>
+    <VersionSelect />
     <LanguageSelect />
   </div>
 </div>

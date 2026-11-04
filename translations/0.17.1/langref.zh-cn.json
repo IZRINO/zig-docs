@@ -1,0 +1,11 @@
+{
+  "reference/Operators::text:108": "转发式错误解包",
+  "reference/for::comment:18": "// 使用切片遍历切片或数组的一部分。",
+  "reference/for::comment:19": "// 要访问迭代索引，请将无界范围指定为",
+  "reference/for::comment:20": "// 第二个迭代对象，并提供第二个捕获值。",
+  "reference/for::comment:21": "// 要遍历连续整数，请使用有界范围语法。",
+  "reference/for::comment:22": "// 单独使用无界范围会导致编译错误。",
+  "reference/for::comment:24": "// 所有有界对象的长度必须相同。",
+  "reference/for::comment:25": "// 至少要有一个有界对象。",
+  "reference/for::comment:29": "// 循环未通过 break 退出时，才会执行 else 分支。"
+}

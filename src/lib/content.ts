@@ -4,6 +4,10 @@ import type { StarlightPageProps } from '@astrojs/starlight/props';
 
 export const locales = ['zh-cn', 'en'] as const;
 export type Locale = (typeof locales)[number];
+export const versions = ['0.17.1', '0.17.0'] as const;
+export type Version = (typeof versions)[number];
+// Keep releases newest-first; the first release is the default.
+export const latestVersion: Version = versions[0];
 export interface Heading {
   depth: number;
   slug: string;
@@ -11,7 +15,7 @@ export interface Heading {
 }
 export interface DocumentMeta {
   id: string;
-  kind: 'langref' | 'reference' | 'std';
+  kind: 'intro' | 'langref' | 'reference' | 'std';
   title: string;
   sourceUrl: string;
   file: string;
@@ -23,17 +27,34 @@ export interface DocumentPage extends DocumentMeta {
   html: string;
 }
 
-const manifestCache = new Map<Locale, Promise<DocumentMeta[]>>();
+const manifestCache = new Map<string, Promise<DocumentMeta[]>>();
 const contentRoot = resolve(process.cwd(), 'content');
 
-export function manifest(locale: Locale): Promise<DocumentMeta[]> {
-  let result = manifestCache.get(locale);
+export function manifest(
+  locale: Locale,
+  version: Version = latestVersion,
+): Promise<DocumentMeta[]> {
+  const key = `${version}/${locale}`;
+  let result = manifestCache.get(key);
   if (!result) {
     result = readFile(
-      resolve(contentRoot, locale, 'manifest.json'),
+      resolve(
+        contentRoot,
+        version === '0.17.0' ? '' : version,
+        locale,
+        'manifest.json',
+      ),
       'utf8',
-    ).then((raw) => JSON.parse(raw) as DocumentMeta[]);
-    manifestCache.set(locale, result);
+    ).then(async (raw) => {
+      const docs = JSON.parse(raw) as DocumentMeta[];
+      if (locale !== 'zh-cn' || version !== latestVersion) return docs;
+      const intro = await readFile(
+        resolve(contentRoot, version, locale, 'intro', 'manifest.json'),
+        'utf8',
+      );
+      return [...(JSON.parse(intro) as DocumentMeta[]), ...docs];
+    });
+    manifestCache.set(key, result);
   }
   return result;
 }
@@ -41,29 +62,55 @@ export function manifest(locale: Locale): Promise<DocumentMeta[]> {
 export async function readDocument(
   locale: Locale,
   meta: DocumentMeta,
+  version: Version = latestVersion,
 ): Promise<DocumentPage> {
-  const raw = await readFile(resolve(contentRoot, locale, meta.file), 'utf8');
+  const raw = await readFile(
+    resolve(
+      contentRoot,
+      version === '0.17.0' ? '' : version,
+      locale,
+      meta.file,
+    ),
+    'utf8',
+  );
   return JSON.parse(raw) as DocumentPage;
 }
 
-export function docHref(locale: Locale, id = ''): string {
-  return `${import.meta.env.BASE_URL.replace(/\/$/, '')}/${locale}/${id ? `${id}/` : ''}`;
+export function docHref(
+  locale: Locale,
+  id = '',
+  version: Version = latestVersion,
+): string {
+  const versionPath = version === '0.17.0' && id ? '' : `${version}/`;
+  return `${import.meta.env.BASE_URL.replace(/\/$/, '')}/${locale}/${versionPath}${id ? `${id}/` : ''}`;
 }
 
 export function currentDocument(pathname: string): {
   locale: Locale;
   id: string;
+  version: Version;
 } {
   const withoutBase = pathname.slice(
     import.meta.env.BASE_URL.replace(/\/$/, '').length,
   );
-  const [locale, ...parts] = decodeURI(withoutBase).split('/').filter(Boolean);
-  return { locale: locale === 'en' ? 'en' : 'zh-cn', id: parts.join('/') };
+  const [localeSegment, ...rest] = decodeURI(withoutBase)
+    .split('/')
+    .filter(Boolean);
+  const explicitVersion = versions.find((candidate) => rest[0] === candidate);
+  const version =
+    explicitVersion ?? (rest.length === 0 ? latestVersion : versions.at(-1)!);
+  const parts = explicitVersion ? rest.slice(1) : rest;
+  return {
+    locale: localeSegment === 'en' ? 'en' : 'zh-cn',
+    id: parts.join('/'),
+    version,
+  };
 }
 
 export const labels = {
   'zh-cn': {
     home: '文档概览',
+    intro: '入门',
     reference: '语言参考',
     library: '标准库',
     modules: '相关模块',
@@ -90,12 +137,14 @@ export const labels = {
     filterModules: '筛选模块',
     noModules: '没有匹配的模块',
     attribution: '基于 Zig 官方文档。中文译文由本项目维护。',
+    officialIntroAttribution: '入门章节使用 Zig 官方简体中文文档。',
     disclaimer: '非官方中文文档',
     repository: '项目仓库',
     viewSource: '查看官方原文',
   },
   en: {
     home: 'Documentation',
+    intro: 'Introduction',
     reference: 'Language reference',
     library: 'Standard library',
     modules: 'Related modules',
@@ -126,6 +175,8 @@ export const labels = {
     noModules: 'No matching modules',
     attribution:
       'Based on the official Zig documentation. Chinese translations are maintained by this project.',
+    officialIntroAttribution:
+      'These introduction chapters are sourced from the official Zig Chinese documentation.',
     disclaimer: 'Unofficial Chinese documentation',
     repository: 'Repository',
     viewSource: 'Read the official documentation',
@@ -136,8 +187,14 @@ export function makeSidebar(
   locale: Locale,
   docs: DocumentMeta[],
   currentId = '',
+  version: Version = latestVersion,
 ): StarlightPageProps['sidebar'] {
   const t = labels[locale];
+  const link = (id = '') =>
+    `/${version === '0.17.0' && id ? '' : `${version}/`}${id ? `${id}/` : ''}`;
+  const introItems = docs
+    .filter((doc) => doc.kind === 'intro')
+    .map((doc) => ({ label: doc.title, link: link(doc.id) }));
   const current = currentId.split('/');
   const standardLibrary = docs.filter((doc) => {
     if (doc.kind !== 'std') return false;
@@ -151,13 +208,25 @@ export function makeSidebar(
     );
   });
   return [
-    { label: t.home, link: '/' },
+    { label: t.home, link: link() },
+    ...(introItems.length
+      ? [
+          {
+            label: t.intro,
+            collapsed: !currentId.startsWith('intro/'),
+            items: introItems,
+          },
+        ]
+      : []),
     {
       label: t.reference,
       collapsed: currentId.startsWith('std'),
       items: docs
-        .filter((doc) => doc.kind !== 'std')
-        .map((doc) => ({ label: doc.title, link: `/${doc.id}/` })),
+        .filter((doc) => doc.kind !== 'std' && doc.kind !== 'intro')
+        .map((doc) => ({
+          label: doc.title,
+          link: link(doc.id),
+        })),
     },
     {
       label: t.library,
@@ -169,7 +238,7 @@ export function makeSidebar(
             doc.id === 'std'
               ? t.allModules
               : doc.id.slice(4).replaceAll('/', '.'),
-          link: `/${doc.id}/`,
+          link: link(doc.id),
         })),
     },
   ];

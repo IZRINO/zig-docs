@@ -28,7 +28,8 @@ jobs:
       - run: npm run lint
       - run: npm run check
       - run: npm run extract
-      - run: git diff --exit-code -- content reports translations/langref.inventory.json translations/langref.status.json src/styles/expressive-code.css
+      - run: npm run extract -- 0.17.1
+      - run: git diff --exit-code -- content reports translations/langref.inventory.json translations/langref.status.json translations/0.17.1/langref.inventory.json translations/0.17.1/langref.status.json src/styles/expressive-code.css
       - run: npm run build
       - run: npm run validate:links
       - run: npx playwright install --with-deps chromium

@@ -10,7 +10,7 @@ export default defineConfig({
     starlight({
       title: 'Zig Docs',
       description:
-        'Zig 0.17.0 language reference and standard library in Chinese and English.',
+        'Zig 0.17.0 and 0.17.1 language reference and standard library in Chinese and English.',
       defaultLocale: 'zh-cn',
       disable404Route: true,
       locales: {

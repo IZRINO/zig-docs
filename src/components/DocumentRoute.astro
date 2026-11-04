@@ -1,0 +1,105 @@
+---
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+import { Icon } from '@astrojs/starlight/components';
+import Overview from './Overview.astro';
+import {
+  manifest,
+  readDocument,
+  docHref,
+  labels,
+  makeSidebar,
+  type Locale,
+  type Version,
+  type DocumentMeta,
+} from '../lib/content';
+
+interface Props {
+  locale: Locale;
+  version: Version;
+  meta: DocumentMeta | null;
+}
+const { locale, meta, version } = Astro.props;
+const t = labels[locale];
+const docs = await manifest(locale, version);
+const page = meta ? await readDocument(locale, meta, version) : null;
+const reference = docs.filter(
+  (entry) => entry.kind !== 'std' && entry.kind !== 'intro',
+);
+const chapterIndex = meta
+  ? reference.findIndex((entry) => entry.id === meta.id)
+  : -1;
+const previous = reference[chapterIndex - 1];
+const next = chapterIndex >= 0 ? reference[chapterIndex + 1] : undefined;
+const title =
+  meta?.title ??
+  (locale === 'zh-cn' ? `Zig ${version} 文档` : `Zig ${version} documentation`);
+const headings = meta?.headings ?? [
+  { depth: 2, slug: 'language-reference', text: t.reference },
+  { depth: 2, slug: 'standard-library', text: t.library },
+];
+---
+
+<StarlightPage
+  lang={locale === 'en' ? 'en' : 'zh-CN'}
+  frontmatter={{
+    title,
+    description: meta
+      ? `${title} · Zig ${version} ${meta.kind === 'std' ? t.library : meta.kind === 'intro' ? t.intro : t.reference}`
+      : t.siteDescription,
+    pagefind: true,
+  }}
+  headings={headings}
+  sidebar={makeSidebar(locale, docs, meta?.id, version)}
+>
+  {
+    meta && page ? (
+      <>
+        <div class="document-meta" data-pagefind-ignore>
+          <span class="document-kind">
+            {meta.kind === 'std'
+              ? t.library
+              : meta.kind === 'intro'
+                ? t.intro
+                : t.reference}
+          </span>
+          <span class="document-version">Zig {version}</span>
+          <a href={meta.sourceUrl} title={t.viewSource}>
+            {t.source}
+            <Icon name="external" size="0.85rem" />
+          </a>
+        </div>
+        {meta.sourcePath && (
+          <div class="source-path" data-pagefind-ignore>
+            <span>{t.sourceCode}</span>
+            <code>{meta.sourcePath}</code>
+          </div>
+        )}
+        <article class="doc-content" set:html={page.html} />
+        {(previous || next) && (
+          <nav
+            class="chapter-pagination"
+            aria-label={locale === 'en' ? 'Chapter navigation' : '章节导航'}
+            data-pagefind-ignore
+          >
+            {previous ? (
+              <a href={docHref(locale, previous.id, version)}>
+                <span>{t.previous}</span>
+                <strong>{previous.title}</strong>
+              </a>
+            ) : (
+              <span />
+            )}
+            {next && (
+              <a class="next-chapter" href={docHref(locale, next.id, version)}>
+                <span>{t.next}</span>
+                <strong>{next.title}</strong>
+              </a>
+            )}
+          </nav>
+        )}
+      </>
+    ) : (
+      <Overview locale={locale} docs={docs} version={version} />
+    )
+  }
+</StarlightPage>

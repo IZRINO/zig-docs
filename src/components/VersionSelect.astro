@@ -1,0 +1,41 @@
+---
+import { currentDocument, docHref, versions } from '../lib/content';
+
+const { locale, id, version } = currentDocument(Astro.url.pathname);
+---
+
+<zig-version-select class="language-control version-control">
+  <select aria-label={locale === 'en' ? 'Change version' : '切换版本'}>
+    {
+      versions.map((candidate) => (
+        <option
+          value={docHref(
+            locale,
+            id.startsWith('intro/') && candidate !== version ? '' : id,
+            candidate,
+          )}
+          selected={candidate === version}
+        >
+          {candidate}
+        </option>
+      ))
+    }
+  </select>
+</zig-version-select>
+
+<script>
+  class ZigVersionSelect extends HTMLElement {
+    constructor() {
+      super();
+      this.querySelector('select')?.addEventListener('change', (event) => {
+        if (!(event.target instanceof HTMLSelectElement)) return;
+        const destination = new URL(event.target.value, location.origin);
+        destination.hash = location.hash;
+        destination.search = location.search;
+        location.assign(destination.href);
+      });
+    }
+  }
+  if (!customElements.get('zig-version-select'))
+    customElements.define('zig-version-select', ZigVersionSelect);
+</script>

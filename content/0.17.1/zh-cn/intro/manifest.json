@@ -1,0 +1,392 @@
+[
+  {
+    "id": "intro/getting-started",
+    "kind": "intro",
+    "title": "快速入门",
+    "sourceUrl": "https://ziglang.org/zh-CN/intro/getting-started/",
+    "file": "intro/getting-started.json",
+    "headings": [
+      {
+        "depth": 2,
+        "slug": "intro-section-1",
+        "text": "选择带版本号的版本还是开发版本？"
+      },
+      {
+        "depth": 2,
+        "slug": "intro-section-2",
+        "text": "安装 Zig"
+      },
+      {
+        "depth": 3,
+        "slug": "direct",
+        "text": "直接下载"
+      },
+      {
+        "depth": 4,
+        "slug": "intro-section-4",
+        "text": "在 Windows 上设置 PATH"
+      },
+      {
+        "depth": 4,
+        "slug": "intro-section-5",
+        "text": "在 Linux, MacOS, BSD 上设置 PATH 将 zig 二进制镜像的位置添加到 PATH 环境变量中。"
+      },
+      {
+        "depth": 3,
+        "slug": "managers",
+        "text": "包管理"
+      },
+      {
+        "depth": 4,
+        "slug": "intro-section-7",
+        "text": "Windows"
+      },
+      {
+        "depth": 4,
+        "slug": "intro-section-8",
+        "text": "macOS"
+      },
+      {
+        "depth": 4,
+        "slug": "intro-section-9",
+        "text": "Linux"
+      },
+      {
+        "depth": 3,
+        "slug": "source",
+        "text": "从源码构建"
+      },
+      {
+        "depth": 2,
+        "slug": "intro-section-11",
+        "text": "推荐工具"
+      },
+      {
+        "depth": 3,
+        "slug": "intro-section-12",
+        "text": "语法高亮和语言服务器（LSP）"
+      },
+      {
+        "depth": 2,
+        "slug": "intro-section-13",
+        "text": "运行 Hello World"
+      },
+      {
+        "depth": 2,
+        "slug": "intro-section-14",
+        "text": "下一步"
+      }
+    ]
+  },
+  {
+    "id": "intro/overview",
+    "kind": "intro",
+    "title": "深入了解",
+    "sourceUrl": "https://ziglang.org/zh-CN/intro/overview/",
+    "file": "intro/overview.json",
+    "headings": [
+      {
+        "depth": 2,
+        "slug": "intro-section-1",
+        "text": "功能特色"
+      },
+      {
+        "depth": 3,
+        "slug": "small-simple-language",
+        "text": "小巧而简单的语言"
+      },
+      {
+        "depth": 3,
+        "slug": "performance-and-safety-choose-two",
+        "text": "性能和安全：全都要"
+      },
+      {
+        "depth": 3,
+        "slug": "intro-section-4",
+        "text": "Zig 与 C 竞争，而不是依赖于它"
+      },
+      {
+        "depth": 3,
+        "slug": "intro-section-5",
+        "text": "顺序无关的顶层声明"
+      },
+      {
+        "depth": 3,
+        "slug": "intro-section-6",
+        "text": "用可选类型代替空指针"
+      },
+      {
+        "depth": 3,
+        "slug": "intro-section-7",
+        "text": "手动内存管理"
+      },
+      {
+        "depth": 3,
+        "slug": "a-fresh-take-on-error-handling",
+        "text": "错误处理的全新诠释"
+      },
+      {
+        "depth": 4,
+        "slug": "stack-traces-on-all-targets",
+        "text": "在所有目标上启用堆栈跟踪"
+      },
+      {
+        "depth": 3,
+        "slug": "intro-section-10",
+        "text": "泛型数据结构和函数"
+      },
+      {
+        "depth": 3,
+        "slug": "compile-time-reflection-and-compile-time-code-execution",
+        "text": "编译期反射和编译期代码执行"
+      },
+      {
+        "depth": 3,
+        "slug": "integration-with-c-libraries-without-ffibindings",
+        "text": "无需 FFI/bindings 的 C 库集成"
+      },
+      {
+        "depth": 4,
+        "slug": "zig-is-also-a-c-compiler",
+        "text": "Zig 也是 C 编译器"
+      },
+      {
+        "depth": 4,
+        "slug": "intro-section-14",
+        "text": "导出函数、变量和类型供 C 代码使用"
+      },
+      {
+        "depth": 3,
+        "slug": "cross-compiling-is-a-first-class-use-case",
+        "text": "交叉编译的一流支持"
+      },
+      {
+        "depth": 4,
+        "slug": "zig-ships-with-libc",
+        "text": "Zig 与 libc 一起发布"
+      },
+      {
+        "depth": 3,
+        "slug": "zig-build-system",
+        "text": "Zig 构建系统与包管理器"
+      },
+      {
+        "depth": 3,
+        "slug": "intro-section-18",
+        "text": "支持广泛的目标"
+      },
+      {
+        "depth": 3,
+        "slug": "intro-section-19",
+        "text": "对包维护者友好"
+      }
+    ]
+  },
+  {
+    "id": "intro/build-system",
+    "kind": "intro",
+    "title": "Zig 构建系统",
+    "sourceUrl": "https://ziglang.org/zh-CN/intro/build-system/",
+    "file": "intro/build-system.json",
+    "headings": [
+      {
+        "depth": 2,
+        "slug": "build-system",
+        "text": "何时使用 Zig 构建系统？"
+      },
+      {
+        "depth": 2,
+        "slug": "getting-started",
+        "text": "开始使用"
+      },
+      {
+        "depth": 3,
+        "slug": "simple",
+        "text": "简单的可执行文件"
+      },
+      {
+        "depth": 3,
+        "slug": "installing-artifacts",
+        "text": "安装构建产物"
+      },
+      {
+        "depth": 3,
+        "slug": "run-step",
+        "text": "为运行应用程序添加一个便捷步骤"
+      },
+      {
+        "depth": 2,
+        "slug": "basics",
+        "text": "基础"
+      },
+      {
+        "depth": 3,
+        "slug": "user-options",
+        "text": "用户提供的选项"
+      },
+      {
+        "depth": 3,
+        "slug": "standard-options",
+        "text": "标准配置选项"
+      },
+      {
+        "depth": 3,
+        "slug": "conditional-compilation",
+        "text": "用于条件编译的选项"
+      },
+      {
+        "depth": 3,
+        "slug": "static-library",
+        "text": "静态库"
+      },
+      {
+        "depth": 3,
+        "slug": "dynamic-library",
+        "text": "动态库"
+      },
+      {
+        "depth": 3,
+        "slug": "testing",
+        "text": "测试"
+      },
+      {
+        "depth": 3,
+        "slug": "linking-to-system-libraries",
+        "text": "链接系统库"
+      },
+      {
+        "depth": 2,
+        "slug": "generating-files",
+        "text": "生成文件"
+      },
+      {
+        "depth": 3,
+        "slug": "system-tools",
+        "text": "运行系统工具"
+      },
+      {
+        "depth": 3,
+        "slug": "project-tools",
+        "text": "运行项目工具"
+      },
+      {
+        "depth": 3,
+        "slug": "embed-file",
+        "text": "为 @embedFile 生成文件"
+      },
+      {
+        "depth": 3,
+        "slug": "generating-zig",
+        "text": "生成 Zig 源代码"
+      },
+      {
+        "depth": 3,
+        "slug": "write-files",
+        "text": "处理一个或多个生成的文件"
+      },
+      {
+        "depth": 3,
+        "slug": "mutating-source",
+        "text": "直接修改源文件"
+      },
+      {
+        "depth": 2,
+        "slug": "examples",
+        "text": "实用示例"
+      },
+      {
+        "depth": 3,
+        "slug": "release",
+        "text": "为多个目标构建以发布版本"
+      }
+    ]
+  },
+  {
+    "id": "intro/samples",
+    "kind": "intro",
+    "title": "代码示例",
+    "sourceUrl": "https://ziglang.org/zh-CN/intro/samples/",
+    "file": "intro/samples.json",
+    "headings": [
+      {
+        "depth": 2,
+        "slug": "hello",
+        "text": "Hello world"
+      },
+      {
+        "depth": 2,
+        "slug": "ext",
+        "text": "调用外部库函数"
+      },
+      {
+        "depth": 2,
+        "slug": "leak",
+        "text": "内存泄露检测"
+      },
+      {
+        "depth": 2,
+        "slug": "c-interop",
+        "text": "C 互操作性"
+      },
+      {
+        "depth": 2,
+        "slug": "zigg-zagg",
+        "text": "Zigg Zagg"
+      },
+      {
+        "depth": 2,
+        "slug": "generic",
+        "text": "泛型"
+      },
+      {
+        "depth": 2,
+        "slug": "curl",
+        "text": "在 Zig 中使用 cURL"
+      }
+    ]
+  },
+  {
+    "id": "intro/why_zig_rust_d_cpp",
+    "kind": "intro",
+    "title": "有了 C++、D 和 Rust，为什么还需要 Zig？",
+    "sourceUrl": "https://ziglang.org/zh-CN/intro/why_zig_rust_d_cpp/",
+    "file": "intro/why_zig_rust_d_cpp.json",
+    "headings": [
+      {
+        "depth": 2,
+        "slug": "intro-section-1",
+        "text": "没有隐式控制流"
+      },
+      {
+        "depth": 2,
+        "slug": "intro-section-2",
+        "text": "没有隐式内存分配"
+      },
+      {
+        "depth": 2,
+        "slug": "intro-section-3",
+        "text": "无标准库的一流支持"
+      },
+      {
+        "depth": 2,
+        "slug": "intro-section-4",
+        "text": "为库设计的可移植语言"
+      },
+      {
+        "depth": 2,
+        "slug": "intro-section-5",
+        "text": "为现有项目的构建系统和包管理器"
+      },
+      {
+        "depth": 2,
+        "slug": "intro-section-6",
+        "text": "简单性"
+      },
+      {
+        "depth": 2,
+        "slug": "intro-section-7",
+        "text": "工具"
+      }
+    ]
+  }
+]

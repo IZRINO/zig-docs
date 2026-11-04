@@ -4,7 +4,6 @@ import { readFile, writeFile, mkdir, readdir } from 'node:fs/promises';
 import path from 'node:path';
 import { enhanceCodeBlocks } from './code-frame.mjs';
 
-const SOURCE_URL = 'https://ziglang.org/documentation/0.17.0/';
 const BLOCKS = new Set([
   'p',
   'li',
@@ -37,7 +36,7 @@ const PROTECTED = new Set(['code', 'cite', 'kbd', 'samp']);
 const normalized = (s) => s.replace(/\s+/g, ' ').trim();
 const hash = (s) => createHash('sha256').update(s).digest('hex');
 
-export function splitLangref(source) {
+export function splitLangref(source, version = '0.17.0') {
   const $ = load(source);
   const pages = [];
   let current;
@@ -48,7 +47,7 @@ export function splitLangref(source) {
         id: `reference/${slug}`,
         kind: 'langref',
         title: $(node).clone().find('.hdr').remove().end().text().trim(),
-        sourceUrl: `${SOURCE_URL}#${slug}`,
+        sourceUrl: `https://ziglang.org/documentation/${version}/#${slug}`,
         file: `reference/${slug}.json`,
         headings: [],
         html: '',
@@ -77,6 +76,7 @@ export function rewriteReferenceLinks(
   locale,
   owners,
   base = '/zig-docs',
+  version = '0.17.0',
 ) {
   const $ = load(html, null, false);
   $('a[href]').each((_, el) => {
@@ -86,7 +86,7 @@ export function rewriteReferenceLinks(
     if (owners.has(anchor))
       $(el).attr(
         'href',
-        `${base}/${locale}/reference/${owners.get(anchor)}/#${anchor}`,
+        `${base}/${locale}/${version === '0.17.0' ? '' : `${version}/`}reference/${owners.get(anchor)}/#${anchor}`,
       );
   });
   return $.html();
@@ -154,7 +154,7 @@ export function codeTokens(source) {
   );
 }
 
-function collectUnits(page) {
+export function collectUnits(page) {
   const $ = load(page.html, null, false);
   const units = [];
   let index = 0;
@@ -226,11 +226,12 @@ function collectUnits(page) {
 export async function extractLangref(options = {}) {
   const root = options.root ?? process.cwd();
   const write = options.write !== false;
+  const version = options.version ?? '0.17.0';
   const source = await readFile(
-    path.join(root, 'upstream/0.17.0/langref.html'),
+    path.join(root, 'upstream', version, 'langref.html'),
     'utf8',
   );
-  const pages = splitLangref(source);
+  const pages = splitLangref(source, version);
   const owners = new Map();
   for (const page of pages) {
     const $ = load(page.html, null, false);
@@ -240,12 +241,18 @@ export async function extractLangref(options = {}) {
   }
   const entries = {};
   const translationsDir = path.join(root, 'translations');
-  if (write) await mkdir(translationsDir, { recursive: true });
+  const versionDir =
+    version === '0.17.0'
+      ? translationsDir
+      : path.join(translationsDir, version);
+  const contentDir = path.join(
+    root,
+    'content',
+    version === '0.17.0' ? '' : version,
+  );
+  if (write) await mkdir(versionDir, { recursive: true });
   const baseline = JSON.parse(
-    await readFile(
-      path.join(translationsDir, 'langref.source-hashes.json'),
-      'utf8',
-    ),
+    await readFile(path.join(versionDir, 'langref.source-hashes.json'), 'utf8'),
   );
   if (baseline.snapshotSha256 !== hash(source))
     throw new Error(
@@ -258,6 +265,33 @@ export async function extractLangref(options = {}) {
       entries,
       JSON.parse(await readFile(path.join(translationsDir, file), 'utf8')),
     );
+  const overrides =
+    version === '0.17.0'
+      ? {}
+      : JSON.parse(
+          await readFile(path.join(versionDir, 'langref.zh-cn.json'), 'utf8'),
+        );
+  const oldInventory =
+    version === '0.17.0'
+      ? []
+      : JSON.parse(
+          await readFile(
+            path.join(translationsDir, 'langref.inventory.json'),
+            'utf8',
+          ),
+        );
+  const byHash = new Map(
+    oldInventory.map((item) => [item.sourceHash, entries[item.key]]),
+  );
+  const oldBaseline =
+    version === '0.17.0'
+      ? baseline
+      : JSON.parse(
+          await readFile(
+            path.join(translationsDir, 'langref.source-hashes.json'),
+            'utf8',
+          ),
+        );
   const inventory = [];
   const zh = [];
   const missing = [];
@@ -276,7 +310,13 @@ export async function extractLangref(options = {}) {
         sourceHash: unit.hash,
         page: page.id,
       });
-      const entry = entries[unit.key] ?? entries[unit.source];
+      const entry =
+        overrides[unit.key] ??
+        (oldBaseline.units[unit.key] === unit.hash
+          ? entries[unit.key]
+          : undefined) ??
+        byHash.get(unit.hash) ??
+        entries[unit.source];
       if (typeof entry !== 'string' || !entry.trim()) {
         missing.push(unit.key);
         continue;
@@ -294,7 +334,13 @@ export async function extractLangref(options = {}) {
     const localized = {
       ...page,
       title: $('h2').first().text().trim(),
-      html: rewriteReferenceLinks($.html(), 'zh-cn', owners),
+      html: rewriteReferenceLinks(
+        $.html(),
+        'zh-cn',
+        owners,
+        '/zig-docs',
+        version,
+      ),
     };
     localized.headings = $('h2,h3,h4')
       .map((_, el) => ({
@@ -306,7 +352,15 @@ export async function extractLangref(options = {}) {
     localized.translation = {
       total: units.length,
       translated: units.filter(
-        (u) => typeof (entries[u.key] ?? entries[u.source]) === 'string',
+        (u) =>
+          typeof (
+            overrides[u.key] ??
+            (oldBaseline.units[u.key] === u.hash
+              ? entries[u.key]
+              : undefined) ??
+            byHash.get(u.hash) ??
+            entries[u.source]
+          ) === 'string',
       ).length,
     };
     const original = load(page.html, null, false);
@@ -331,16 +385,22 @@ export async function extractLangref(options = {}) {
       });
     }
     zh.push(localized);
-    page.html = rewriteReferenceLinks(page.html, 'en', owners);
+    page.html = rewriteReferenceLinks(
+      page.html,
+      'en',
+      owners,
+      '/zig-docs',
+      version,
+    );
   }
   if (write)
     await writeFile(
-      path.join(translationsDir, 'langref.inventory.json'),
+      path.join(versionDir, 'langref.inventory.json'),
       JSON.stringify(inventory, null, 2) + '\n',
     );
   if (write)
     await writeFile(
-      path.join(translationsDir, 'langref.status.json'),
+      path.join(versionDir, 'langref.status.json'),
       JSON.stringify(
         { total: inventory.length, translated, missing },
         null,
@@ -356,12 +416,12 @@ export async function extractLangref(options = {}) {
       ['en', pages],
       ['zh-cn', zh],
     ]) {
-      await mkdir(path.join(root, 'content', locale, 'reference'), {
+      await mkdir(path.join(contentDir, locale, 'reference'), {
         recursive: true,
       });
       for (const page of localizedPages)
         await writeFile(
-          path.join(root, 'content', locale, page.file),
+          path.join(contentDir, locale, page.file),
           JSON.stringify(page, null, 2) + '\n',
         );
     }

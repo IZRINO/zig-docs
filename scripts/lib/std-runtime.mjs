@@ -36,16 +36,16 @@ export function readTar(archive) {
   return files;
 }
 
-export function symbolHref(name, symbolPages, locale) {
+export function symbolHref(name, symbolPages, locale, version = '0.17.0') {
   const target = symbolPages.get(name) ?? symbolPages.resolve?.(name);
   if (!target) return null;
   const { page, anchor } =
     typeof target === 'string' ? { page: target, anchor: name } : target;
-  return `/zig-docs/${locale}/${page.split('/').map(encodeURIComponent).join('/')}/#${encodeURIComponent(anchor)}`;
+  return `/zig-docs/${locale}/${version === '0.17.0' ? '' : `${version}/`}${page.split('/').map(encodeURIComponent).join('/')}/#${encodeURIComponent(anchor)}`;
 }
 
-export async function loadRuntime(archiveOverride) {
-  const root = new URL('../../upstream/0.17.0/std/', import.meta.url);
+export async function loadRuntime(archiveOverride, version = '0.17.0') {
+  const root = new URL(`../../upstream/${version}/std/`, import.meta.url);
   const [wasm, archive] = await Promise.all([
     readFile(new URL('main.wasm', root)),
     archiveOverride ?? readFile(new URL('sources.tar', root)),

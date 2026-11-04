@@ -95,6 +95,7 @@ export function rewriteLinks(
   sourcePages,
   locale,
   unresolved,
+  version = '0.17.0',
 ) {
   const $ = load(html, null, false);
   const localAnchors = new Set(
@@ -115,7 +116,7 @@ export function rewriteLinks(
       return;
     }
     let hash = href;
-    const official = 'https://ziglang.org/documentation/0.17.0/std/';
+    const official = `https://ziglang.org/documentation/${version}/std/`;
     if (hash.startsWith(official)) hash = hash.slice(official.length);
     if (hash.startsWith('#src/')) {
       const path = decodeURIComponent(hash.slice(5));
@@ -123,13 +124,13 @@ export function rewriteLinks(
       anchor.attr(
         'href',
         page
-          ? `/zig-docs/${locale}/${page.split('/').map(encodeURIComponent).join('/')}/#source`
+          ? `/zig-docs/${locale}/${version === '0.17.0' ? '' : `${version}/`}${page.split('/').map(encodeURIComponent).join('/')}/#source`
           : `${official}${hash}`,
       );
     } else if (hash.startsWith('#std')) {
       const name = decodeURIComponent(hash.slice(1));
       if (name.includes('--L') && localAnchors.has(name)) return;
-      const target = symbolHref(name, symbolPages, locale);
+      const target = symbolHref(name, symbolPages, locale, version);
       if (!target) unresolved.add(name);
       anchor.attr('href', target ?? `${official}#${encodeURIComponent(name)}`);
     }
@@ -248,7 +249,11 @@ export function renderDeclaration(
   return parts.join('\n');
 }
 
-export async function renderStandardLibrary(runtime, locale = 'en') {
+export async function renderStandardLibrary(
+  runtime,
+  locale = 'en',
+  version = '0.17.0',
+) {
   const { roots, declarations, ex, string } = runtime;
   const sourcePages = new Map([...roots].map(([path]) => [path, pageId(path)]));
   const groups = new Map([...roots].map(([path]) => [path, []]));
@@ -321,13 +326,14 @@ export async function renderStandardLibrary(runtime, locale = 'en') {
       sourcePages,
       locale,
       unresolved,
+      version,
     );
     const meta = {
       id,
       kind: 'std',
       title: root.fqn,
       sourcePath,
-      sourceUrl: `https://ziglang.org/documentation/0.17.0/std/#${encodeURIComponent(root.fqn)}`,
+      sourceUrl: `https://ziglang.org/documentation/${version}/std/#${encodeURIComponent(root.fqn)}`,
       file: `${id}.json`,
       headings: [
         { depth: 2, slug: root.fqn, text: root.fqn },
@@ -347,7 +353,7 @@ export async function renderStandardLibrary(runtime, locale = 'en') {
       symbols,
     };
     const target = new URL(
-      `../../content/${locale}/${meta.file}`,
+      `../../content/${version === '0.17.0' ? '' : `${version}/`}${locale}/${meta.file}`,
       import.meta.url,
     );
     const serialized = `${JSON.stringify({ ...meta, html })}\n`;

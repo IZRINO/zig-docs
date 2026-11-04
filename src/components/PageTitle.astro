@@ -1,13 +1,14 @@
 ---
 import { currentDocument, docHref, labels, manifest } from '../lib/content';
 
-const { locale, id } = currentDocument(Astro.url.pathname);
+const { locale, id, version } = currentDocument(Astro.url.pathname);
 const t = labels[locale];
 const parts = id.split('/').filter(Boolean);
 const isLibrary = parts[0] === 'std';
+const isIntro = parts[0] === 'intro';
 const moduleIds = new Set(
   isLibrary
-    ? (await manifest(locale))
+    ? (await manifest(locale, version))
         .filter((doc) => doc.kind === 'std')
         .map((doc) => doc.id)
     : [],
@@ -24,18 +25,20 @@ const ancestors = parts.slice(1, -1).map((label, index) => ({
     aria-label={locale === 'en' ? 'Breadcrumbs' : '面包屑导航'}
     data-pagefind-ignore
   >
-    <a href={docHref(locale)}>{t.home}</a>
+    <a href={docHref(locale, '', version)}>{t.home}</a>
     {parts.length > 0 && <span aria-hidden="true">/</span>}
     {
       parts.length > 0 && (
         <a
           href={
             isLibrary
-              ? docHref(locale, 'std')
-              : `${docHref(locale)}#language-reference`
+              ? docHref(locale, 'std', version)
+              : isIntro
+                ? `${docHref(locale, '', version)}#intro-index`
+                : `${docHref(locale, '', version)}#language-reference`
           }
         >
-          {isLibrary ? t.library : t.reference}
+          {isLibrary ? t.library : isIntro ? t.intro : t.reference}
         </a>
       )
     }
@@ -45,7 +48,9 @@ const ancestors = parts.slice(1, -1).map((label, index) => ({
           <>
             <span aria-hidden="true">/</span>
             {moduleIds.has(ancestor.id) ? (
-              <a href={docHref(locale, ancestor.id)}>{ancestor.label}</a>
+              <a href={docHref(locale, ancestor.id, version)}>
+                {ancestor.label}
+              </a>
             ) : (
               <span>{ancestor.label}</span>
             )}

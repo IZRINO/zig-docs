@@ -4,8 +4,8 @@ import { Icon } from '@astrojs/starlight/components';
 import ApiIndex from './ApiIndex.astro';
 import { currentDocument, manifest } from '../lib/content';
 
-const { locale, id } = currentDocument(Astro.url.pathname);
-const meta = (await manifest(locale)).find((doc) => doc.id === id);
+const { locale, id, version } = currentDocument(Astro.url.pathname);
+const meta = (await manifest(locale, version)).find((doc) => doc.id === id);
 const compact = meta?.kind === 'std' && (meta.symbols?.length ?? 0) > 200;
 const title = locale === 'en' ? 'API index' : '接口索引';
 ---

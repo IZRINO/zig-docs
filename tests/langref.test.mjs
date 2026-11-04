@@ -122,3 +122,19 @@ test('code tokens ignore only comments, preserving comment-like strings', () => 
     codeTokens('const s = "// 改动";'),
   );
 });
+
+test('0.17.1 reference extraction retains anchors and versioned source links', () => {
+  const pages = splitLangref(fixture, '0.17.1');
+  assert.equal(
+    pages[0].sourceUrl,
+    'https://ziglang.org/documentation/0.17.1/#One',
+  );
+  const html = rewriteReferenceLinks(
+    pages[0].html,
+    'zh-cn',
+    new Map([['nested', 'One']]),
+    '/zig-docs',
+    '0.17.1',
+  );
+  assert.match(html, /\/zig-docs\/zh-cn\/0\.17\.1\/reference\/One\/#nested/);
+});

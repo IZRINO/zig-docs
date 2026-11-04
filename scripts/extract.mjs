@@ -17,24 +17,35 @@ import { rewriteContentLinks } from './lib/links.mjs';
 import { getCodeFrameStyles } from './lib/code-frame.mjs';
 import { format, resolveConfig } from 'prettier';
 
+const version = process.argv[2] ?? '0.17.0';
+if (!['0.17.0', '0.17.1'].includes(version))
+  throw new Error('Unsupported version');
+const contentPrefix = version === '0.17.0' ? '' : `${version}/`;
+const reportsPrefix = version === '0.17.0' ? '' : `${version}/`;
+
 const codeStylesUrl = new URL(
   '../src/styles/expressive-code.css',
   import.meta.url,
 );
-await writeFile(
-  codeStylesUrl,
-  await format(await getCodeFrameStyles(), {
-    ...(await resolveConfig(codeStylesUrl)),
-    parser: 'css',
-  }),
-);
+if (version === '0.17.0')
+  await writeFile(
+    codeStylesUrl,
+    await format(await getCodeFrameStyles(), {
+      ...(await resolveConfig(codeStylesUrl)),
+      parser: 'css',
+    }),
+  );
 
-const englishRuntime = await loadRuntime();
+const englishRuntime = await loadRuntime(undefined, version);
 const tokenizer = await createTokenizer();
 const { units, groups } = collectCommentUnits(englishRuntime.files, tokenizer);
-const translations = await loadStandardTranslations();
-const { verbatim, protectedExceptions } = await loadTranslationPolicy();
-assertTranslationCoverage(units, translations, verbatim);
+const translations = await loadStandardTranslations(version);
+const { verbatim, protectedExceptions } = await loadTranslationPolicy(version);
+assertTranslationCoverage(
+  units,
+  Object.fromEntries(units.map((unit) => [unit.id, translations[unit.id]])),
+  verbatim,
+);
 const translatedSources = translateSources(
   englishRuntime.files,
   groups,
@@ -42,7 +53,7 @@ const translatedSources = translateSources(
   tokenizer,
   protectedExceptions,
 );
-const chineseRuntime = await loadRuntime(writeTar(translatedSources));
+const chineseRuntime = await loadRuntime(writeTar(translatedSources), version);
 if (englishRuntime.declarations.size !== chineseRuntime.declarations.size)
   throw new Error('Translation changes declaration count');
 for (const [id, declaration] of englishRuntime.declarations) {
@@ -58,40 +69,52 @@ for (const [id, declaration] of englishRuntime.declarations) {
       `Translation changes declaration identity: ${declaration.fqn}`,
     );
 }
-const reference = await extractLangref();
+const reference = await extractLangref({ version });
 console.log(`Extracted ${reference.en.length} reference chapters.`);
-const en = await renderStandardLibrary(englishRuntime, 'en');
+const en = await renderStandardLibrary(englishRuntime, 'en', version);
 console.log(`Rendered ${en.manifest.length} English standard library modules.`);
-const zh = await renderStandardLibrary(chineseRuntime, 'zh-cn');
+const zh = await renderStandardLibrary(chineseRuntime, 'zh-cn', version);
 console.log(`Rendered ${zh.manifest.length} Chinese standard library modules.`);
-const unresolved = await rewriteContentLinks(reference.en, [
-  ['en', [...reference.en, ...en.manifest], en.symbolPages],
-  ['zh-cn', [...reference.zh, ...zh.manifest], zh.symbolPages],
-]);
+const unresolved = await rewriteContentLinks(
+  reference.en,
+  [
+    ['en', [...reference.en, ...en.manifest], en.symbolPages],
+    ['zh-cn', [...reference.zh, ...zh.manifest], zh.symbolPages],
+  ],
+  version,
+);
 for (const [locale, docs] of [
   ['en', [...reference.en, ...en.manifest]],
   ['zh-cn', [...reference.zh, ...zh.manifest]],
 ]) {
-  await mkdir(new URL(`../content/${locale}/`, import.meta.url), {
-    recursive: true,
-  });
+  await mkdir(
+    new URL(`../content/${contentPrefix}${locale}/`, import.meta.url),
+    {
+      recursive: true,
+    },
+  );
   await writeFile(
-    new URL(`../content/${locale}/manifest.json`, import.meta.url),
+    new URL(
+      `../content/${contentPrefix}${locale}/manifest.json`,
+      import.meta.url,
+    ),
     `${JSON.stringify(docs)}\n`,
   );
 }
-await mkdir(new URL('../reports/', import.meta.url), { recursive: true });
+await mkdir(new URL(`../reports/${reportsPrefix}`, import.meta.url), {
+  recursive: true,
+});
 await writeFile(
-  new URL('../reports/std-declarations.json', import.meta.url),
+  new URL(`../reports/${reportsPrefix}std-declarations.json`, import.meta.url),
   `${JSON.stringify(en.inventory)}\n`,
 );
 await writeFile(
-  new URL('../reports/upstream-links.json', import.meta.url),
-  `${JSON.stringify({ version: '0.17.0', unresolved }, null, 2)}\n`,
+  new URL(`../reports/${reportsPrefix}upstream-links.json`, import.meta.url),
+  `${JSON.stringify({ version, unresolved }, null, 2)}\n`,
 );
 await writeFile(
-  new URL('../reports/coverage.json', import.meta.url),
-  `${JSON.stringify({ version: '0.17.0', reference: reference.stats, standardLibrary: en.stats, standardLibraryTranslations: { expected: units.length, translated: units.length, missing: 0, verbatim: Object.keys(verbatim).length } }, null, 2)}\n`,
+  new URL(`../reports/${reportsPrefix}coverage.json`, import.meta.url),
+  `${JSON.stringify({ version, reference: reference.stats, standardLibrary: en.stats, standardLibraryTranslations: { expected: units.length, translated: units.length, missing: 0, verbatim: Object.keys(verbatim).length } }, null, 2)}\n`,
 );
 console.log(
   `Exported ${reference.en.length} reference chapters and ${en.manifest.length} standard library modules in both languages.`,

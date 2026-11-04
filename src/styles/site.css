@@ -174,6 +174,11 @@ body {
   max-width: 6rem;
 }
 
+.version-control select {
+  max-width: 5.8rem;
+  font-family: var(--sl-font-mono);
+}
+
 .language-control option {
   background: var(--sl-color-black);
 }

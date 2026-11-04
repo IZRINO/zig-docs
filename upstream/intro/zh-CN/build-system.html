@@ -1,0 +1,1273 @@
+<!DOCTYPE html><html lang="zh-CN"><head id="head"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title id="title">
+      Zig 构建系统
+      ⚡
+      Zig 编程语言
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
+    <link rel="icon" href="https://ziglang.org/favicon.png">
+    <link rel="icon" href="https://ziglang.org/favicon.svg">
+    <link type="text/css" rel="stylesheet" href="https://ziglang.org/css/style.css">
+    <link type="text/css" rel="stylesheet" href="https://ziglang.org/css/navigation.css">
+    
+  <link type="text/css" rel="stylesheet" href="https://ziglang.org/css/home.css">
+
+  </head>
+  <body>
+    <div class="container">
+      <a href="https://ziglang.org/zh-CN/"><span id="header-image"></span></a>
+    </div>
+    <nav id="mobile-navbar" class="nav container">
+      <span style="overflow:hidden; max-width: 80%; display: inline-block; vertical-align:bottom;">Zig 构建系统
+      </span>
+      <label for="mobile-toggle" id="hamburger">
+        <svg style="width:2em;height:2em;" viewBox="0 0 24 24">
+          <path fill="currentColor" d="M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z"></path>
+        </svg>
+      </label>
+    </nav>
+    <div id="mobile-subnav">
+      <input type="checkbox" name="mobile-toggle" id="mobile-toggle">
+      <div class="" id="menu">
+        
+          <a class="navbar-item" href="https://ziglang.org/zh-CN/download/">下载</a>
+        
+        
+          <a class="navbar-item" href="https://ziglang.org/zh-CN/intro/">学习</a>
+        
+        
+          <a class="navbar-item" href="https://ziglang.org/news/">News</a>
+        
+        <a href="https://codeberg.org/ziglang/zig" class="navbar-item external-link external-link-light">源代码</a>
+        <a href="https://ziglang.org/community" class="navbar-item">加入社区</a>
+        
+          <a class="navbar-item" href="https://ziglang.org/zh-CN/zsf/">Zig 软件基金会</a>
+        
+        
+          <a class="navbar-item" href="https://ziglang.org/devlog/2026/">Devlog</a>
+        
+      </div>
+    </div>
+    <nav id="navbar" class="nav">
+      <div class="container" style="display:flex; justify-content: space-between;">
+        <div>
+          
+            <a class="navbar-item" href="https://ziglang.org/zh-CN/download/">下载</a>
+          
+          
+            <a class="navbar-item" href="https://ziglang.org/zh-CN/intro/">学习</a>
+          
+          
+            <a class="navbar-item" href="https://ziglang.org/news/">News</a>
+          
+          
+            <a class="navbar-item" href="https://ziglang.org/zh-CN/zsf/">Zig 软件基金会</a>
+          
+          
+            <a class="navbar-item" href="https://ziglang.org/devlog/2026/">Devlog</a>
+          
+          <a href="https://codeberg.org/ziglang/zig" class="navbar-item external-link external-link-light">源代码</a>
+          <a href="https://ziglang.org/community" class="navbar-item">加入社区</a>
+        </div>
+      </div>
+    </nav>
+    <div id="content" role="main">
+      
+  <div class="container">
+    
+      <a id="back" href="https://ziglang.org/zh-CN/intro/">
+        ← 返回
+        <b>学习</b>
+      </a>
+    
+    <h1 class="title">Zig 构建系统</h1>
+    <ul>
+<li><a href="https://ziglang.org/zh-CN/intro/build-system/#build-system">何时使用 Zig 构建系统？</a></li><li><a href="https://ziglang.org/zh-CN/intro/build-system/#getting-started">开始使用</a><ul><li>
+<a href="https://ziglang.org/zh-CN/intro/build-system/#simple">简单的可执行文件</a></li><li><a href="https://ziglang.org/zh-CN/intro/build-system/#installing-artifacts">安装构建产物</a></li><li><a href="https://ziglang.org/zh-CN/intro/build-system/#run-step">为运行应用程序添加一个便捷步骤</a></li></ul></li><li><a href="https://ziglang.org/zh-CN/intro/build-system/#basics">基础</a><ul><li>
+<a href="https://ziglang.org/zh-CN/intro/build-system/#user-options">用户提供的选项</a></li><li><a href="https://ziglang.org/zh-CN/intro/build-system/#standard-options">标准配置选项</a></li><li><a href="https://ziglang.org/zh-CN/intro/build-system/#conditional-compilation">用于条件编译的选项</a></li><li><a href="https://ziglang.org/zh-CN/intro/build-system/#static-library">静态库</a></li><li><a href="https://ziglang.org/zh-CN/intro/build-system/#dynamic-library">动态库</a></li><li><a href="https://ziglang.org/zh-CN/intro/build-system/#testing">测试</a></li><li><a href="https://ziglang.org/zh-CN/intro/build-system/#linking-to-system-libraries">链接系统库</a></li></ul></li><li><a href="https://ziglang.org/zh-CN/intro/build-system/#generating-files">生成文件</a><ul><li>
+<a href="https://ziglang.org/zh-CN/intro/build-system/#system-tools">运行系统工具</a></li><li><a href="https://ziglang.org/zh-CN/intro/build-system/#project-tools">运行项目工具</a></li><li><a href="https://ziglang.org/zh-CN/intro/build-system/#embed-file">为 <code>@embedFile</code> 生成文件</a></li><li><a href="https://ziglang.org/zh-CN/intro/build-system/#generating-zig">生成 Zig 源代码</a></li><li><a href="https://ziglang.org/zh-CN/intro/build-system/#write-files">处理一个或多个生成的文件</a></li><li><a href="https://ziglang.org/zh-CN/intro/build-system/#mutating-source">直接修改源文件</a></li></ul></li><li><a href="https://ziglang.org/zh-CN/intro/build-system/#examples">实用示例</a><ul><li>
+<a href="https://ziglang.org/zh-CN/intro/build-system/#release">为多个目标构建以发布版本</a></li></ul></li></ul>
+    
+    <h1 id="build-system">何时使用 Zig 构建系统？</h1><p>基本的命令 <code>zig build-exe</code>、<code>zig build-lib</code>、<code>zig build-obj</code> 和 <code>zig test</code> 通常已经足够。然而，有时项目需要另一层抽象来管理从源代码构建的复杂性。</p><p>例如，可能存在以下情况之一：</p><ul><li>命令行变得过长且难以操作，你希望有一个地方可以将其写下来。</li><li>你想要构建许多东西，或者构建过程包含许多步骤。</li><li>你想要利用并发和缓存来减少构建时间。</li><li>你想要为项目提供配置选项。</li><li>构建过程根据目标系统和其他选项的不同而有所区别。</li><li>你的项目依赖于其他项目。</li><li>你想要避免对 cmake、make、shell、msvc、python 等不必要的依赖，使项目对更多贡献者开放。</li><li>你想要提供一个包供第三方使用。</li><li>你想要为工具（如 IDE）提供一个标准化的方式，以便它们能够从语义上理解如何构建项目。</li></ul><p>如果符合以上任何一种情况，采用 Zig 构建系统将大有裨益。</p><h1 id="getting-started">开始使用</h1><h2 id="simple">简单的可执行文件</h2><p>这个构建脚本负责将一个包含对外可见 <code>main</code> 函数定义的 Zig 文件编译成可执行文件。</p><p></p><figure><figcaption class="zig-cap"><cite class="file">hello.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
+
+<span class="tok-kw">pub</span> <span class="tok-kw">fn</span> <span class="tok-fn">main</span>() !<span class="tok-type">void</span> {
+    std.debug.print(<span class="tok-str">"Hello World!\n"</span>, .{});
+}</code></pre></figure> <figure><figcaption class="zig-cap"><cite class="file">build.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
+
+<span class="tok-kw">pub</span> <span class="tok-kw">fn</span> <span class="tok-fn">build</span>(b: *std.Build) <span class="tok-type">void</span> {
+    <span class="tok-kw">const</span> exe = b.addExecutable(.{
+        .name = <span class="tok-str">"hello"</span>,
+        .root_module = b.createModule(.{
+            .root_source_file = b.path(<span class="tok-str">"hello.zig"</span>),
+            .target = b.graph.host,
+        }),
+    });
+
+    b.installArtifact(exe);
+}</code></pre></figure><figure><figcaption class="shell-cap">Shell</figcaption><pre><samp>$ <kbd>zig build --summary all</kbd>
+Build Summary: 3/3 steps succeeded
+install success
++- install hello success
+   +- compile exe hello debug native success 894ms MaxRSS:147M
+</samp></pre></figure><p></p><h2 id="installing-artifacts">安装构建产物</h2><p>Zig 构建系统与其他大多数构建系统一样，将项目视为一系列步骤构成的有向无环图（DAG），每个步骤都可以独立且并发地执行。</p><p>默认情况下，图中的主要步骤是 <strong>Install</strong>，其作用是将构建产物复制到它们的最终存放位置。Install 步骤开始时没有依赖，因此当执行 <code>zig build</code> 命令时，不会发生任何操作。项目的构建脚本必须添加到要安装的物品清单中，这正是上面提到的 <code>installArtifact</code> 函数调用所执行的操作。</p><p><strong>Output</strong></p><pre><code>├── build.zig
+├── hello.zig
+├── .zig-cache
+└── zig-out
+    └── bin
+        └── hello
+</code></pre><p>输出结果中包含了两个生成的目录：<code>.zig-cache</code> 和 <code>zig-out</code>。第一个目录包含的文件可以加快后续构建的速度，但这些文件不应该被提交到源代码控制系统中，并且这个目录可以在任何时候完全删除，而不会产生任何影响。</p><p>第二个目录，<code>zig-out</code>，用作“安装路径”（installation prefix）。它对应于标准的文件系统层次结构概念。这个目录不是由项目选择的，而是由使用 <code>zig build</code> 的用户通过 <code>--prefix</code> 参数（简写为 <code>-p</code>）来指定的。</p><p>作为项目维护者，你决定将哪些内容放入这个目录，但用户选择在他们的系统中安装到哪个位置。构建脚本不应将输出路径直接编写在代码中，因为这样做会破坏缓存、并发性和组合性，同时也会让最终用户感到不便。</p><h2 id="run-step">为运行应用程序添加一个便捷步骤</h2><p>通常，我们会添加一个 <strong>Run</strong> 步骤，以便可以直接从构建命令中运行主应用程序。</p><p></p><figure><figcaption class="zig-cap"><cite class="file">hello.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
+
+<span class="tok-kw">pub</span> <span class="tok-kw">fn</span> <span class="tok-fn">main</span>() !<span class="tok-type">void</span> {
+    std.debug.print(<span class="tok-str">"Hello World!\n"</span>, .{});
+}</code></pre></figure> <figure><figcaption class="zig-cap"><cite class="file">build.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
+
+<span class="tok-kw">pub</span> <span class="tok-kw">fn</span> <span class="tok-fn">build</span>(b: *std.Build) <span class="tok-type">void</span> {
+    <span class="tok-kw">const</span> exe = b.addExecutable(.{
+        .name = <span class="tok-str">"hello"</span>,
+        .root_module = b.createModule(.{
+            .root_source_file = b.path(<span class="tok-str">"hello.zig"</span>),
+            .target = b.graph.host,
+        }),
+    });
+
+    b.installArtifact(exe);
+
+    <span class="tok-kw">const</span> run_exe = b.addRunArtifact(exe);
+
+    <span class="tok-kw">const</span> run_step = b.step(<span class="tok-str">"run"</span>, <span class="tok-str">"Run the application"</span>);
+    run_step.dependOn(&amp;run_exe.step);
+}</code></pre></figure><figure><figcaption class="shell-cap">Shell</figcaption><pre><samp>$ <kbd>zig build run --summary all</kbd>
+Hello World!
+Build Summary: 3/3 steps succeeded
+run success
++- run exe hello success 924us
+   +- compile exe hello debug native success 982ms MaxRSS:151M
+</samp></pre></figure><p></p><h1 id="basics">基础</h1><h2 id="user-options">用户提供的选项</h2><p>使用 <code>b.option</code> 来配置构建脚本，便于最终用户和其他依赖此项目的包进行调整。</p><p></p><figure><figcaption class="zig-cap"><cite class="file">build.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
+
+<span class="tok-kw">pub</span> <span class="tok-kw">fn</span> <span class="tok-fn">build</span>(b: *std.Build) <span class="tok-type">void</span> {
+    <span class="tok-kw">const</span> windows = b.option(<span class="tok-type">bool</span>, <span class="tok-str">"windows"</span>, <span class="tok-str">"Target Microsoft Windows"</span>) <span class="tok-kw">orelse</span> <span class="tok-null">false</span>;
+
+    <span class="tok-kw">const</span> exe = b.addExecutable(.{
+        .name = <span class="tok-str">"hello"</span>,
+        .root_module = b.createModule(.{
+            .root_source_file = b.path(<span class="tok-str">"example.zig"</span>),
+            .target = b.resolveTargetQuery(.{
+                .os_tag = <span class="tok-kw">if</span> (windows) .windows <span class="tok-kw">else</span> <span class="tok-null">null</span>,
+            }),
+        }),
+    });
+
+    b.installArtifact(exe);
+}</code></pre></figure><figure><figcaption class="shell-cap">Shell</figcaption><pre><samp>$ <kbd>zig build --help</kbd>
+Usage: /home/ci/deps/zig-x86_64-linux-0.17.0/zig build [steps] [options]
+
+Steps:
+  install (default)            Copy build artifacts to prefix path
+  uninstall                    Remove build artifacts from prefix path
+
+Project-Specific Options:
+  -Dwindows=[bool]             Target Microsoft Windows
+
+System Integration Options:
+  --search-prefix [path]       Add a path to look for binaries, libraries, headers
+  --sysroot [path]             Set the system root directory (usually /)
+  --libc [file]                Provide a file which specifies libc paths
+
+  --system [pkgdir]            Disable package fetching; enable all integrations
+  -fsys=[name]                 Enable a system integration
+  -fno-sys=[name]              Disable a system integration
+
+  -fdarling,  -fno-darling     Integration with system-installed Darling to
+                               execute macOS programs on Linux hosts
+                               (default: no)
+  -fqemu,     -fno-qemu        Integration with system-installed QEMU to execute
+                               foreign-architecture programs on Linux hosts
+                               (default: no)
+  --libc-runtimes [path]       Enhances QEMU integration by providing dynamic libc
+                               (e.g. glibc or musl) built for multiple foreign
+                               architectures, allowing execution of non-native
+                               programs that link with libc.
+  -frosetta,  -fno-rosetta     Rely on Rosetta to execute x86_64 programs on
+                               ARM64 macOS hosts. (default: no)
+  -fwasmtime, -fno-wasmtime    Integration with system-installed wasmtime to
+                               execute WASI binaries. (default: no)
+  -fwine,     -fno-wine        Integration with system-installed Wine to execute
+                               Windows programs on Linux hosts. (default: no)
+
+  Available System Integrations:                Enabled:
+  (none)                                        -
+
+General Options:
+  -h, --help                   Print this help to stdout and exit
+  -l, --list-steps             Print available steps to stdout and exit
+
+  -p, --prefix [path]          Where to install files (default: zig-out)
+  --prefix-lib-dir [path]      Where to install libraries
+  --prefix-exe-dir [path]      Where to install executables
+  --prefix-include-dir [path]  Where to install C header files
+  --release[=mode]             Request release mode, optionally specifying a
+                               preferred optimization mode: fast, safe, small
+
+  --verbose                    Print commands before executing them
+  --color [auto|off|on]        Enable or disable colored error messages
+  --error-style [style]        Control how build errors are printed
+    verbose                    (Default) Report errors with full context
+    minimal                    Report errors after summary, excluding context like command lines
+    verbose_clear              Like 'verbose', but clear the terminal at the start of each update
+    minimal_clear              Like 'minimal', but clear the terminal at the start of each update
+  --multiline-errors [style]   Control how multi-line error messages are printed
+    indent                     (Default) Indent non-initial lines to align with initial line
+    newline                    Include a leading newline so that the error message is on its own lines
+    none                       Print as usual so the first line is misaligned
+  --summary [mode]             Control the printing of the build summary
+    all                        Print the build summary in its entirety
+    new                        Omit cached steps
+    failures                   (Default if short-lived) Only print failed steps
+    line                       (Default if long-lived) Only print the single-line summary
+    none                       Do not print the build summary
+  -j&lt;N&gt;                        Limit concurrent jobs (default is to use all CPU cores)
+  --maxrss &lt;bytes&gt;             Limit memory usage (default is to use available memory)
+  --skip-oom-steps             Instead of failing, skip steps that would exceed --maxrss
+  --test-timeout &lt;timeout&gt;     Limit execution time of unit tests, terminating if exceeded.
+                               The timeout must include a unit: ns, us, ms, s, m, h
+  --watch                      Continuously rebuild when source files are modified
+  --debounce &lt;ms&gt;              Delay before rebuilding after changed file detected
+  --webui[=ip]                 Enable the web interface on the given IP address
+  --fuzz[=limit]               Continuously search for unit test failures with an optional
+                               limit to the max number of iterations. The argument supports
+                               an optional 'K', 'M', or 'G' suffix (e.g. '10K'). Implies
+                               '--webui' when no limit is specified.
+  --listen=-                   Enable the build server protocol on stdio
+  --time-report                Force full rebuild and provide detailed information on
+                               compilation time of Zig source code (implies '--webui')
+  -fincremental                Enable incremental compilation
+  -fno-incremental             Disable incremental compilation
+
+Package Management Options:
+  --fetch[=mode]               Fetch dependency tree (optionally choose laziness) and exit
+    needed                     (Default) Lazy dependencies are fetched as needed
+    all                        Lazy dependencies are always fetched
+  --fork=[path], --fork [path] Override one or more projects from dependency tree
+
+Advanced Options:
+  -freference-trace[=num]      How many lines of reference trace should be shown per compile error
+  -fno-reference-trace         Disable reference trace
+  -fallow-so-scripts           Allows .so files to be GNU ld scripts
+  -fno-allow-so-scripts        (default) .so files must be ELF files
+  --error-limit [num]          Set the maximum amount of distinct error values
+  --build-file [file]          Override path to build.zig
+  --cache-dir [path]           Override path to local Zig cache directory
+  --zig-lib=[arg]              Override path to Zig lib directory
+  --seed [integer]             For shuffling dependency traversal order (default: random)
+  --cache-poison[=mode]        Override configuration caching behavior
+      pure                     (default) Avoid false positive cache hits
+      poisoned                 Don't cache the configuration
+      disallowed               Panics when cache would be poisoned
+      ignored                  A little poison never hurt anybody
+  --print-configuration        Render configuration as .zon to stdout
+  --print-configuration-path   Print the path to the binary configuration file to stdout
+  --build-id[=style]           At a minor link-time expense, embeds a build ID in binaries
+      fast                     8-byte non-cryptographic hash (COFF, ELF, WASM)
+      sha1, tree               20-byte cryptographic hash (ELF, WASM)
+      md5                      16-byte cryptographic hash (ELF)
+      uuid                     16-byte random UUID (ELF, WASM)
+      0x[hexstring]            Constant ID, maximum 32 bytes (ELF, WASM)
+      none                     (default) No build ID
+  --debug-log [scope]          Enable debugging the compiler
+  --debug-pkg-config           Fail if unknown pkg-config flags encountered
+  --verbose-link               Enable compiler debug output for linking
+  --verbose-air                Enable compiler debug output for Zig AIR
+  --verbose-llvm-ir            Enable compiler debug output for LLVM IR
+  --verbose-cimport            Enable compiler debug output for C imports
+  --verbose-cc                 Enable compiler debug output for C compilation
+  --verbose-llvm-cpu-features  Enable compiler debug output for LLVM CPU features
+</samp></pre></figure> <figure><figcaption class="zig-cap"><cite class="file">example.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
+
+<span class="tok-kw">pub</span> <span class="tok-kw">fn</span> <span class="tok-fn">main</span>() !<span class="tok-type">void</span> {
+    std.debug.print(<span class="tok-str">"Hello World!\n"</span>, .{});
+}</code></pre></figure><p></p><p>请关注这几行：</p><pre><code>Project-Specific Options:
+  -Dwindows=[bool]             Target Microsoft Windows
+</code></pre><p>帮助菜单的这一部分是在运行 <code>build.zig</code> 逻辑时自动生成的。用户可以通过这种方式发现构建脚本的配置选项。</p><h2 id="standard-options">标准配置选项</h2><p>之前我们使用一个布尔选项来表示为 Windows 构建。然而，我们可以做得更好。</p><p>大多数项目都希望提供更改目标和优化设置的能力。为了鼓励这些选项的标准命名约定，Zig 提供了辅助函数 <code>standardTargetOptions</code> 和 <code>standardOptimizeOption</code>。</p><p>standardTargetOptions 使得执行 <code>zig build</code> 命令的用户能够选择他们想要构建的目标平台。默认情况下，脚本将允许构建任何目标平台，如果不做选择，则默认为目标宿主系统。此外，还提供了选项来限制支持的目标平台集合。</p><p>standardOptimizeOption 为执行 <code>zig build</code> 命令的用户提供了在 <code>Debug</code>、<code>ReleaseSafe</code>、<code>ReleaseFast</code> 和 <code>ReleaseSmall</code> 之间进行选择的机会。在默认情况下，构建脚本不会自动选择任何发布模式作为首选设置，因此用户需要明确选择一个优化级别，以便生成一个发布版本的构建。</p><p></p><figure><figcaption class="zig-cap"><cite class="file">hello.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
+
+<span class="tok-kw">pub</span> <span class="tok-kw">fn</span> <span class="tok-fn">main</span>() !<span class="tok-type">void</span> {
+    std.debug.print(<span class="tok-str">"Hello World!\n"</span>, .{});
+}</code></pre></figure> <figure><figcaption class="zig-cap"><cite class="file">build.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
+
+<span class="tok-kw">pub</span> <span class="tok-kw">fn</span> <span class="tok-fn">build</span>(b: *std.Build) <span class="tok-type">void</span> {
+    <span class="tok-kw">const</span> target = b.standardTargetOptions(.{});
+    <span class="tok-kw">const</span> optimize = b.standardOptimizeOption(.{});
+    <span class="tok-kw">const</span> exe = b.addExecutable(.{
+        .name = <span class="tok-str">"hello"</span>,
+        .root_module = b.createModule(.{
+            .root_source_file = b.path(<span class="tok-str">"hello.zig"</span>),
+            .target = target,
+            .optimize = optimize,
+        }),
+    });
+
+    b.installArtifact(exe);
+}</code></pre></figure><figure><figcaption class="shell-cap">Shell</figcaption><pre><samp>$ <kbd>zig build -Dtarget=x86_64-windows -Doptimize=ReleaseSmall --summary all</kbd>
+Build Summary: 3/3 steps succeeded
+install success
++- install hello success
+   +- compile exe hello small x86_64-windows success 3s MaxRSS:171M
+</samp></pre></figure><p></p><p>现在，我们的 <code>--help</code> 菜单包含了更多的项目：</p><pre><code>Project-Specific Options:
+  -Dtarget=[string]            The CPU architecture, OS, and ABI to build for
+  -Dcpu=[string]               Target CPU features to add or subtract
+  -Doptimize=[enum]            Prioritize performance, safety, or binary size (-O flag)
+                                 Supported Values:
+                                   Debug
+                                   ReleaseSafe
+                                   ReleaseFast
+                                   ReleaseSmall
+</code></pre><p>完全可以直接通过 <code>b.option</code> 创建这些选项，但这个 API 为这些常用设置提供了一种常用的命名约定。</p><p>在我们的终端输出中，请注意我们传递了 <code>-Dtarget=x86_64-windows -Doptimize=ReleaseSmall</code>。与第一个示例相比，现在我们在安装路径中看到了不同的文件：</p><pre><code>zig-out/
+└── bin
+    └── hello.exe
+</code></pre><h2 id="conditional-compilation">用于条件编译的选项</h2><p>要从构建脚本传递选项到项目的 Zig 代码中，请使用 <code>Options</code> 步骤。</p><p></p><figure><figcaption class="zig-cap"><cite class="file">app.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
+<span class="tok-kw">const</span> config = <span class="tok-builtin">@import</span>(<span class="tok-str">"config"</span>);
+
+<span class="tok-kw">const</span> semver = std.SemanticVersion.parse(config.version) <span class="tok-kw">catch</span> <span class="tok-kw">unreachable</span>;
+
+<span class="tok-kw">extern</span> <span class="tok-kw">fn</span> <span class="tok-fn">foo_bar</span>() <span class="tok-type">void</span>;
+
+<span class="tok-kw">pub</span> <span class="tok-kw">fn</span> <span class="tok-fn">main</span>() !<span class="tok-type">void</span> {
+    <span class="tok-kw">if</span> (semver.major &lt; <span class="tok-number">1</span>) {
+        <span class="tok-builtin">@compileError</span>(<span class="tok-str">"too old"</span>);
+    }
+    std.debug.print(<span class="tok-str">"version: {s}\n"</span>, .{config.version});
+
+    <span class="tok-kw">if</span> (config.have_libfoo) {
+        foo_bar();
+    }
+}</code></pre></figure> <figure><figcaption class="zig-cap"><cite class="file">build.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
+
+<span class="tok-kw">pub</span> <span class="tok-kw">fn</span> <span class="tok-fn">build</span>(b: *std.Build) <span class="tok-type">void</span> {
+    <span class="tok-kw">const</span> exe = b.addExecutable(.{
+        .name = <span class="tok-str">"app"</span>,
+        .root_module = b.createModule(.{
+            .root_source_file = b.path(<span class="tok-str">"app.zig"</span>),
+            .target = b.graph.host,
+        }),
+    });
+
+    <span class="tok-kw">const</span> version = b.option([]<span class="tok-kw">const</span> <span class="tok-type">u8</span>, <span class="tok-str">"version"</span>, <span class="tok-str">"application version string"</span>) <span class="tok-kw">orelse</span> <span class="tok-str">"0.0.0"</span>;
+    <span class="tok-kw">const</span> enable_foo = detectWhetherToEnableLibFoo();
+
+    <span class="tok-kw">const</span> options = b.addOptions();
+    options.addOption([]<span class="tok-kw">const</span> <span class="tok-type">u8</span>, <span class="tok-str">"version"</span>, version);
+    options.addOption(<span class="tok-type">bool</span>, <span class="tok-str">"have_libfoo"</span>, enable_foo);
+
+    exe.root_module.addOptions(<span class="tok-str">"config"</span>, options);
+
+    b.installArtifact(exe);
+}
+
+<span class="tok-kw">fn</span> <span class="tok-fn">detectWhetherToEnableLibFoo</span>() <span class="tok-type">bool</span> {
+    <span class="tok-kw">return</span> <span class="tok-null">false</span>;
+}</code></pre></figure><figure><figcaption class="shell-cap">Shell</figcaption><pre><samp>$ <kbd>zig build -Dversion=1.2.3 --summary all</kbd>
+Build Summary: 4/4 steps succeeded
+install success
++- install app success
+   +- compile exe app debug native success 699ms MaxRSS:149M
+      +- options success
+</samp></pre></figure><p></p><p>在这个例子中，由 <code>@import(“config”)</code> 提供的数据是编译时已知的，这阻止了触发 <code>@compileError</code> 语句。如果我们传递了 <code>-Dversion=0.2.3</code> 或者省略了这个选项，那么我们将会看到 <code>app.zig</code> 的编译因为“太旧”的错误而失败。</p><h2 id="static-library">静态库</h2><p>这个构建脚本从 Zig 代码创建了一个静态库，并且还创建了一个可执行文件，这个可执行文件依赖于这个静态库。</p><p></p><figure><figcaption class="zig-cap"><cite class="file">fizzbuzz.zig</cite></figcaption><pre><code><span class="tok-kw">export</span> <span class="tok-kw">fn</span> <span class="tok-fn">fizzbuzz</span>(n: <span class="tok-type">usize</span>) ?[*:<span class="tok-number">0</span>]<span class="tok-kw">const</span> <span class="tok-type">u8</span> {
+    <span class="tok-kw">if</span> (n % <span class="tok-number">5</span> == <span class="tok-number">0</span>) {
+        <span class="tok-kw">if</span> (n % <span class="tok-number">3</span> == <span class="tok-number">0</span>) {
+            <span class="tok-kw">return</span> <span class="tok-str">"fizzbuzz"</span>;
+        } <span class="tok-kw">else</span> {
+            <span class="tok-kw">return</span> <span class="tok-str">"fizz"</span>;
+        }
+    } <span class="tok-kw">else</span> <span class="tok-kw">if</span> (n % <span class="tok-number">3</span> == <span class="tok-number">0</span>) {
+        <span class="tok-kw">return</span> <span class="tok-str">"buzz"</span>;
+    }
+    <span class="tok-kw">return</span> <span class="tok-null">null</span>;
+}</code></pre></figure> <figure><figcaption class="zig-cap"><cite class="file">demo.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
+<span class="tok-kw">const</span> Io = std.Io;
+
+<span class="tok-kw">extern</span> <span class="tok-kw">fn</span> <span class="tok-fn">fizzbuzz</span>(n: <span class="tok-type">usize</span>) ?[*:<span class="tok-number">0</span>]<span class="tok-kw">const</span> <span class="tok-type">u8</span>;
+
+<span class="tok-kw">pub</span> <span class="tok-kw">fn</span> <span class="tok-fn">main</span>(init: std.process.Init) !<span class="tok-type">void</span> {
+    <span class="tok-kw">const</span> io = init.io;
+
+    <span class="tok-kw">var</span> buf: [<span class="tok-number">1024</span>]<span class="tok-type">u8</span> = <span class="tok-null">undefined</span>;
+    <span class="tok-kw">const</span> file_writer = Io.File.stdout().writer(io, &amp;buf);
+    <span class="tok-kw">const</span> w = &amp;file_writer.interface;
+    <span class="tok-kw">for</span> (<span class="tok-number">0</span>..<span class="tok-number">100</span>) |n| {
+        <span class="tok-kw">if</span> (fizzbuzz(n)) |s| {
+            <span class="tok-kw">try</span> w.print(<span class="tok-str">"{s}\n"</span>, .{s});
+        } <span class="tok-kw">else</span> {
+            <span class="tok-kw">try</span> w.print(<span class="tok-str">"{d}\n"</span>, .{n});
+        }
+    }
+    <span class="tok-kw">try</span> w.flush();
+}</code></pre></figure> <figure><figcaption class="zig-cap"><cite class="file">build.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
+
+<span class="tok-kw">pub</span> <span class="tok-kw">fn</span> <span class="tok-fn">build</span>(b: *std.Build) <span class="tok-type">void</span> {
+    <span class="tok-kw">const</span> target = b.standardTargetOptions(.{});
+    <span class="tok-kw">const</span> optimize = b.standardOptimizeOption(.{});
+
+    <span class="tok-kw">const</span> libfizzbuzz = b.addLibrary(.{
+        .name = <span class="tok-str">"fizzbuzz"</span>,
+        .linkage = .static,
+        .root_module = b.createModule(.{
+            .root_source_file = b.path(<span class="tok-str">"fizzbuzz.zig"</span>),
+            .target = target,
+            .optimize = optimize,
+        }),
+    });
+
+    <span class="tok-kw">const</span> exe = b.addExecutable(.{
+        .name = <span class="tok-str">"demo"</span>,
+        .root_module = b.createModule(.{
+            .root_source_file = b.path(<span class="tok-str">"demo.zig"</span>),
+            .target = target,
+            .optimize = optimize,
+        }),
+    });
+
+    exe.root_module.linkLibrary(libfizzbuzz);
+
+    b.installArtifact(libfizzbuzz);
+
+    <span class="tok-kw">if</span> (b.option(<span class="tok-type">bool</span>, <span class="tok-str">"enable-demo"</span>, <span class="tok-str">"install the demo too"</span>) <span class="tok-kw">orelse</span> <span class="tok-null">false</span>) {
+        b.installArtifact(exe);
+    }
+}</code></pre></figure><figure><figcaption class="shell-cap">Shell</figcaption><pre><samp>$ <kbd>zig build --summary all</kbd>
+Build Summary: 3/3 steps succeeded
+install success
++- install fizzbuzz success
+   +- compile lib fizzbuzz debug native success 223ms MaxRSS:96M
+</samp></pre></figure><p></p><p>在这种情况下，最终只有静态库被安装：</p><pre><code>zig-out/
+└── lib
+    └── libfizzbuzz.a
+</code></pre><p>然而，如果你仔细观察，构建脚本中包含了一个选项，也可以安装 demo 程序。如果我们额外传递 <code>-Denable-demo</code> 参数，那么我们会在安装路径中看到它：</p><pre><code>zig-out/
+├── bin
+│&nbsp;&nbsp; └── demo
+└── lib
+    └── libfizzbuzz.a
+</code></pre><p>请注意，尽管无条件地调用了 <code>addExecutable</code>，但实际上，除非我们明确使用 <code>-Denable-demo</code> 参数，构建系统是不会去构建 <code>demo</code> 程序的。这是因为构建系统是根据一个有向无环图来工作的，这个图记录了不同部分之间的依赖关系。</p><h2 id="dynamic-library">动态库</h2><p>在这里，我们使用了之前<a href="https://ziglang.org/zh-CN/intro/build-system/#static-library">静态库</a>示例中的所有代码文件，但是对 <code>build.zig</code> 文件进行了修改。</p><p></p><figure><figcaption class="zig-cap"><cite class="file">build.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
+
+<span class="tok-kw">pub</span> <span class="tok-kw">fn</span> <span class="tok-fn">build</span>(b: *std.Build) <span class="tok-type">void</span> {
+    <span class="tok-kw">const</span> target = b.standardTargetOptions(.{});
+    <span class="tok-kw">const</span> optimize = b.standardOptimizeOption(.{});
+
+    <span class="tok-kw">const</span> libfizzbuzz = b.addLibrary(.{
+        .name = <span class="tok-str">"fizzbuzz"</span>,
+        .linkage = .dynamic,
+        .version = .{ .major = <span class="tok-number">1</span>, .minor = <span class="tok-number">2</span>, .patch = <span class="tok-number">3</span> },
+        .root_module = b.createModule(.{
+            .root_source_file = b.path(<span class="tok-str">"fizzbuzz.zig"</span>),
+            .target = target,
+            .optimize = optimize,
+        }),
+    });
+
+    b.installArtifact(libfizzbuzz);
+}</code></pre></figure><figure><figcaption class="shell-cap">Shell</figcaption><pre><samp>$ <kbd>zig build --summary all</kbd>
+Build Summary: 3/3 steps succeeded
+install success
++- install fizzbuzz success
+   +- compile lib fizzbuzz debug native success 599ms MaxRSS:150M
+</samp></pre></figure><p></p><p><strong>Output</strong></p><pre><code>zig-out
+└── lib
+    ├── libfizzbuzz.so -&gt; libfizzbuzz.so.1
+    ├── libfizzbuzz.so.1 -&gt; libfizzbuzz.so.1.2.3
+    └── libfizzbuzz.so.1.2.3
+</code></pre><p>就像在静态库示例中一样，为了让一个可执行文件链接到这个动态库，你需要添加类似这样的代码：</p><pre><code class="zig"><span class="constant variable_builtin type variable">exe</span><span class="punctuation_delimiter">.</span><span class="type constant variable_builtin function_call variable_member variable">linkLibrary</span><span class="punctuation_bracket">(</span><span class="constant variable_builtin type variable">libfizzbuzz</span><span class="punctuation_bracket">)</span><span class="punctuation_delimiter">;</span>
+</code></pre>
+<h2 id="testing">测试</h2><p>单个文件可以直接使用 <code>zig test foo.zig</code> 命令进行测试，然而，更复杂的使用场景可以通过构建脚本来解决。</p><p>当使用构建脚本时，单元测试在构建图中被分为两个不同的步骤：<strong>Compile</strong> 步骤和 <strong>Run</strong> 步骤。如果没有调用 <code>addRunArtifact</code> 来在这两个步骤之间建立依赖关系，单元测试将不会被执行。</p><p>Compile 步骤可以像配置任何可执行文件、库或对象文件一样进行配置，例如通过<a href="https://ziglang.org/zh-CN/intro/build-system/#linking-to-system-libraries">链接系统库</a>、设置目标选项或添加额外的编译单元。</p><p><strong>Run</strong> 步骤可以像配置其他 Run 步骤一样进行配置，例如，当主机无法执行二进制文件时，可以跳过执行。</p><p>当使用构建系统来运行单元测试时，构建运行器（build runner）和测试运行器（test runner）通过 <em>标准输入</em> 和 <em>标准输出</em> 进行通信，以便并发运行多个单元测试套件，并以一种有意义的方式报告测试失败，而不会使它们的输出混淆在一起。这就是为什么<a href="https://github.com/ziglang/zig/issues/15091">在单元测试中向 <em>标准输出</em> 写数据会是个问题</a>——因为这样会干扰这个通信通道。另一方面，这种机制将启用一个即将推出的功能，即<a href="https://github.com/ziglang/zig/issues/1356">单元测试能够预测 panic</a>。</p><p></p><figure><figcaption class="zig-cap"><cite class="file">main.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
+
+<span class="tok-kw">test</span> <span class="tok-str">"simple test"</span> {
+    <span class="tok-kw">var</span> list = std.ArrayList(<span class="tok-type">i32</span>).init(std.testing.allocator);
+    <span class="tok-kw">defer</span> list.deinit();
+    <span class="tok-kw">try</span> list.append(<span class="tok-number">42</span>);
+    <span class="tok-kw">try</span> std.testing.expectEqual(<span class="tok-builtin">@as</span>(<span class="tok-type">i32</span>, <span class="tok-number">42</span>), list.pop());
+}</code></pre></figure> <figure><figcaption class="zig-cap"><cite class="file">build.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
+
+<span class="tok-kw">const</span> test_targets = [_]std.Target.Query{
+    .{}, <span class="tok-comment">// native</span>
+    .{
+        .cpu_arch = .x86_64,
+        .os_tag = .linux,
+    },
+    .{
+        .cpu_arch = .aarch64,
+        .os_tag = .macos,
+    },
+};
+
+<span class="tok-kw">pub</span> <span class="tok-kw">fn</span> <span class="tok-fn">build</span>(b: *std.Build) <span class="tok-type">void</span> {
+    <span class="tok-kw">const</span> test_step = b.step(<span class="tok-str">"test"</span>, <span class="tok-str">"Run unit tests"</span>);
+
+    <span class="tok-kw">for</span> (test_targets) |target| {
+        <span class="tok-kw">const</span> unit_tests = b.addTest(.{
+            .root_module = b.createModule(.{
+                .root_source_file = b.path(<span class="tok-str">"main.zig"</span>),
+                .target = b.resolveTargetQuery(target),
+            }),
+        });
+
+        <span class="tok-kw">const</span> run_unit_tests = b.addRunArtifact(unit_tests);
+        test_step.dependOn(&amp;run_unit_tests.step);
+    }
+}</code></pre></figure><figure><figcaption class="shell-cap">Shell</figcaption><pre><samp>$ <kbd>zig build test --summary all</kbd>
+test
++- run test
+   +- compile test debug x86_64-linux 1 errors
+/home/ci/.cache/act/37f9154e5a14f94b/hostexecutor/zig-code/build-system/unit-testing/main.zig:4:34: error: struct 'array_list.Aligned(i32,null)' has no member named 'init'
+    var list = std.ArrayList(i32).init(std.testing.allocator);
+               ~~~~~~~~~~~~~~~~~~^~~~~
+/home/ci/deps/zig-x86_64-linux-0.17.0/lib/std/array_list.zig:638:12: note: struct declared here
+    return struct {
+           ^~~~~~
+error: 1 compilation errors
+failed command: /home/ci/deps/zig-x86_64-linux-0.17.0/zig test -target x86_64-linux -mcpu baseline -Mroot=../../../zig-code/build-system/unit-testing/main.zig --cache-dir ../../../zig-code/build-system/unit-testing/.zig-cache --global-cache-dir /home/ci/.cache/zig --build-root ../../../zig-code/build-system/unit-testing --name test --zig-lib-dir /home/ci/deps/zig-x86_64-linux-0.17.0/lib/ --listen=-
+
+test
++- run test
+   +- compile test debug native 1 errors
+/home/ci/.cache/act/37f9154e5a14f94b/hostexecutor/zig-code/build-system/unit-testing/main.zig:4:34: error: struct 'array_list.Aligned(i32,null)' has no member named 'init'
+    var list = std.ArrayList(i32).init(std.testing.allocator);
+               ~~~~~~~~~~~~~~~~~~^~~~~
+/home/ci/deps/zig-x86_64-linux-0.17.0/lib/std/array_list.zig:638:12: note: struct declared here
+    return struct {
+           ^~~~~~
+error: 1 compilation errors
+failed command: /home/ci/deps/zig-x86_64-linux-0.17.0/zig test -Mroot=../../../zig-code/build-system/unit-testing/main.zig --cache-dir ../../../zig-code/build-system/unit-testing/.zig-cache --global-cache-dir /home/ci/.cache/zig --build-root ../../../zig-code/build-system/unit-testing --name test --zig-lib-dir /home/ci/deps/zig-x86_64-linux-0.17.0/lib/ --listen=-
+
+test
++- run test
+   +- compile test debug aarch64-macos 1 errors
+/home/ci/.cache/act/37f9154e5a14f94b/hostexecutor/zig-code/build-system/unit-testing/main.zig:4:34: error: struct 'array_list.Aligned(i32,null)' has no member named 'init'
+    var list = std.ArrayList(i32).init(std.testing.allocator);
+               ~~~~~~~~~~~~~~~~~~^~~~~
+/home/ci/deps/zig-x86_64-linux-0.17.0/lib/std/array_list.zig:638:12: note: struct declared here
+    return struct {
+           ^~~~~~
+error: 1 compilation errors
+failed command: /home/ci/deps/zig-x86_64-linux-0.17.0/zig test -target aarch64-macos -mcpu baseline -Mroot=../../../zig-code/build-system/unit-testing/main.zig --cache-dir ../../../zig-code/build-system/unit-testing/.zig-cache --global-cache-dir /home/ci/.cache/zig --build-root ../../../zig-code/build-system/unit-testing --name test --zig-lib-dir /home/ci/deps/zig-x86_64-linux-0.17.0/lib/ --listen=-
+
+Build Summary: 0/7 steps succeeded (3 failed)
+test transitive failure
++- run test transitive failure
+|  +- compile test debug native 1 errors
++- run test transitive failure
+|  +- compile test debug x86_64-linux 1 errors
++- run test transitive failure
+   +- compile test debug aarch64-macos 1 errors
+</samp></pre></figure><p></p><p>在这种情况下，为单元测试开启 <code>skip_foreign_checks</code> 可能是个好主意：</p><pre><code class="diff"><span class="attribute">@@ -23,6 +23,7 @@</span>
+         });
+ 
+         const run_unit_tests = b.addRunArtifact(unit_tests);
+<span class="punctuation_special diff_plus">+</span><span class="diff_plus">        run_unit_tests.skip_foreign_checks = true;</span>
+         test_step.dependOn(&amp;run_unit_tests.step);
+     }
+ }
+</code></pre>
+<p></p><figure><figcaption class="zig-cap"><cite class="file">build.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
+
+<span class="tok-kw">const</span> test_targets = [_]std.Target.Query{
+    .{}, <span class="tok-comment">// native</span>
+    .{
+        .cpu_arch = .x86_64,
+        .os_tag = .linux,
+    },
+    .{
+        .cpu_arch = .aarch64,
+        .os_tag = .macos,
+    },
+};
+
+<span class="tok-kw">pub</span> <span class="tok-kw">fn</span> <span class="tok-fn">build</span>(b: *std.Build) <span class="tok-type">void</span> {
+    <span class="tok-kw">const</span> test_step = b.step(<span class="tok-str">"test"</span>, <span class="tok-str">"Run unit tests"</span>);
+
+    <span class="tok-kw">for</span> (test_targets) |target| {
+        <span class="tok-kw">const</span> unit_tests = b.addTest(.{
+            .root_module = b.createModule(.{
+                .root_source_file = b.path(<span class="tok-str">"main.zig"</span>),
+                .target = b.resolveTargetQuery(target),
+            }),
+        });
+
+        <span class="tok-kw">const</span> run_unit_tests = b.addRunArtifact(unit_tests);
+        run_unit_tests.skip_foreign_checks = <span class="tok-null">true</span>;
+        test_step.dependOn(&amp;run_unit_tests.step);
+    }
+}
+
+<span class="tok-comment">// zig-doctest: build-system --collapseable -- test --summary all</span></code></pre></figure><figure><figcaption class="shell-cap">Shell</figcaption><pre><samp>$ <kbd>zig build --summary all</kbd>
+Build Summary: 1/1 steps succeeded
+install success
+</samp></pre></figure><p></p><h2 id="linking-to-system-libraries">链接系统库</h2><p>为了满足库依赖，有两个选择：</p><ol><li>通过 Zig 构建系统提供这些库（参见包管理和<a href="https://ziglang.org/zh-CN/intro/build-system/#static-library">静态库</a>）。</li><li>使用宿主系统提供的文件。</li></ol><p>对于上游项目维护者的使用场景，通过 Zig 构建系统获取这些库可以减少很多麻烦，并将配置能力掌握在维护者手中。像这样构建，每个人都会得到可复现、一致的结果，并且它可以在每个操作系统上工作，甚至支持交叉编译。此外，它允许项目精确决定其整个依赖树中希望构建的每个库的确切版本。这被认为是依赖外部库的普遍首选方式。</p><p>然而，对于将软件打包到诸如 Debian、Homebrew 或 Nix 等仓库的使用场景，必须链接到系统库。因此，构建脚本必须能<a href="https://github.com/ziglang/zig/issues/14281">检测构建模式</a>并相应地配置。</p><p></p><figure><figcaption class="zig-cap"><cite class="file">build.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
+
+<span class="tok-kw">pub</span> <span class="tok-kw">fn</span> <span class="tok-fn">build</span>(b: *std.Build) <span class="tok-type">void</span> {
+    <span class="tok-kw">const</span> exe = b.addExecutable(.{
+        .name = <span class="tok-str">"zip"</span>,
+        .root_module = b.createModule(.{
+            .root_source_file = b.path(<span class="tok-str">"zip.zig"</span>),
+            .target = b.graph.host,
+            .link_libc = <span class="tok-null">true</span>,
+        }),
+    });
+
+    exe.root_module.linkSystemLibrary(<span class="tok-str">"z"</span>, .{});
+
+    b.installArtifact(exe);
+}</code></pre></figure><figure><figcaption class="shell-cap">Shell</figcaption><pre><samp>$ <kbd>zig build --summary all</kbd>
+Build Summary: 3/3 steps succeeded
+install success
++- install zip success
+   +- compile exe zip debug native success 659ms MaxRSS:151M
+</samp></pre></figure><p></p><p>使用 <code>zig build</code> 的用户可以使用 <code>--search-prefix</code> 参数来提供额外的目录，这些目录将被视为“系统目录”，用于查找静态库和动态库。</p><h1 id="generating-files">生成文件</h1><h2 id="system-tools">运行系统工具</h2><p>这个版本的 “hello world” 期望在相同的路径下找到一个 <code>word.txt</code> 文件，并且我们希望使用一个系统工具从 JSON 文件生成它。</p><p>请注意，系统依赖项会使你的项目对用户来说更难构建。例如，这个构建脚本依赖于 <code>jq</code>，而在大多数 Linux 发行版中默认并不包含它，对于 Windows 用户来说可能也不熟悉这个工具。</p><p>下一节将使用源代码中包含的 Zig 工具替换 <code>jq</code>，这种方法是更推荐的。</p><p><strong><code>words.json</code></strong></p><pre><code class="json">{
+  <span class="string_special_key string">"en"</span>: <span class="string">"world"</span>,
+  <span class="string_special_key string">"it"</span>: <span class="string">"mondo"</span>,
+  <span class="string_special_key string">"ja"</span>: <span class="string">"世界"</span>
+}
+</code></pre>
+<p></p><figure><figcaption class="zig-cap"><cite class="file">main.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
+<span class="tok-kw">const</span> Io = std.Io;
+
+<span class="tok-kw">pub</span> <span class="tok-kw">fn</span> <span class="tok-fn">main</span>(init: std.process.Init) !<span class="tok-type">void</span> {
+    <span class="tok-kw">const</span> io = init.io;
+    <span class="tok-kw">const</span> arena = init.arena.allocator();
+
+    <span class="tok-kw">const</span> self_exe_dir_path = <span class="tok-kw">try</span> std.process.executableDirPathAlloc(io, arena);
+    <span class="tok-kw">var</span> self_exe_dir = <span class="tok-kw">try</span> Io.Dir.cwd().openDir(io, self_exe_dir_path, .{});
+    <span class="tok-kw">defer</span> self_exe_dir.close(io);
+
+    <span class="tok-kw">const</span> word = <span class="tok-kw">try</span> self_exe_dir.readFileAlloc(io, <span class="tok-str">"word.txt"</span>, arena, .limited(<span class="tok-number">1000</span>));
+
+    <span class="tok-kw">var</span> stdout_buffer: [<span class="tok-number">1000</span>]<span class="tok-type">u8</span> = <span class="tok-null">undefined</span>;
+    <span class="tok-kw">var</span> stdout_writer = Io.File.stdout().writer(io, &amp;stdout_buffer);
+    <span class="tok-kw">const</span> stdout = &amp;stdout_writer.interface;
+
+    <span class="tok-kw">try</span> stdout.print(<span class="tok-str">"Hello {s}\n"</span>, .{word});
+    <span class="tok-kw">try</span> stdout.flush();
+}</code></pre></figure> <figure><figcaption class="zig-cap"><cite class="file">build.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
+
+<span class="tok-kw">pub</span> <span class="tok-kw">fn</span> <span class="tok-fn">build</span>(b: *std.Build) <span class="tok-type">void</span> {
+    <span class="tok-kw">const</span> lang = b.option([]<span class="tok-kw">const</span> <span class="tok-type">u8</span>, <span class="tok-str">"language"</span>, <span class="tok-str">"language of the greeting"</span>) <span class="tok-kw">orelse</span> <span class="tok-str">"en"</span>;
+    <span class="tok-kw">const</span> tool_run = b.addSystemCommand(&amp;.{<span class="tok-str">"jq"</span>});
+    tool_run.addArgs(&amp;.{
+        b.fmt(
+            <span class="tok-str">\\.["{s}"]</span>
+        , .{lang}),
+        <span class="tok-str">"-r"</span>, <span class="tok-comment">// raw output to omit quotes around the selected string</span>
+    });
+    tool_run.addFileArg(b.path(<span class="tok-str">"words.json"</span>));
+
+    <span class="tok-kw">const</span> output = tool_run.captureStdOut(.{});
+
+    b.getInstallStep().dependOn(&amp;b.addInstallFileWithDir(output, .prefix, <span class="tok-str">"word.txt"</span>).step);
+
+    <span class="tok-kw">const</span> target = b.standardTargetOptions(.{});
+    <span class="tok-kw">const</span> optimize = b.standardOptimizeOption(.{});
+    <span class="tok-kw">const</span> exe = b.addExecutable(.{
+        .name = <span class="tok-str">"hello"</span>,
+        .root_module = b.createModule(.{
+            .root_source_file = b.path(<span class="tok-str">"src/main.zig"</span>),
+            .target = target,
+            .optimize = optimize,
+        }),
+    });
+
+    <span class="tok-kw">const</span> install_artifact = b.addInstallArtifact(exe, .{
+        .dest_dir = .{ .override = .prefix },
+    });
+    b.getInstallStep().dependOn(&amp;install_artifact.step);
+}</code></pre></figure><figure><figcaption class="shell-cap">Shell</figcaption><pre><samp>$ <kbd>zig build -Dlanguage=ja --summary all</kbd>
+Build Summary: 5/5 steps succeeded
+install success
++- install generated to word.txt success
+|  +- run jq success 3ms
++- install hello success
+   +- compile exe hello debug native success 780ms MaxRSS:156M
+</samp></pre></figure><p></p><p><strong>Output</strong></p><pre><code>zig-out
+├── hello
+└── word.txt
+</code></pre><p>注意 <code>captureStdOut</code> 如何创建一个临时文件来存储 <code>jq</code> 命令的输出。</p><h2 id="project-tools">运行项目工具</h2><p>这个版本的 hello world 期望在相同的路径下找到一个 <code>word.txt</code> 文件。我们计划在构建过程中，通过运行一个 Zig 程序来处理 JSON 文件并生成目标文件。</p><p><strong><code>tools/words.json</code></strong></p><pre><code class="json">{
+  <span class="string_special_key string">"en"</span>: <span class="string">"world"</span>,
+  <span class="string_special_key string">"it"</span>: <span class="string">"mondo"</span>,
+  <span class="string_special_key string">"ja"</span>: <span class="string">"世界"</span> 
+}
+</code></pre>
+<p></p><figure><figcaption class="zig-cap"><cite class="file">main.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
+<span class="tok-kw">const</span> Io = std.Io;
+
+<span class="tok-kw">pub</span> <span class="tok-kw">fn</span> <span class="tok-fn">main</span>(init: std.process.Init) !<span class="tok-type">void</span> {
+    <span class="tok-kw">const</span> io = init.io;
+    <span class="tok-kw">const</span> arena = init.arena.allocator();
+
+    <span class="tok-kw">const</span> self_exe_dir_path = <span class="tok-kw">try</span> std.process.executableDirPathAlloc(io, arena);
+    <span class="tok-kw">var</span> self_exe_dir = <span class="tok-kw">try</span> Io.Dir.cwd().openDir(io, self_exe_dir_path, .{});
+    <span class="tok-kw">defer</span> self_exe_dir.close(io);
+
+    <span class="tok-kw">const</span> word = <span class="tok-kw">try</span> self_exe_dir.readFileAlloc(io, <span class="tok-str">"word.txt"</span>, arena, .limited(<span class="tok-number">1000</span>));
+
+    <span class="tok-kw">var</span> stdout_buffer: [<span class="tok-number">1000</span>]<span class="tok-type">u8</span> = <span class="tok-null">undefined</span>;
+    <span class="tok-kw">var</span> stdout_writer = Io.File.stdout().writer(io, &amp;stdout_buffer);
+    <span class="tok-kw">const</span> stdout = &amp;stdout_writer.interface;
+
+    <span class="tok-kw">try</span> stdout.print(<span class="tok-str">"Hello {s}\n"</span>, .{word});
+    <span class="tok-kw">try</span> stdout.flush();
+}</code></pre></figure><p></p><p></p><figure><figcaption class="zig-cap"><cite class="file">word_select.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
+<span class="tok-kw">const</span> Io = std.Io;
+
+<span class="tok-kw">const</span> usage =
+    <span class="tok-str">\\Usage: ./word_select [options]</span>
+    <span class="tok-str">\\</span>
+    <span class="tok-str">\\Options:</span>
+    <span class="tok-str">\\  --input-file INPUT_JSON_FILE</span>
+    <span class="tok-str">\\  --output-file OUTPUT_TXT_FILE</span>
+    <span class="tok-str">\\  --lang LANG</span>
+    <span class="tok-str">\\</span>
+;
+
+<span class="tok-kw">pub</span> <span class="tok-kw">fn</span> <span class="tok-fn">main</span>(init: std.process.Init) !<span class="tok-type">void</span> {
+    <span class="tok-kw">const</span> io = init.io;
+    <span class="tok-kw">const</span> arena = init.arena.allocator();
+
+    <span class="tok-kw">const</span> args = <span class="tok-kw">try</span> init.minimal.args.toSlice(arena);
+
+    <span class="tok-kw">var</span> opt_input_file_path: ?[]<span class="tok-kw">const</span> <span class="tok-type">u8</span> = <span class="tok-null">null</span>;
+    <span class="tok-kw">var</span> opt_output_file_path: ?[]<span class="tok-kw">const</span> <span class="tok-type">u8</span> = <span class="tok-null">null</span>;
+    <span class="tok-kw">var</span> opt_lang: ?[]<span class="tok-kw">const</span> <span class="tok-type">u8</span> = <span class="tok-null">null</span>;
+
+    {
+        <span class="tok-kw">var</span> i: <span class="tok-type">usize</span> = <span class="tok-number">1</span>;
+        <span class="tok-kw">while</span> (i &lt; args.len) : (i += <span class="tok-number">1</span>) {
+            <span class="tok-kw">const</span> arg = args[i];
+            <span class="tok-kw">if</span> (std.mem.eql(<span class="tok-type">u8</span>, <span class="tok-str">"-h"</span>, arg) <span class="tok-kw">or</span> std.mem.eql(<span class="tok-type">u8</span>, <span class="tok-str">"--help"</span>, arg)) {
+                <span class="tok-kw">try</span> Io.File.stdout().writeStreamingAll(io, usage);
+                <span class="tok-kw">return</span> std.process.cleanExit(io);
+            } <span class="tok-kw">else</span> <span class="tok-kw">if</span> (std.mem.eql(<span class="tok-type">u8</span>, <span class="tok-str">"--input-file"</span>, arg)) {
+                i += <span class="tok-number">1</span>;
+                <span class="tok-kw">if</span> (i &gt; args.len) fatal(<span class="tok-str">"expected arg after '{s}'"</span>, .{arg});
+                <span class="tok-kw">if</span> (opt_input_file_path != <span class="tok-null">null</span>) fatal(<span class="tok-str">"duplicated {s} argument"</span>, .{arg});
+                opt_input_file_path = args[i];
+            } <span class="tok-kw">else</span> <span class="tok-kw">if</span> (std.mem.eql(<span class="tok-type">u8</span>, <span class="tok-str">"--output-file"</span>, arg)) {
+                i += <span class="tok-number">1</span>;
+                <span class="tok-kw">if</span> (i &gt; args.len) fatal(<span class="tok-str">"expected arg after '{s}'"</span>, .{arg});
+                <span class="tok-kw">if</span> (opt_output_file_path != <span class="tok-null">null</span>) fatal(<span class="tok-str">"duplicated {s} argument"</span>, .{arg});
+                opt_output_file_path = args[i];
+            } <span class="tok-kw">else</span> <span class="tok-kw">if</span> (std.mem.eql(<span class="tok-type">u8</span>, <span class="tok-str">"--lang"</span>, arg)) {
+                i += <span class="tok-number">1</span>;
+                <span class="tok-kw">if</span> (i &gt; args.len) fatal(<span class="tok-str">"expected arg after '{s}'"</span>, .{arg});
+                <span class="tok-kw">if</span> (opt_lang != <span class="tok-null">null</span>) fatal(<span class="tok-str">"duplicated {s} argument"</span>, .{arg});
+                opt_lang = args[i];
+            } <span class="tok-kw">else</span> {
+                fatal(<span class="tok-str">"unrecognized arg: '{s}'"</span>, .{arg});
+            }
+        }
+    }
+
+    <span class="tok-kw">const</span> input_file_path = opt_input_file_path <span class="tok-kw">orelse</span> fatal(<span class="tok-str">"missing --input-file"</span>, .{});
+    <span class="tok-kw">const</span> output_file_path = opt_output_file_path <span class="tok-kw">orelse</span> fatal(<span class="tok-str">"missing --output-file"</span>, .{});
+    <span class="tok-kw">const</span> lang = opt_lang <span class="tok-kw">orelse</span> fatal(<span class="tok-str">"missing --lang"</span>, .{});
+
+    <span class="tok-kw">var</span> input_file = Io.Dir.cwd().openFile(io, input_file_path, .{}) <span class="tok-kw">catch</span> |err| {
+        fatal(<span class="tok-str">"unable to open '{s}': {s}"</span>, .{ input_file_path, <span class="tok-builtin">@errorName</span>(err) });
+    };
+    <span class="tok-kw">defer</span> input_file.close(io);
+    <span class="tok-kw">var</span> input_file_buffer: [<span class="tok-number">1000</span>]<span class="tok-type">u8</span> = <span class="tok-null">undefined</span>;
+    <span class="tok-kw">var</span> input_file_reader = input_file.reader(io, &amp;input_file_buffer);
+
+    <span class="tok-kw">var</span> output_file = Io.Dir.cwd().createFile(io, output_file_path, .{}) <span class="tok-kw">catch</span> |err| {
+        fatal(<span class="tok-str">"unable to open '{s}': {s}"</span>, .{ output_file_path, <span class="tok-builtin">@errorName</span>(err) });
+    };
+    <span class="tok-kw">defer</span> output_file.close(io);
+
+    <span class="tok-kw">var</span> json_reader: std.json.Reader = .init(arena, &amp;input_file_reader.interface);
+    <span class="tok-kw">var</span> words = <span class="tok-kw">try</span> std.json.ArrayHashMap([]<span class="tok-kw">const</span> <span class="tok-type">u8</span>).jsonParse(arena, &amp;json_reader, .{
+        .allocate = .alloc_if_needed,
+        .max_value_len = <span class="tok-number">1000</span>,
+    });
+
+    <span class="tok-kw">const</span> w = words.map.get(lang) <span class="tok-kw">orelse</span> fatal(<span class="tok-str">"Lang not found in JSON file"</span>, .{});
+
+    <span class="tok-kw">try</span> output_file.writeStreamingAll(io, w);
+    <span class="tok-kw">return</span> std.process.cleanExit(io);
+}
+
+<span class="tok-kw">fn</span> <span class="tok-fn">fatal</span>(<span class="tok-kw">comptime</span> format: []<span class="tok-kw">const</span> <span class="tok-type">u8</span>, args: <span class="tok-kw">anytype</span>) <span class="tok-type">noreturn</span> {
+    std.debug.print(format, args);
+    std.process.exit(<span class="tok-number">1</span>);
+}</code></pre></figure><p></p><p></p><figure><figcaption class="zig-cap"><cite class="file">build.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
+
+<span class="tok-kw">pub</span> <span class="tok-kw">fn</span> <span class="tok-fn">build</span>(b: *std.Build) <span class="tok-type">void</span> {
+    <span class="tok-kw">const</span> lang = b.option([]<span class="tok-kw">const</span> <span class="tok-type">u8</span>, <span class="tok-str">"language"</span>, <span class="tok-str">"language of the greeting"</span>) <span class="tok-kw">orelse</span> <span class="tok-str">"en"</span>;
+    <span class="tok-kw">const</span> tool = b.addExecutable(.{
+        .name = <span class="tok-str">"word_select"</span>,
+        .root_module = b.createModule(.{
+            .root_source_file = b.path(<span class="tok-str">"tools/word_select.zig"</span>),
+            .target = b.graph.host,
+        }),
+    });
+
+    <span class="tok-kw">const</span> tool_step = b.addRunArtifact(tool);
+    tool_step.addArg(<span class="tok-str">"--input-file"</span>);
+    tool_step.addFileArg(b.path(<span class="tok-str">"tools/words.json"</span>));
+    tool_step.addArg(<span class="tok-str">"--output-file"</span>);
+    <span class="tok-kw">const</span> output = tool_step.addOutputFileArg(<span class="tok-str">"word.txt"</span>);
+    tool_step.addArgs(&amp;.{ <span class="tok-str">"--lang"</span>, lang });
+
+    b.getInstallStep().dependOn(&amp;b.addInstallFileWithDir(output, .prefix, <span class="tok-str">"word.txt"</span>).step);
+
+    <span class="tok-kw">const</span> target = b.standardTargetOptions(.{});
+    <span class="tok-kw">const</span> optimize = b.standardOptimizeOption(.{});
+    <span class="tok-kw">const</span> exe = b.addExecutable(.{
+        .name = <span class="tok-str">"hello"</span>,
+        .root_module = b.createModule(.{
+            .root_source_file = b.path(<span class="tok-str">"src/main.zig"</span>),
+            .target = target,
+            .optimize = optimize,
+        }),
+    });
+
+    <span class="tok-kw">const</span> install_artifact = b.addInstallArtifact(exe, .{
+        .dest_dir = .{ .override = .prefix },
+    });
+    b.getInstallStep().dependOn(&amp;install_artifact.step);
+}</code></pre></figure><figure><figcaption class="shell-cap">Shell</figcaption><pre><samp>$ <kbd>zig build --summary all</kbd>
+Build Summary: 6/6 steps succeeded
+install success
++- install generated to word.txt success
+|  +- run exe word_select (word.txt) success 32ms
+|     +- compile exe word_select debug native success 991ms MaxRSS:156M
++- install hello success
+   +- compile exe hello debug native success 1s MaxRSS:152M
+</samp></pre></figure><p></p><p><strong>Output</strong></p><pre><code>zig-out
+├── hello
+└── word.txt
+</code></pre><h2 id="embed-file">为 <code>@embedFile</code> 生成文件</h2><p>这个版本的 hello world 希望将构建时生成的文件通过 <code>@embedFile</code> 进行嵌入，我们将使用一个用 Zig 编写的工具来生成这个文件。</p><p><strong><code>tools/words.json</code></strong></p><pre><code class="json">{
+  <span class="string_special_key string">"en"</span>: <span class="string">"world"</span>,
+  <span class="string_special_key string">"it"</span>: <span class="string">"mondo"</span>,
+  <span class="string_special_key string">"ja"</span>: <span class="string">"世界"</span>
+}
+</code></pre>
+<p></p><figure><figcaption class="zig-cap"><cite class="file">main.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
+<span class="tok-kw">const</span> word = <span class="tok-builtin">@embedFile</span>(<span class="tok-str">"word"</span>);
+
+<span class="tok-kw">pub</span> <span class="tok-kw">fn</span> <span class="tok-fn">main</span>() !<span class="tok-type">void</span> {
+    std.log.info(<span class="tok-str">"Hello {s}\n"</span>, .{word});
+}</code></pre></figure><p></p><p></p><figure><figcaption class="zig-cap"><cite class="file">word_select.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
+<span class="tok-kw">const</span> Io = std.Io;
+
+<span class="tok-kw">const</span> usage =
+    <span class="tok-str">\\Usage: ./word_select [options]</span>
+    <span class="tok-str">\\</span>
+    <span class="tok-str">\\Options:</span>
+    <span class="tok-str">\\  --input-file INPUT_JSON_FILE</span>
+    <span class="tok-str">\\  --output-file OUTPUT_TXT_FILE</span>
+    <span class="tok-str">\\  --lang LANG</span>
+    <span class="tok-str">\\</span>
+;
+
+<span class="tok-kw">pub</span> <span class="tok-kw">fn</span> <span class="tok-fn">main</span>(init: std.process.Init) !<span class="tok-type">void</span> {
+    <span class="tok-kw">const</span> io = init.io;
+    <span class="tok-kw">const</span> arena = init.arena.allocator();
+
+    <span class="tok-kw">const</span> args = <span class="tok-kw">try</span> init.minimal.args.toSlice(arena);
+
+    <span class="tok-kw">var</span> opt_input_file_path: ?[]<span class="tok-kw">const</span> <span class="tok-type">u8</span> = <span class="tok-null">null</span>;
+    <span class="tok-kw">var</span> opt_output_file_path: ?[]<span class="tok-kw">const</span> <span class="tok-type">u8</span> = <span class="tok-null">null</span>;
+    <span class="tok-kw">var</span> opt_lang: ?[]<span class="tok-kw">const</span> <span class="tok-type">u8</span> = <span class="tok-null">null</span>;
+
+    {
+        <span class="tok-kw">var</span> i: <span class="tok-type">usize</span> = <span class="tok-number">1</span>;
+        <span class="tok-kw">while</span> (i &lt; args.len) : (i += <span class="tok-number">1</span>) {
+            <span class="tok-kw">const</span> arg = args[i];
+            <span class="tok-kw">if</span> (std.mem.eql(<span class="tok-type">u8</span>, <span class="tok-str">"-h"</span>, arg) <span class="tok-kw">or</span> std.mem.eql(<span class="tok-type">u8</span>, <span class="tok-str">"--help"</span>, arg)) {
+                <span class="tok-kw">try</span> Io.File.stdout().writeStreamingAll(io, usage);
+                <span class="tok-kw">return</span> std.process.cleanExit(io);
+            } <span class="tok-kw">else</span> <span class="tok-kw">if</span> (std.mem.eql(<span class="tok-type">u8</span>, <span class="tok-str">"--input-file"</span>, arg)) {
+                i += <span class="tok-number">1</span>;
+                <span class="tok-kw">if</span> (i &gt; args.len) fatal(<span class="tok-str">"expected arg after '{s}'"</span>, .{arg});
+                <span class="tok-kw">if</span> (opt_input_file_path != <span class="tok-null">null</span>) fatal(<span class="tok-str">"duplicated {s} argument"</span>, .{arg});
+                opt_input_file_path = args[i];
+            } <span class="tok-kw">else</span> <span class="tok-kw">if</span> (std.mem.eql(<span class="tok-type">u8</span>, <span class="tok-str">"--output-file"</span>, arg)) {
+                i += <span class="tok-number">1</span>;
+                <span class="tok-kw">if</span> (i &gt; args.len) fatal(<span class="tok-str">"expected arg after '{s}'"</span>, .{arg});
+                <span class="tok-kw">if</span> (opt_output_file_path != <span class="tok-null">null</span>) fatal(<span class="tok-str">"duplicated {s} argument"</span>, .{arg});
+                opt_output_file_path = args[i];
+            } <span class="tok-kw">else</span> <span class="tok-kw">if</span> (std.mem.eql(<span class="tok-type">u8</span>, <span class="tok-str">"--lang"</span>, arg)) {
+                i += <span class="tok-number">1</span>;
+                <span class="tok-kw">if</span> (i &gt; args.len) fatal(<span class="tok-str">"expected arg after '{s}'"</span>, .{arg});
+                <span class="tok-kw">if</span> (opt_lang != <span class="tok-null">null</span>) fatal(<span class="tok-str">"duplicated {s} argument"</span>, .{arg});
+                opt_lang = args[i];
+            } <span class="tok-kw">else</span> {
+                fatal(<span class="tok-str">"unrecognized arg: '{s}'"</span>, .{arg});
+            }
+        }
+    }
+
+    <span class="tok-kw">const</span> input_file_path = opt_input_file_path <span class="tok-kw">orelse</span> fatal(<span class="tok-str">"missing --input-file"</span>, .{});
+    <span class="tok-kw">const</span> output_file_path = opt_output_file_path <span class="tok-kw">orelse</span> fatal(<span class="tok-str">"missing --output-file"</span>, .{});
+    <span class="tok-kw">const</span> lang = opt_lang <span class="tok-kw">orelse</span> fatal(<span class="tok-str">"missing --lang"</span>, .{});
+
+    <span class="tok-kw">var</span> input_file = Io.Dir.cwd().openFile(io, input_file_path, .{}) <span class="tok-kw">catch</span> |err| {
+        fatal(<span class="tok-str">"unable to open '{s}': {s}"</span>, .{ input_file_path, <span class="tok-builtin">@errorName</span>(err) });
+    };
+    <span class="tok-kw">defer</span> input_file.close(io);
+    <span class="tok-kw">var</span> input_file_buffer: [<span class="tok-number">1000</span>]<span class="tok-type">u8</span> = <span class="tok-null">undefined</span>;
+    <span class="tok-kw">var</span> input_file_reader = input_file.reader(io, &amp;input_file_buffer);
+
+    <span class="tok-kw">var</span> output_file = Io.Dir.cwd().createFile(io, output_file_path, .{}) <span class="tok-kw">catch</span> |err| {
+        fatal(<span class="tok-str">"unable to open '{s}': {s}"</span>, .{ output_file_path, <span class="tok-builtin">@errorName</span>(err) });
+    };
+    <span class="tok-kw">defer</span> output_file.close(io);
+
+    <span class="tok-kw">var</span> json_reader: std.json.Reader = .init(arena, &amp;input_file_reader.interface);
+    <span class="tok-kw">var</span> words = <span class="tok-kw">try</span> std.json.ArrayHashMap([]<span class="tok-kw">const</span> <span class="tok-type">u8</span>).jsonParse(arena, &amp;json_reader, .{
+        .allocate = .alloc_if_needed,
+        .max_value_len = <span class="tok-number">1000</span>,
+    });
+
+    <span class="tok-kw">const</span> w = words.map.get(lang) <span class="tok-kw">orelse</span> fatal(<span class="tok-str">"Lang not found in JSON file"</span>, .{});
+
+    <span class="tok-kw">try</span> output_file.writeStreamingAll(io, w);
+    <span class="tok-kw">return</span> std.process.cleanExit(io);
+}
+
+<span class="tok-kw">fn</span> <span class="tok-fn">fatal</span>(<span class="tok-kw">comptime</span> format: []<span class="tok-kw">const</span> <span class="tok-type">u8</span>, args: <span class="tok-kw">anytype</span>) <span class="tok-type">noreturn</span> {
+    std.debug.print(format, args);
+    std.process.exit(<span class="tok-number">1</span>);
+}</code></pre></figure><p></p><p></p><figure><figcaption class="zig-cap"><cite class="file">build.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
+
+<span class="tok-kw">pub</span> <span class="tok-kw">fn</span> <span class="tok-fn">build</span>(b: *std.Build) <span class="tok-type">void</span> {
+    <span class="tok-kw">const</span> lang = b.option([]<span class="tok-kw">const</span> <span class="tok-type">u8</span>, <span class="tok-str">"language"</span>, <span class="tok-str">"language of the greeting"</span>) <span class="tok-kw">orelse</span> <span class="tok-str">"en"</span>;
+    <span class="tok-kw">const</span> tool = b.addExecutable(.{
+        .name = <span class="tok-str">"word_select"</span>,
+        .root_module = b.createModule(.{
+            .root_source_file = b.path(<span class="tok-str">"tools/word_select.zig"</span>),
+            .target = b.graph.host,
+        }),
+    });
+
+    <span class="tok-kw">const</span> tool_step = b.addRunArtifact(tool);
+    tool_step.addArg(<span class="tok-str">"--input-file"</span>);
+    tool_step.addFileArg(b.path(<span class="tok-str">"tools/words.json"</span>));
+    tool_step.addArg(<span class="tok-str">"--output-file"</span>);
+    <span class="tok-kw">const</span> output = tool_step.addOutputFileArg(<span class="tok-str">"word.txt"</span>);
+    tool_step.addArgs(&amp;.{ <span class="tok-str">"--lang"</span>, lang });
+
+    <span class="tok-kw">const</span> target = b.standardTargetOptions(.{});
+    <span class="tok-kw">const</span> optimize = b.standardOptimizeOption(.{});
+    <span class="tok-kw">const</span> exe = b.addExecutable(.{
+        .name = <span class="tok-str">"hello"</span>,
+        .root_module = b.createModule(.{
+            .root_source_file = b.path(<span class="tok-str">"src/main.zig"</span>),
+            .target = target,
+            .optimize = optimize,
+        }),
+    });
+
+    exe.root_module.addAnonymousImport(<span class="tok-str">"word"</span>, .{
+        .root_source_file = output,
+    });
+
+    b.installArtifact(exe);
+}</code></pre></figure><figure><figcaption class="shell-cap">Shell</figcaption><pre><samp>$ <kbd>zig build --summary all</kbd>
+Build Summary: 5/5 steps succeeded
+install success
++- install hello success
+   +- compile exe hello debug native success 612ms MaxRSS:147M
+      +- run exe word_select (word.txt) success 14ms
+         +- compile exe word_select debug native success 742ms MaxRSS:159M
+</samp></pre></figure><p></p><p><strong>Output</strong></p><pre><code>zig-out/
+└── bin
+ &nbsp;&nbsp; └── hello
+</code></pre><h2 id="generating-zig">生成 Zig 源代码</h2><p>这个构建脚本使用一个 Zig 程序来生成一个 Zig 源文件，并将其作为模块提供给主程序。</p><p></p><figure><figcaption class="zig-cap"><cite class="file">main.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
+<span class="tok-kw">const</span> Person = <span class="tok-builtin">@import</span>(<span class="tok-str">"person"</span>).Person;
+
+<span class="tok-kw">pub</span> <span class="tok-kw">fn</span> <span class="tok-fn">main</span>() !<span class="tok-type">void</span> {
+    <span class="tok-kw">const</span> p: Person = .{};
+    std.log.info(<span class="tok-str">"Hello {any}\n"</span>, .{p});
+}</code></pre></figure> <figure><figcaption class="zig-cap"><cite class="file">generate_struct.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
+<span class="tok-kw">const</span> Io = std.Io;
+
+<span class="tok-kw">pub</span> <span class="tok-kw">fn</span> <span class="tok-fn">main</span>(init: std.process.Init) !<span class="tok-type">void</span> {
+    <span class="tok-kw">const</span> io = init.io;
+    <span class="tok-kw">const</span> arena = init.arena.allocator();
+
+    <span class="tok-kw">const</span> args = <span class="tok-kw">try</span> init.minimal.args.toSlice(arena);
+
+    <span class="tok-kw">if</span> (args.len != <span class="tok-number">2</span>) fatal(<span class="tok-str">"wrong number of arguments"</span>, .{});
+
+    <span class="tok-kw">const</span> output_file_path = args[<span class="tok-number">1</span>];
+
+    <span class="tok-kw">var</span> output_file = Io.Dir.cwd().createFile(io, output_file_path, .{}) <span class="tok-kw">catch</span> |err| {
+        fatal(<span class="tok-str">"unable to open '{s}': {s}"</span>, .{ output_file_path, <span class="tok-builtin">@errorName</span>(err) });
+    };
+    <span class="tok-kw">defer</span> output_file.close(io);
+
+    <span class="tok-kw">try</span> output_file.writeStreamingAll(io,
+        <span class="tok-str">\\pub const Person = struct {</span>
+        <span class="tok-str">\\   age: usize = 18,</span>
+        <span class="tok-str">\\   name: []const u8 = "foo"</span>
+        <span class="tok-str">\\};</span>
+    );
+    <span class="tok-kw">return</span> std.process.cleanExit(io);
+}
+
+<span class="tok-kw">fn</span> <span class="tok-fn">fatal</span>(<span class="tok-kw">comptime</span> format: []<span class="tok-kw">const</span> <span class="tok-type">u8</span>, args: <span class="tok-kw">anytype</span>) <span class="tok-type">noreturn</span> {
+    std.debug.print(format, args);
+    std.process.exit(<span class="tok-number">1</span>);
+}</code></pre></figure> <figure><figcaption class="zig-cap"><cite class="file">build.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
+
+<span class="tok-kw">pub</span> <span class="tok-kw">fn</span> <span class="tok-fn">build</span>(b: *std.Build) <span class="tok-type">void</span> {
+    <span class="tok-kw">const</span> tool = b.addExecutable(.{
+        .name = <span class="tok-str">"generate_struct"</span>,
+        .root_module = b.createModule(.{
+            .root_source_file = b.path(<span class="tok-str">"tools/generate_struct.zig"</span>),
+            .target = b.graph.host,
+        }),
+    });
+
+    <span class="tok-kw">const</span> tool_step = b.addRunArtifact(tool);
+    <span class="tok-kw">const</span> output = tool_step.addOutputFileArg(<span class="tok-str">"person.zig"</span>);
+
+    <span class="tok-kw">const</span> target = b.standardTargetOptions(.{});
+    <span class="tok-kw">const</span> optimize = b.standardOptimizeOption(.{});
+    <span class="tok-kw">const</span> exe = b.addExecutable(.{
+        .name = <span class="tok-str">"hello"</span>,
+        .root_module = b.createModule(.{
+            .root_source_file = b.path(<span class="tok-str">"src/main.zig"</span>),
+            .target = target,
+            .optimize = optimize,
+        }),
+    });
+
+    exe.root_module.addAnonymousImport(<span class="tok-str">"person"</span>, .{
+        .root_source_file = output,
+    });
+
+    b.installArtifact(exe);
+}</code></pre></figure><figure><figcaption class="shell-cap">Shell</figcaption><pre><samp>$ <kbd>zig build --summary all</kbd>
+Build Summary: 5/5 steps succeeded
+install success
++- install hello success
+   +- compile exe hello debug native success 918ms MaxRSS:150M
+      +- run exe generate_struct (person.zig) success 15ms
+         +- compile exe generate_struct debug native success 1s MaxRSS:154M
+</samp></pre></figure><p></p><p><strong>Output</strong></p><pre><code>zig-out/
+└── bin
+ &nbsp;&nbsp; └── hello
+</code></pre><h2 id="write-files">处理一个或多个生成的文件</h2><p><strong>WriteFiles</strong> 步骤提供了一种方法，用于生成同一父目录下一个或多个文件。生成的目录位于项目的 <code>.zig-cache</code> 里，每个生成的文件以及父目录本身都可以独立地作为 <code>std.Build.LazyPath</code> 使用。</p><p>这个 API 支持将任意字符串写入生成的目录，以及将文件复制到其中。</p><p></p><figure><figcaption class="zig-cap"><cite class="file">main.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
+
+<span class="tok-kw">pub</span> <span class="tok-kw">fn</span> <span class="tok-fn">main</span>() !<span class="tok-type">void</span> {
+    std.debug.print(<span class="tok-str">"hello world\n"</span>, .{});
+}</code></pre></figure> <figure><figcaption class="zig-cap"><cite class="file">build.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
+
+<span class="tok-kw">pub</span> <span class="tok-kw">fn</span> <span class="tok-fn">build</span>(b: *std.Build) <span class="tok-type">void</span> {
+    <span class="tok-kw">const</span> exe = b.addExecutable(.{
+        .name = <span class="tok-str">"app"</span>,
+        .root_module = b.createModule(.{
+            .root_source_file = b.path(<span class="tok-str">"src/main.zig"</span>),
+            .target = b.graph.host,
+        }),
+    });
+
+    <span class="tok-kw">const</span> version = b.option([]<span class="tok-kw">const</span> <span class="tok-type">u8</span>, <span class="tok-str">"version"</span>, <span class="tok-str">"application version string"</span>) <span class="tok-kw">orelse</span> <span class="tok-str">"0.0.0"</span>;
+
+    <span class="tok-kw">const</span> wf = b.addWriteFiles();
+    <span class="tok-kw">const</span> app_exe_name = b.fmt(<span class="tok-str">"project/{s}"</span>, .{exe.out_filename});
+    _ = wf.addCopyFile(exe.getEmittedBin(), app_exe_name);
+    _ = wf.add(<span class="tok-str">"project/version.txt"</span>, version);
+
+    <span class="tok-kw">const</span> tar = b.addSystemCommand(&amp;.{ <span class="tok-str">"tar"</span>, <span class="tok-str">"czf"</span> });
+    tar.setCwd(wf.getDirectory());
+    <span class="tok-kw">const</span> out_file = tar.addOutputFileArg(<span class="tok-str">"project.tar.gz"</span>);
+    tar.addArgs(&amp;.{<span class="tok-str">"project/"</span>});
+
+    <span class="tok-kw">const</span> install_tar = b.addInstallFileWithDir(out_file, .prefix, <span class="tok-str">"project.tar.gz"</span>);
+    b.getInstallStep().dependOn(&amp;install_tar.step);
+}</code></pre></figure><figure><figcaption class="shell-cap">Shell</figcaption><pre><samp>$ <kbd>zig build --summary all</kbd>
+Build Summary: 5/5 steps succeeded
+install success
++- install generated to project.tar.gz success
+   +- run tar (project.tar.gz) success 505ms
+      +- WriteFile project/app success
+         +- compile exe app debug native success 733ms MaxRSS:147M
+</samp></pre></figure><p></p><p><strong>Output</strong></p><pre><code>zig-out/
+└── project.tar.gz
+</code></pre><h2 id="mutating-source">直接修改源文件</h2><p>虽然不常见，但有时项目会将生成的文件直接提交到版本控制中。当生成的文件很少更新，且更新过程依赖于繁琐的系统依赖时，这样做可能是有用的，但<em>仅限于</em>更新过程中。<strong>UpdateSourceFiles</strong> 提供了完成此任务的一种方法。</p><p>使用这个功能时要小心；它不应该在正常的构建过程中使用，而应该由有意更新源文件的开发者作为工具运行，然后这些文件将被提交到版本控制中。如果在正常的构建过程中使用，它将导致缓存和并发错误。</p><p></p><figure><figcaption class="zig-cap"><cite class="file">proto_gen.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
+
+<span class="tok-kw">pub</span> <span class="tok-kw">fn</span> <span class="tok-fn">main</span>() !<span class="tok-type">void</span> {
+    <span class="tok-kw">var</span> arena_state = std.heap.ArenaAllocator.init(std.heap.page_allocator);
+    <span class="tok-kw">defer</span> arena_state.deinit();
+    <span class="tok-kw">const</span> arena = arena_state.allocator();
+
+    <span class="tok-kw">const</span> args = <span class="tok-kw">try</span> std.process.argsAlloc(arena);
+
+    <span class="tok-kw">if</span> (args.len != <span class="tok-number">2</span>) fatal(<span class="tok-str">"wrong number of arguments"</span>, .{});
+
+    <span class="tok-kw">const</span> output_file_path = args[<span class="tok-number">1</span>];
+
+    <span class="tok-kw">var</span> output_file = std.fs.cwd().createFile(output_file_path, .{}) <span class="tok-kw">catch</span> |err| {
+        fatal(<span class="tok-str">"unable to open '{s}': {s}"</span>, .{ output_file_path, <span class="tok-builtin">@errorName</span>(err) });
+    };
+    <span class="tok-kw">defer</span> output_file.close();
+
+    <span class="tok-kw">try</span> output_file.writeAll(
+        <span class="tok-str">\\pub const Header = extern struct {</span>
+        <span class="tok-str">\\    magic: u64,</span>
+        <span class="tok-str">\\    width: u32,</span>
+        <span class="tok-str">\\    height: u32,</span>
+        <span class="tok-str">\\};</span>
+    );
+    <span class="tok-kw">return</span> std.process.cleanExit();
+}
+
+<span class="tok-kw">fn</span> <span class="tok-fn">fatal</span>(<span class="tok-kw">comptime</span> format: []<span class="tok-kw">const</span> <span class="tok-type">u8</span>, args: <span class="tok-kw">anytype</span>) <span class="tok-type">noreturn</span> {
+    std.debug.print(format, args);
+    std.process.exit(<span class="tok-number">1</span>);
+}</code></pre></figure> <figure><figcaption class="zig-cap"><cite class="file">main.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
+<span class="tok-kw">const</span> Protocol = <span class="tok-builtin">@import</span>(<span class="tok-str">"protocol.zig"</span>);
+
+<span class="tok-kw">pub</span> <span class="tok-kw">fn</span> <span class="tok-fn">main</span>() !<span class="tok-type">void</span> {
+    <span class="tok-kw">const</span> header = <span class="tok-kw">try</span> std.io.getStdIn().reader().readStruct(Protocol.Header);
+    std.debug.print(<span class="tok-str">"header: {any}\n"</span>, .{header});
+}</code></pre></figure> <figure><figcaption class="zig-cap"><cite class="file">protocol.zig</cite></figcaption><pre><code><span class="tok-kw">pub</span> <span class="tok-kw">const</span> Header = <span class="tok-kw">extern</span> <span class="tok-kw">struct</span> {
+    magic: <span class="tok-type">u64</span>,
+    width: <span class="tok-type">u32</span>,
+    height: <span class="tok-type">u32</span>,
+};</code></pre></figure> <figure><figcaption class="zig-cap"><cite class="file">build.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
+
+<span class="tok-kw">pub</span> <span class="tok-kw">fn</span> <span class="tok-fn">build</span>(b: *std.Build) <span class="tok-type">void</span> {
+    <span class="tok-kw">const</span> target = b.standardTargetOptions(.{});
+    <span class="tok-kw">const</span> exe = b.addExecutable(.{
+        .name = <span class="tok-str">"demo"</span>,
+        .root_source_file = b.path(<span class="tok-str">"src/main.zig"</span>),
+        .target = target,
+    });
+    b.installArtifact(exe);
+
+    <span class="tok-kw">const</span> proto_gen = b.addExecutable(.{
+        .name = <span class="tok-str">"proto_gen"</span>,
+        .root_source_file = b.path(<span class="tok-str">"tools/proto_gen.zig"</span>),
+        .target = target,
+    });
+
+    <span class="tok-kw">const</span> run = b.addRunArtifact(proto_gen);
+    <span class="tok-kw">const</span> generated_protocol_file = run.addOutputFileArg(<span class="tok-str">"protocol.zig"</span>);
+
+    <span class="tok-kw">const</span> wf = b.addUpdateSourceFiles();
+    wf.addCopyFileToSource(generated_protocol_file, <span class="tok-str">"src/protocol.zig"</span>);
+
+    <span class="tok-kw">const</span> update_protocol_step = b.step(<span class="tok-str">"update-protocol"</span>, <span class="tok-str">"update src/protocol.zig to latest"</span>);
+    update_protocol_step.dependOn(&amp;wf.step);
+}
+
+<span class="tok-kw">fn</span> <span class="tok-fn">detectWhetherToEnableLibFoo</span>() <span class="tok-type">bool</span> {
+    <span class="tok-kw">return</span> <span class="tok-null">false</span>;
+}</code></pre></figure><p></p><pre><code class="shell">$ zig build update-protocol --summary all
+<span class="sgr-36m">Build Summary:</span> 4/4 steps succeeded
+update-protocol<span class="sgr-32m"> success</span>
+└─ WriteFile<span class="sgr-32m"> success</span>
+   └─ run proto_gen (protocol.zig)<span class="sgr-32m"> success</span><span class="sgr-2m"> 401us</span><span class="sgr-2m"> MaxRSS:1M</span>
+      └─ zig build-exe proto_gen Debug native<span class="sgr-32m"> success</span><span class="sgr-2m"> 1s</span><span class="sgr-2m"> MaxRSS:183M</span>
+</code></pre>
+<p>运行这个命令后，<code>src/protocol.zig</code> 文件会被原地更新。</p><h1 id="examples">实用示例</h1><h2 id="release">为多个目标构建以发布版本</h2><p>在这个例子中，我们在创建 <code>InstallArtifact</code> 步骤时更改一些默认设置，以便将每个目标的构建产物放入安装路径内的单独子目录中。</p><p></p><figure><figcaption class="zig-cap"><cite class="file">build.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
+
+<span class="tok-kw">const</span> targets: []<span class="tok-kw">const</span> std.Target.Query = &amp;.{
+    .{ .cpu_arch = .aarch64, .os_tag = .macos },
+    .{ .cpu_arch = .aarch64, .os_tag = .linux },
+    .{ .cpu_arch = .x86_64, .os_tag = .linux, .abi = .gnu },
+    .{ .cpu_arch = .x86_64, .os_tag = .linux, .abi = .musl },
+    .{ .cpu_arch = .x86_64, .os_tag = .windows },
+};
+
+<span class="tok-kw">pub</span> <span class="tok-kw">fn</span> <span class="tok-fn">build</span>(b: *std.Build) !<span class="tok-type">void</span> {
+    <span class="tok-kw">for</span> (targets) |t| {
+        <span class="tok-kw">const</span> exe = b.addExecutable(.{
+            .name = <span class="tok-str">"hello"</span>,
+            .root_module = b.createModule(.{
+                .root_source_file = b.path(<span class="tok-str">"hello.zig"</span>),
+                .target = b.resolveTargetQuery(t),
+                .optimize = .ReleaseSafe,
+            }),
+        });
+
+        <span class="tok-kw">const</span> target_output = b.addInstallArtifact(exe, .{
+            .dest_dir = .{
+                .override = .{
+                    .custom = <span class="tok-kw">try</span> t.zigTriple(b.allocator),
+                },
+            },
+        });
+
+        b.getInstallStep().dependOn(&amp;target_output.step);
+    }
+}</code></pre></figure><figure><figcaption class="shell-cap">Shell</figcaption><pre><samp>$ <kbd>zig build --summary all</kbd>
+Build Summary: 11/11 steps succeeded
+install success
++- install hello success
+|  +- compile exe hello safe aarch64-macos success 22s MaxRSS:421M
++- install hello success
+|  +- compile exe hello safe aarch64-linux success 24s MaxRSS:498M
++- install hello success
+|  +- compile exe hello safe x86_64-linux-gnu success 24s MaxRSS:436M
++- install hello success
+|  +- compile exe hello safe x86_64-linux-musl success 23s MaxRSS:447M
++- install hello success
+   +- compile exe hello safe x86_64-windows success 19s MaxRSS:378M
+</samp></pre></figure> <figure><figcaption class="zig-cap"><cite class="file">hello.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
+
+<span class="tok-kw">pub</span> <span class="tok-kw">fn</span> <span class="tok-fn">main</span>() !<span class="tok-type">void</span> {
+    std.debug.print(<span class="tok-str">"Hello World!\n"</span>, .{});
+}</code></pre></figure><p></p><p><strong>Output</strong></p><pre><code>zig-out
+├── aarch64-linux
+│&nbsp;&nbsp; └── hello
+├── aarch64-macos
+│&nbsp;&nbsp; └── hello
+├── x86_64-linux-gnu
+│&nbsp;&nbsp; └── hello
+├── x86_64-linux-musl
+│&nbsp;&nbsp; └── hello
+└── x86_64-windows
+    ├── hello.exe
+    └── hello.pdb
+</code></pre>
+  </div>
+
+    </div>
+    <div class="container" style="text-align: center; padding: 2em 0;">
+      <div id="languages-menu">
+  
+    <div class="container">
+      <span>This page was translated by the Zig community,
+        <a href="https://ziglang.org/intro/build-system/">see the original version</a>
+        or
+        <a href="https://codeberg.org/ziglang/ziglang.org" class="external-link" target="_blank" rel="noopener">report errors</a>.</span>
+    </div>
+    <br>
+  
+  <span>此页面还提供以下语言的版本：</span>
+  <br>
+  <div>
+    <a href="https://ziglang.org/intro/build-system/" style="white-space: nowrap;">English (original)</a>
+  
+    <a href="https://ziglang.org/es-AR/intro/build-system/" style="white-space: nowrap;">Español</a>
+  
+    <a href="https://ziglang.org/ru-RU/intro/build-system/" style="white-space: nowrap;">Русский</a>
+  
+    <a href="https://ziglang.org/it-IT/intro/build-system/" style="white-space: nowrap;">Italiano</a>
+  
+    <a href="https://ziglang.org/de-DE/intro/build-system/" style="white-space: nowrap;">Deutsch</a>
+  
+    <a href="https://ziglang.org/uk-UA/intro/build-system/" style="white-space: nowrap;">Українська</a>
+  
+    <a href="https://ziglang.org/ja-JP/intro/build-system/" style="white-space: nowrap;">日本語</a>
+  
+    <a href="https://ziglang.org/zh-CN/intro/build-system/" style="white-space: nowrap;">中文</a>
+  
+    <a href="https://ziglang.org/ko-KR/intro/build-system/" style="white-space: nowrap;">한국어</a>
+  </div>
+</div>
+    </div>
+  
+
+</body></html>

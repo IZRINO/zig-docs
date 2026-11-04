@@ -49,3 +49,28 @@ test('cross-reference links preserve the resolved anchor of an exported function
   assert.match(html, /\/en\/std\/math\/log1p\/#std.math.log1p.log1p/);
   assert.equal(issues.size, 0);
 });
+
+test('0.17.1 cross-reference links remain within the selected version', async () => {
+  const { rewriteDocumentationLinks } =
+    await import('../scripts/lib/links.mjs');
+  const issues = new Set();
+  const html = rewriteDocumentationLinks(
+    '<a href="std/#std.Io.Writer">Writer</a><a href="#local">local</a><a href="https://ziglang.org/documentation/0.17.1/#Undefined-Behavior">UB</a>',
+    'https://ziglang.org/documentation/0.17.1/',
+    'zh-cn',
+    new Map([['Undefined-Behavior', 'reference/Undefined-Behavior']]),
+    new Map([['std.Io.Writer', 'std/Io/Writer']]),
+    issues,
+    '0.17.1',
+  );
+  assert.match(
+    html,
+    /\/zig-docs\/zh-cn\/0\.17\.1\/std\/Io\/Writer\/#std.Io.Writer/,
+  );
+  assert.match(
+    html,
+    /\/zig-docs\/zh-cn\/0\.17\.1\/reference\/Undefined-Behavior\/#Undefined-Behavior/,
+  );
+  assert.match(html, /href="#local"/);
+  assert.equal(issues.size, 0);
+});

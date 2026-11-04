@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 
 interface DocumentMeta {
   id: string;
-  kind: 'langref' | 'reference' | 'std';
+  kind: 'intro' | 'langref' | 'reference' | 'std';
   title: string;
   headings: { slug: string; text: string; depth: number }[];
   symbols?: {
@@ -23,6 +23,18 @@ const english = JSON.parse(
 const chinese = JSON.parse(
   readFileSync(
     new URL('../../content/zh-cn/manifest.json', import.meta.url),
+    'utf8',
+  ),
+) as DocumentMeta[];
+const english171 = JSON.parse(
+  readFileSync(
+    new URL('../../content/0.17.1/en/manifest.json', import.meta.url),
+    'utf8',
+  ),
+) as DocumentMeta[];
+const chinese171 = JSON.parse(
+  readFileSync(
+    new URL('../../content/0.17.1/zh-cn/manifest.json', import.meta.url),
     'utf8',
   ),
 ) as DocumentMeta[];
@@ -53,13 +65,21 @@ const sampledPages = [
 
 test('根地址进入中文概览，章节与模块来自真实清单', async ({ page }) => {
   await page.goto(`${base}/`);
-  await expect(page).toHaveURL(new RegExp(`${base}/zh-cn/$`));
-  await expect(page.getByRole('heading', { level: 1 })).toContainText('0.17.0');
-  await expect(page.locator('.chapter-index a')).toHaveCount(
-    chinese.filter((doc) => doc.kind !== 'std').length,
+  await expect(page).toHaveURL(new RegExp(`${base}/zh-cn/0[.]17[.]1/$`));
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('0.17.1');
+  await expect(page.locator('zig-version-select select').first()).toHaveValue(
+    `${base}/zh-cn/0.17.1/`,
+  );
+  await expect(
+    page.locator(
+      '.index-section[aria-labelledby="language-reference"] .chapter-index a',
+    ),
+  ).toHaveCount(
+    chinese171.filter((doc) => doc.kind !== 'std' && doc.kind !== 'intro')
+      .length,
   );
   await expect(page.locator('.module-index a')).toHaveCount(
-    chinese.filter((doc) => doc.kind === 'std').length,
+    chinese171.filter((doc) => doc.kind === 'std').length,
   );
   await page.getByRole('searchbox', { name: '筛选模块' }).fill('std.Io.Writer');
   await expect(page.locator('.module-index li:visible')).not.toHaveCount(0);
@@ -72,6 +92,99 @@ test('根地址进入中文概览，章节与模块来自真实清单', async ({
   await expect(
     page.getByRole('status').filter({ hasText: '没有匹配的模块' }),
   ).toBeVisible();
+});
+
+test('语言根目录默认显示最新版本，旧版概览可显式访问', async ({ page }) => {
+  await page.goto(`${base}/zh-cn/`);
+  await expect(page.locator('.version-badge')).toHaveText('0.17.1');
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('0.17.1');
+  await page.goto(`${base}/zh-cn/0.17.0/`);
+  await expect(page.locator('.version-badge')).toHaveText('0.17.0');
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('0.17.0');
+});
+
+test('官方中文入门章节出现在新版概览和侧栏', async ({ page }) => {
+  const intro = JSON.parse(
+    readFileSync(
+      new URL(
+        '../../content/0.17.1/zh-cn/intro/manifest.json',
+        import.meta.url,
+      ),
+      'utf8',
+    ),
+  ) as DocumentMeta[];
+  expect(intro).toHaveLength(5);
+  await page.goto(`${base}/zh-cn/`);
+  await expect(page.locator('.intro-index a')).toHaveCount(5);
+  const route = `${base}/zh-cn/0.17.1/intro/getting-started/`;
+  await page.goto(route);
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('快速入门');
+  await expect(page.locator('.document-kind')).toHaveText('入门');
+  await expect(page.locator('.document-meta a')).toHaveAttribute(
+    'href',
+    'https://ziglang.org/zh-CN/intro/getting-started/',
+  );
+  await expect(page.locator('.doc-content .expressive-code')).toHaveCount(12);
+  await expect(
+    page.locator('#starlight__sidebar').getByRole('link', { name: '快速入门' }),
+  ).toHaveAttribute('href', route);
+  await expect(
+    page.locator('zig-version-select select').first().locator('option').nth(1),
+  ).toHaveAttribute('value', '/zig-docs/zh-cn/0.17.0/');
+  await expect(
+    page.locator('zig-language-select select').first().locator('option').nth(1),
+  ).toHaveAttribute('value', '/zig-docs/en/0.17.1/');
+});
+
+test('版本切换保持文档与共享锚点，旧版路由不变', async ({ page }) => {
+  const id = 'reference/Hello-World';
+  expect(english171.some((doc) => doc.id === id)).toBe(true);
+  expect(chinese171.some((doc) => doc.id === id)).toBe(true);
+  await page.goto(`${base}/en/${id}/#Hello-World`);
+  await expect(
+    page.locator('zig-version-select select').first().locator('option'),
+  ).toHaveText(['0.17.1', '0.17.0']);
+  await page
+    .locator('zig-version-select select')
+    .first()
+    .selectOption(`${base}/en/0.17.1/${id}/`);
+  await expect(page).toHaveURL(
+    new RegExp(`${base}/en/0[.]17[.]1/${id}/#Hello-World$`),
+  );
+  await expect(page.locator('.document-version')).toHaveText('Zig 0.17.1');
+  await expect(page.locator('.document-meta a')).toHaveAttribute(
+    'href',
+    /documentation\/0\.17\.1\//,
+  );
+  await page
+    .locator('zig-language-select select')
+    .first()
+    .selectOption(`${base}/zh-cn/0.17.1/${id}/`);
+  await expect(page).toHaveURL(
+    new RegExp(`${base}/zh-cn/0[.]17[.]1/${id}/#Hello-World$`),
+  );
+  await page.reload();
+  await expect(page.locator('html')).toHaveAttribute('lang', 'zh-CN');
+  await page
+    .locator('zig-version-select select')
+    .first()
+    .selectOption(`${base}/zh-cn/${id}/`);
+  await expect(page).toHaveURL(new RegExp(`${base}/zh-cn/${id}/#Hello-World$`));
+  await expect(page.locator('.document-version')).toHaveText('Zig 0.17.0');
+});
+
+test('0.17.1 标准库页面读取独立快照', async ({ page }) => {
+  const id = 'std/Io/Dir';
+  expect(english171.some((doc) => doc.id === id)).toBe(true);
+  await page.goto(`${base}/en/0.17.1/${id}/`);
+  await expect(page.locator('.document-version')).toHaveText('Zig 0.17.1');
+  await expect(page.locator('.source-listing')).toContainText(
+    'canonicalized absolute path',
+  );
+  await expect(page.locator('.document-meta a')).toHaveAttribute(
+    'href',
+    /documentation\/0\.17\.1\/std\//,
+  );
 });
 
 for (const [locale, docs] of [
@@ -242,9 +355,11 @@ test('移动端导航可打开、选择章节、按退出键关闭，页面无�
   const toggle = page.locator('button[popovertarget="starlight__sidebar"]');
   await toggle.click();
   await expect(page.locator('#starlight__sidebar')).toBeVisible();
-  const entry = chinese.find((doc) => doc.kind !== 'std')!;
+  const entry = chinese171.find((doc) => doc.kind !== 'std')!;
   await page
-    .locator(`#starlight__sidebar a[href="${base}/zh-cn/${entry.id}/"]`)
+    .locator(
+      `#starlight__sidebar a[href="${base}/zh-cn/0.17.1/${entry.id}/"]`,
+    )
     .click();
   await expect(page.getByRole('heading', { level: 1 })).toHaveText(entry.title);
   await toggle.click();

@@ -1,0 +1,43 @@
+{
+  "version": "0.17.1",
+  "capturedAt": "2026-11-04T03:58:50.270Z",
+  "releaseDate": "2026-11-02",
+  "assets": [
+    {
+      "file": "langref.html",
+      "url": "https://ziglang.org/documentation/0.17.1/",
+      "bytes": 984982,
+      "sha256": "253e0d40c3bdecdec02b19f3e19fffcd0270b1197bf86662efff2a1536a01337"
+    },
+    {
+      "file": "std/index.html",
+      "url": "https://ziglang.org/documentation/0.17.1/std/",
+      "bytes": 13390,
+      "sha256": "476e05b76393838be0c4e571086759b22ff316980d98e227ccc096ddcca1ebb7"
+    },
+    {
+      "file": "std/main.js",
+      "url": "https://ziglang.org/documentation/0.17.1/std/main.js",
+      "bytes": 35408,
+      "sha256": "88b76563f2246d2a7437787e070b483452c10294753b60d2aaab6014b96ecdcc"
+    },
+    {
+      "file": "std/main.wasm",
+      "url": "https://ziglang.org/documentation/0.17.1/std/main.wasm",
+      "bytes": 194940,
+      "sha256": "7bfbb37d1a4546a218b3b950621c0b53858be205d8d04cb36b80da30482f7131"
+    },
+    {
+      "file": "std/sources.tar",
+      "url": "https://ziglang.org/documentation/0.17.1/std/sources.tar",
+      "bytes": 17620480,
+      "sha256": "14dd4ebe11350a8a34112fc9ed2f9948f7d0005454eba5cea582cbc07761cb73"
+    },
+    {
+      "file": "LICENSE",
+      "url": "https://ziglang.org/download/0.17.1/zig-0.17.1.tar.xz",
+      "archiveSha256": "1e89bf06610b769a8c77676c6c8d54b093a0db60f4891f2f91014829012f0e24",
+      "sha256": "5c537d6853e005298a285d508cff9ac7192cea23576c840d485b2b586a7ff177"
+    }
+  ]
+}

@@ -2,16 +2,18 @@
 import { Icon } from '@astrojs/starlight/components';
 import { currentDocument, docHref, labels } from '../lib/content';
 
-const { locale, id } = currentDocument(Astro.url.pathname);
+const { locale, id, version } = currentDocument(Astro.url.pathname);
+const englishId = id.startsWith('intro/') ? '' : id;
 ---
 
 <zig-language-select class="language-control">
   <Icon name="translate" size="1.1rem" />
   <select aria-label={labels[locale].language}>
-    <option value={docHref('zh-cn', id)} selected={locale === 'zh-cn'}
+    <option value={docHref('zh-cn', id, version)} selected={locale === 'zh-cn'}
       >中文</option
     >
-    <option value={docHref('en', id)} selected={locale === 'en'}>English</option
+    <option value={docHref('en', englishId, version)} selected={locale === 'en'}
+      >English</option
     >
   </select>
 </zig-language-select>

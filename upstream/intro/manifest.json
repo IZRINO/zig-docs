@@ -1,0 +1,29 @@
+{
+  "source": "https://ziglang.org/zh-CN/intro/",
+  "assets": [
+    {
+      "file": "upstream/intro/zh-CN/heart.svg",
+      "sha256": "c62684bc8cacf2f28ca40630f20774babb6d1955c480870afa9066b8a0ce99e6"
+    },
+    {
+      "file": "upstream/intro/zh-CN/getting-started.html",
+      "sha256": "13de666dd62afcd0333b832345af6ea2c346f2847fac4d9a4ea1a22f493f08fa"
+    },
+    {
+      "file": "upstream/intro/zh-CN/overview.html",
+      "sha256": "eefe00198d80e9c6a0cf522a16b5731504c0937cf6eb7f8badf8f2e058957ef1"
+    },
+    {
+      "file": "upstream/intro/zh-CN/build-system.html",
+      "sha256": "fb1c693df42a096e904207e4c950a914814e3f47a90129fe7d749a0654d9b16b"
+    },
+    {
+      "file": "upstream/intro/zh-CN/samples.html",
+      "sha256": "01d29c98ef1ebe9579e972f9582e2890eda7c0f389c33db8bee511844697ebc5"
+    },
+    {
+      "file": "upstream/intro/zh-CN/why_zig_rust_d_cpp.html",
+      "sha256": "e644ee73a1aa12fee572150d7e8aaae5f9e4c8f5dd513ce31df92fd017861fef"
+    }
+  ]
+}

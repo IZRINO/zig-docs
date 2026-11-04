@@ -1,6 +1,6 @@
 import { readFile, readdir } from 'node:fs/promises';
 
-export async function loadStandardTranslations() {
+export async function loadStandardTranslations(version = '0.17.0') {
   const directory = new URL('../../translations/std/', import.meta.url);
   const all = {};
   const files = (await readdir(directory))
@@ -14,10 +14,19 @@ export async function loadStandardTranslations() {
       all[id] = value;
     }
   }
+  if (version !== '0.17.0') {
+    const additions = JSON.parse(
+      await readFile(
+        new URL(`../../translations/${version}/std.zh.json`, import.meta.url),
+        'utf8',
+      ),
+    );
+    Object.assign(all, additions);
+  }
   return all;
 }
 
-export async function loadTranslationPolicy() {
+export async function loadTranslationPolicy(version = '0.17.0') {
   const directory = new URL('../../translations/std/', import.meta.url);
   const verbatim = {};
   const protectedExceptions = {};
@@ -34,6 +43,15 @@ export async function loadTranslationPolicy() {
         throw new Error(`Conflicting translation policy: ${id}`);
       target[id] = value;
     }
+  }
+  if (version !== '0.17.0') {
+    const additions = JSON.parse(
+      await readFile(
+        new URL(`../../translations/${version}/verbatim.json`, import.meta.url),
+        'utf8',
+      ),
+    );
+    Object.assign(verbatim, additions);
   }
   return { verbatim, protectedExceptions };
 }
