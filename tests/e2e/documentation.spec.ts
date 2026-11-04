@@ -357,9 +357,7 @@ test('移动端导航可打开、选择章节、按退出键关闭，页面无�
   await expect(page.locator('#starlight__sidebar')).toBeVisible();
   const entry = chinese171.find((doc) => doc.kind !== 'std')!;
   await page
-    .locator(
-      `#starlight__sidebar a[href="${base}/zh-cn/0.17.1/${entry.id}/"]`,
-    )
+    .locator(`#starlight__sidebar a[href="${base}/zh-cn/0.17.1/${entry.id}/"]`)
     .click();
   await expect(page.getByRole('heading', { level: 1 })).toHaveText(entry.title);
   await toggle.click();

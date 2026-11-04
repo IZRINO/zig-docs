@@ -9,7 +9,7 @@
       {
         "depth": 2,
         "slug": "intro-section-1",
-        "text": "选择带版本号的版本还是开发版本？"
+        "text": "选择发布版本还是开发版本？"
       },
       {
         "depth": 2,
@@ -19,22 +19,22 @@
       {
         "depth": 3,
         "slug": "direct",
-        "text": "直接下载"
+        "text": "直接下载安装包"
       },
       {
         "depth": 4,
         "slug": "intro-section-4",
-        "text": "在 Windows 上设置 PATH"
+        "text": "Windows"
       },
       {
         "depth": 4,
         "slug": "intro-section-5",
-        "text": "在 Linux, MacOS, BSD 上设置 PATH 将 zig 二进制镜像的位置添加到 PATH 环境变量中。"
+        "text": "macOS"
       },
       {
         "depth": 3,
         "slug": "managers",
-        "text": "包管理"
+        "text": "通过包管理器安装"
       },
       {
         "depth": 4,
@@ -59,12 +59,12 @@
       {
         "depth": 2,
         "slug": "intro-section-11",
-        "text": "推荐工具"
+        "text": "推荐开发工具"
       },
       {
         "depth": 3,
         "slug": "intro-section-12",
-        "text": "语法高亮和语言服务器（LSP）"
+        "text": "语法高亮与语言服务器（LSP）"
       },
       {
         "depth": 2,
@@ -74,7 +74,7 @@
       {
         "depth": 2,
         "slug": "intro-section-14",
-        "text": "下一步"
+        "text": "后续学习建议"
       }
     ]
   },
@@ -88,32 +88,32 @@
       {
         "depth": 2,
         "slug": "intro-section-1",
-        "text": "功能特色"
+        "text": "核心特性一览"
       },
       {
         "depth": 3,
         "slug": "small-simple-language",
-        "text": "小巧而简单的语言"
+        "text": "小巧而精炼的语言"
       },
       {
         "depth": 3,
         "slug": "performance-and-safety-choose-two",
-        "text": "性能和安全：全都要"
+        "text": "性能与安全：两者兼得"
       },
       {
         "depth": 3,
         "slug": "intro-section-4",
-        "text": "Zig 与 C 竞争，而不是依赖于它"
+        "text": "Zig 与 C 竞争，而非依赖于 C"
       },
       {
         "depth": 3,
         "slug": "intro-section-5",
-        "text": "顺序无关的顶层声明"
+        "text": "顶层声明顺序无关"
       },
       {
         "depth": 3,
         "slug": "intro-section-6",
-        "text": "用可选类型代替空指针"
+        "text": "用可选类型替代空指针"
       },
       {
         "depth": 3,
@@ -123,47 +123,47 @@
       {
         "depth": 3,
         "slug": "a-fresh-take-on-error-handling",
-        "text": "错误处理的全新诠释"
+        "text": "全新视角的错误处理"
       },
       {
         "depth": 4,
         "slug": "stack-traces-on-all-targets",
-        "text": "在所有目标上启用堆栈跟踪"
+        "text": "所有目标平台均支持调用栈回溯"
       },
       {
         "depth": 3,
         "slug": "intro-section-10",
-        "text": "泛型数据结构和函数"
+        "text": "泛型数据结构与泛型函数"
       },
       {
         "depth": 3,
         "slug": "compile-time-reflection-and-compile-time-code-execution",
-        "text": "编译期反射和编译期代码执行"
+        "text": "编译期反射与编译期代码执行"
       },
       {
         "depth": 3,
         "slug": "integration-with-c-libraries-without-ffibindings",
-        "text": "无需 FFI/bindings 的 C 库集成"
+        "text": "无需 FFI 与绑定即可直接集成 C 库"
       },
       {
         "depth": 4,
         "slug": "zig-is-also-a-c-compiler",
-        "text": "Zig 也是 C 编译器"
+        "text": "Zig 本身就是一个顶级的 C 语言编译器"
       },
       {
         "depth": 4,
         "slug": "intro-section-14",
-        "text": "导出函数、变量和类型供 C 代码使用"
+        "text": "导出函数、变量与类型供 C 代码调用"
       },
       {
         "depth": 3,
         "slug": "cross-compiling-is-a-first-class-use-case",
-        "text": "交叉编译的一流支持"
+        "text": "交叉编译是一等公民"
       },
       {
         "depth": 4,
         "slug": "zig-ships-with-libc",
-        "text": "Zig 与 libc 一起发布"
+        "text": "Zig 自带完备的 libc"
       },
       {
         "depth": 3,
@@ -173,12 +173,12 @@
       {
         "depth": 3,
         "slug": "intro-section-18",
-        "text": "支持广泛的目标"
+        "text": "广泛的目标平台支持"
       },
       {
         "depth": 3,
         "slug": "intro-section-19",
-        "text": "对包维护者友好"
+        "text": "对软件包维护者极其友好"
       }
     ]
   },
@@ -192,17 +192,17 @@
       {
         "depth": 2,
         "slug": "build-system",
-        "text": "何时使用 Zig 构建系统？"
+        "text": "何时需要使用 Zig 构建系统？"
       },
       {
         "depth": 2,
         "slug": "getting-started",
-        "text": "开始使用"
+        "text": "快速上手"
       },
       {
         "depth": 3,
         "slug": "simple",
-        "text": "简单的可执行文件"
+        "text": "构建简单的可执行文件"
       },
       {
         "depth": 3,
@@ -212,17 +212,17 @@
       {
         "depth": 3,
         "slug": "run-step",
-        "text": "为运行应用程序添加一个便捷步骤"
+        "text": "添加用于运行应用程序的便捷构建步骤"
       },
       {
         "depth": 2,
         "slug": "basics",
-        "text": "基础"
+        "text": "核心基础"
       },
       {
         "depth": 3,
         "slug": "user-options",
-        "text": "用户提供的选项"
+        "text": "用户自定义配置选项"
       },
       {
         "depth": 3,
@@ -232,72 +232,72 @@
       {
         "depth": 3,
         "slug": "conditional-compilation",
-        "text": "用于条件编译的选项"
+        "text": "基于选项的条件编译与配置传递"
       },
       {
         "depth": 3,
         "slug": "static-library",
-        "text": "静态库"
+        "text": "构建静态库"
       },
       {
         "depth": 3,
         "slug": "dynamic-library",
-        "text": "动态库"
+        "text": "构建共享库（动态链接库）"
       },
       {
         "depth": 3,
         "slug": "testing",
-        "text": "测试"
+        "text": "单元测试集成"
       },
       {
         "depth": 3,
         "slug": "linking-to-system-libraries",
-        "text": "链接系统库"
+        "text": "查找并链接系统级动态库"
       },
       {
         "depth": 2,
         "slug": "generating-files",
-        "text": "生成文件"
+        "text": "代码与资源文件生成"
       },
       {
         "depth": 3,
         "slug": "system-tools",
-        "text": "运行系统工具"
+        "text": "运行系统工具生成文件"
       },
       {
         "depth": 3,
         "slug": "project-tools",
-        "text": "运行项目工具"
+        "text": "运行工程自身工具生成代码"
       },
       {
         "depth": 3,
         "slug": "embed-file",
-        "text": "为 @embedFile 生成文件"
+        "text": "生成用于 @embedFile 嵌入的资产"
       },
       {
         "depth": 3,
         "slug": "generating-zig",
-        "text": "生成 Zig 源代码"
+        "text": "生成 Zig 源代码并作为模块导入"
       },
       {
         "depth": 3,
         "slug": "write-files",
-        "text": "处理一个或多个生成的文件"
+        "text": "通过 WriteFiles 统一管理生成的文件"
       },
       {
         "depth": 3,
         "slug": "mutating-source",
-        "text": "直接修改源文件"
+        "text": "就地生成与更新版本控制下的源码文件"
       },
       {
         "depth": 2,
         "slug": "examples",
-        "text": "实用示例"
+        "text": "实用构建示例"
       },
       {
         "depth": 3,
         "slug": "release",
-        "text": "为多个目标构建以发布版本"
+        "text": "面向多个目标平台批量交叉构建发布包"
       }
     ]
   },
@@ -311,37 +311,37 @@
       {
         "depth": 2,
         "slug": "hello",
-        "text": "Hello world"
+        "text": "Hello World"
       },
       {
         "depth": 2,
         "slug": "ext",
-        "text": "调用外部库函数"
+        "text": "调用外部动态库函数"
       },
       {
         "depth": 2,
         "slug": "leak",
-        "text": "内存泄露检测"
+        "text": "内存泄漏与非法释放检测"
       },
       {
         "depth": 2,
         "slug": "c-interop",
-        "text": "C 互操作性"
+        "text": "C 语言互操作性"
       },
       {
         "depth": 2,
         "slug": "zigg-zagg",
-        "text": "Zigg Zagg"
+        "text": "Zigg Zagg 趣味算法"
       },
       {
         "depth": 2,
         "slug": "generic",
-        "text": "泛型"
+        "text": "泛型数据类型"
       },
       {
         "depth": 2,
         "slug": "curl",
-        "text": "在 Zig 中使用 cURL"
+        "text": "在 Zig 中直接调用 libcurl 网络库"
       }
     ]
   },
@@ -355,37 +355,37 @@
       {
         "depth": 2,
         "slug": "intro-section-1",
-        "text": "没有隐式控制流"
+        "text": "无隐式控制流"
       },
       {
         "depth": 2,
         "slug": "intro-section-2",
-        "text": "没有隐式内存分配"
+        "text": "无隐式内存分配"
       },
       {
         "depth": 2,
         "slug": "intro-section-3",
-        "text": "无标准库的一流支持"
+        "text": "对无标准库环境的一等支持"
       },
       {
         "depth": 2,
         "slug": "intro-section-4",
-        "text": "为库设计的可移植语言"
+        "text": "为构建通用便携库量身打造的语言"
       },
       {
         "depth": 2,
         "slug": "intro-section-5",
-        "text": "为现有项目的构建系统和包管理器"
+        "text": "为既有项目打造的包管理器与构建系统"
       },
       {
         "depth": 2,
         "slug": "intro-section-6",
-        "text": "简单性"
+        "text": "极致精简与纯粹性"
       },
       {
         "depth": 2,
         "slug": "intro-section-7",
-        "text": "工具"
+        "text": "完备卓越的现代化工具链"
       }
     ]
   }

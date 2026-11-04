@@ -7,23 +7,23 @@
     },
     {
       "file": "upstream/intro/zh-CN/getting-started.html",
-      "sha256": "13de666dd62afcd0333b832345af6ea2c346f2847fac4d9a4ea1a22f493f08fa"
+      "sha256": "a5ad33a72d0fa1505d05dcf4df40c899c98b9ec1c9c7bcb3dd97d6924b8de833"
     },
     {
       "file": "upstream/intro/zh-CN/overview.html",
-      "sha256": "eefe00198d80e9c6a0cf522a16b5731504c0937cf6eb7f8badf8f2e058957ef1"
+      "sha256": "feff2a19a5711416f7d12b601727e02d18844fe32c9f51c145d8e0c673503f57"
     },
     {
       "file": "upstream/intro/zh-CN/build-system.html",
-      "sha256": "fb1c693df42a096e904207e4c950a914814e3f47a90129fe7d749a0654d9b16b"
+      "sha256": "39672f311d3eb06c4de5e40261a44ea01db5af6f056d15b7eecbe738411f5a6f"
     },
     {
       "file": "upstream/intro/zh-CN/samples.html",
-      "sha256": "01d29c98ef1ebe9579e972f9582e2890eda7c0f389c33db8bee511844697ebc5"
+      "sha256": "928f02154e4952a91db1e6f79e3be08d4083829d6f066307644b97d7cd0d38ae"
     },
     {
       "file": "upstream/intro/zh-CN/why_zig_rust_d_cpp.html",
-      "sha256": "e644ee73a1aa12fee572150d7e8aaae5f9e4c8f5dd513ce31df92fd017861fef"
+      "sha256": "1ae3b38ff1e9200de1bb86073c7459b8d0557eaa56f1e5a354a3e2f8ee3cb62c"
     }
   ]
 }

@@ -1,26 +1,24 @@
-<!DOCTYPE html><html lang="zh-CN"><head id="head"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    
-    <title id="title">
-      快速入门
-      ⚡
-      Zig 编程语言
-    </title>
+
+
+  
+    <meta charset="utf-8">
+    <title id="title">快速入门 ⚡ Zig 编程语言</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="light dark">
-    <link rel="icon" href="https://ziglang.org/favicon.png">
-    <link rel="icon" href="https://ziglang.org/favicon.svg">
-    <link type="text/css" rel="stylesheet" href="https://ziglang.org/css/style.css">
-    <link type="text/css" rel="stylesheet" href="https://ziglang.org/css/navigation.css">
+    <link rel="icon" href="/favicon.png">
+    <link rel="icon" href="/favicon.svg">
+    <link type="text/css" rel="stylesheet" href="/css/style.css">
+    <link type="text/css" rel="stylesheet" href="/css/navigation.css">
     
-  <link type="text/css" rel="stylesheet" href="https://ziglang.org/css/home.css">
+  <link type="text/css" rel="stylesheet" href="/css/home.css">
 
-  </head>
-  <body>
+  
+  
     <div class="container">
-      <a href="https://ziglang.org/zh-CN/"><span id="header-image"></span></a>
+      <a href="/"><span id="header-image"></span></a>
     </div>
     <nav id="mobile-navbar" class="nav container">
-      <span style="overflow:hidden; max-width: 80%; display: inline-block; vertical-align:bottom;">快速入门
+      <span style="overflow:hidden; max-width: 80%; display: inline-block; vertical-align:bottom;">Getting Started
       </span>
       <label for="mobile-toggle" id="hamburger">
         <svg style="width:2em;height:2em;" viewBox="0 0 24 24">
@@ -32,21 +30,21 @@
       <input type="checkbox" name="mobile-toggle" id="mobile-toggle">
       <div class="" id="menu">
         
-          <a class="navbar-item" href="https://ziglang.org/zh-CN/download/">下载</a>
+          <a class="navbar-item" href="/download/">Download &amp; Documentation</a>
         
         
-          <a class="navbar-item" href="https://ziglang.org/zh-CN/intro/">学习</a>
+          <a class="navbar-item" href="/intro/">Intro</a>
         
         
-          <a class="navbar-item" href="https://ziglang.org/news/">News</a>
+          <a class="navbar-item" href="/news/">News</a>
         
-        <a href="https://codeberg.org/ziglang/zig" class="navbar-item external-link external-link-light">源代码</a>
-        <a href="https://ziglang.org/community" class="navbar-item">加入社区</a>
+        <a href="https://codeberg.org/ziglang/zig" class="navbar-item external-link external-link-light">Source</a>
+        <a href="/community" class="navbar-item">Community</a>
         
-          <a class="navbar-item" href="https://ziglang.org/zh-CN/zsf/">Zig 软件基金会</a>
+          <a class="navbar-item" href="/zsf/">Zig Software Foundation</a>
         
         
-          <a class="navbar-item" href="https://ziglang.org/devlog/2026/">Devlog</a>
+          <a class="navbar-item" href="/devlog/2026/">Devlog</a>
         
       </div>
     </div>
@@ -54,22 +52,22 @@
       <div class="container" style="display:flex; justify-content: space-between;">
         <div>
           
-            <a class="navbar-item" href="https://ziglang.org/zh-CN/download/">下载</a>
+            <a class="navbar-item" href="/download/">Download &amp; Documentation</a>
           
           
-            <a class="navbar-item" href="https://ziglang.org/zh-CN/intro/">学习</a>
+            <a class="navbar-item" href="/intro/">Introduction</a>
           
           
-            <a class="navbar-item" href="https://ziglang.org/news/">News</a>
+            <a class="navbar-item" href="/news/">News</a>
           
           
-            <a class="navbar-item" href="https://ziglang.org/zh-CN/zsf/">Zig 软件基金会</a>
+            <a class="navbar-item" href="/zsf/">Zig Software Foundation</a>
           
           
-            <a class="navbar-item" href="https://ziglang.org/devlog/2026/">Devlog</a>
+            <a class="navbar-item" href="/devlog/2026/">Devlog</a>
           
-          <a href="https://codeberg.org/ziglang/zig" class="navbar-item external-link external-link-light">源代码</a>
-          <a href="https://ziglang.org/community" class="navbar-item">加入社区</a>
+          <a href="https://codeberg.org/ziglang/zig" class="navbar-item external-link external-link-light">Source</a>
+          <a href="/community" class="navbar-item">Community</a>
         </div>
       </div>
     </nav>
@@ -77,50 +75,69 @@
       
   <div class="container">
     
-      <a id="back" href="https://ziglang.org/zh-CN/intro/">
-        ← 返回
-        <b>学习</b>
-      </a>
+      <a id="back" href="/intro/">← 返回 <b>学习</b></a>
     
     <h1 class="title">快速入门</h1>
     <ul>
-<li>选择带版本号的版本还是开发版本？</li><li>安装 Zig<ul><li>
-<a href="https://ziglang.org/zh-CN/intro/getting-started/#direct">直接下载</a><ul><li>
-在 Windows 上设置 PATH</li><li>在 Linux, MacOS, BSD 上设置 PATH 将 zig 二进制镜像的位置添加到 PATH 环境变量中。</li></ul></li><li><a href="https://ziglang.org/zh-CN/intro/getting-started/#managers">包管理</a><ul><li>
-Windows</li><li>macOS</li><li>Linux</li></ul></li><li><a href="https://ziglang.org/zh-CN/intro/getting-started/#source">从源码构建</a></li></ul></li><li>推荐工具<ul><li>
-语法高亮和语言服务器（LSP）</li></ul></li><li>运行 Hello World</li><li>下一步</li></ul>
+<li>选择发布版本还是开发版本？</li>
+<li>安装 Zig
+  <ul>
+    <li><a href="#direct">直接下载安装包</a>
+      <ul>
+        <li>在 Windows 上配置 PATH</li>
+        <li>在 Linux、macOS、BSD 上配置 PATH</li>
+      </ul>
+    </li>
+    <li><a href="#managers">通过包管理器安装</a>
+      <ul>
+        <li>Windows</li>
+        <li>macOS</li>
+        <li>Linux</li>
+      </ul>
+    </li>
+    <li><a href="#source">从源码构建</a></li>
+  </ul>
+</li>
+<li>推荐开发工具
+  <ul>
+    <li>语法高亮与语言服务器（LSP）</li>
+  </ul>
+</li>
+<li>运行 Hello World</li>
+<li>后续学习建议</li>
+</ul>
     
-    <h1>选择带版本号的版本还是开发版本？</h1><p>总体上，带版本号版本对于有依赖并受益于稳定性的项目更实用，同时开发版本向希望更多参与 Zig 项目开发中的人提供。</p><p>Zig 安装是可以被放在你系统的任何地方的独立的归档。多个版本的 Zig 可以共存。</p><h1>安装 Zig</h1><h2 id="direct">直接下载</h2><p>这是最直接的获取 Zig 的方法：从<a href="https://ziglang.org/zh-CN/download/">下载</a>页面为你的平台获取压缩包，将其解压到一个目录，再添加到你的 <code>PATH</code> 环境变量里，然后就可在任意位置调用 <code>zig</code> 了。</p><h3>在 Windows 上设置 PATH</h3><p>要在 Windows 上设置 path，请在 PowerShell 中运行以下<strong>任一</strong>代码片段。选择要在系统级别上应用此更改（需要在有管理员权限的情况下运行 PowerShell）还是只针对你使用的用户，并<strong>确保更改代码以指向 Zig 所在的位置</strong>。注意在 <code>C:</code> 之前的 <code>;</code> 不是拼写错误。</p><p>系统级安装 (<strong>管理员</strong> PowerShell):</p><pre><code>[Environment]::SetEnvironmentVariable(
+    <h1>选择发布版本还是开发版本？</h1><p>总体而言，带版本标签的正式发布版本更适合依赖稳定环境并用于生产的实际工程项目；而开发构建版本（Development Builds）则面向希望体验最新语言演进或参与 Zig 本身开发的贡献者。</p><p>Zig 的安装包是完全自包含的独立压缩包，解压后可以存放在操作系统的任意目录下，不同版本的 Zig 可以完美共存且互不干扰。</p><h1>安装 Zig</h1><h2 id="direct">直接下载安装包</h2><p>这是获取 Zig 最直接简便的方式：从<a href="https://ziglang.org/download/">下载页面</a>获取适合你操作系统的压缩包，将其解压至指定目录，然后把该目录添加到 <code>PATH</code> 环境变量中，即可在终端的任意位置调用 <code>zig</code>。</p><h3>Windows</h3><p>在 Windows 上配置 PATH 环境变量，请在 PowerShell 中执行以下<strong>任一</strong>脚本片段。你可以选择系统级全局生效（需要以管理员身份运行 PowerShell）或仅对当前用户生效，并<strong>务必将路径替换为你实际存放 Zig 的目录</strong>。注意：<code>C:</code> 前面的分号 <code>;</code> 是必需的分隔符，并非拼写错误。</p><p>系统级全局配置（<strong>管理员权限</strong> PowerShell）：</p><pre><code>[Environment]::SetEnvironmentVariable(
    "Path",
    [Environment]::GetEnvironmentVariable("Path", "Machine") + ";C:\your-path\zig-windows-x86_64-your-version",
    "Machine"
 )
-</code></pre><p>用户级安装 (PowerShell):</p><pre><code>[Environment]::SetEnvironmentVariable(
+</code></pre><p>当前用户配置（普通用户权限 PowerShell）：</p><pre><code>[Environment]::SetEnvironmentVariable(
    "Path",
    [Environment]::GetEnvironmentVariable("Path", "User") + ";C:\your-path\zig-windows-x86_64-your-version",
    "User"
 )
-</code></pre><p>运行完毕后重启你的 PowerShell 实例。</p><h3>在 Linux, MacOS, BSD 上设置 PATH 将 zig 二进制镜像的位置添加到 PATH 环境变量中。</h3><p>这通常通过在 shell 启动脚本（<code>.profile</code>、<code>.zshrc</code>……）中添加 export 行完成</p><pre><code class="bash"><span class="keyword">export</span> <span class="property">PATH</span>=<span class="operator">$</span><span class="property">PATH</span>:~/path/to/zig
+</code></pre><p>配置完成后，请重启 PowerShell 终端使环境变量生效。</p><h3>macOS</h3><p>将解压出的 zig 可执行文件所在目录添加到 <code>PATH</code> 环境变量中。</p><p>通常只需在终端的启动脚本配置文件（如 <code>.profile</code>、<code>.bashrc</code>、<code>.zshrc</code> 等）中添加一行 <code>export</code> 语句：</p><pre><code class="bash"><span class="keyword">export</span> <span class="property">PATH</span>=<span class="operator">$</span><span class="property">PATH</span>:~/path/to/zig
 </code></pre>
-<p>完成后，可以 <code>source</code> 你的启动文件或者重启 Shell。</p><h2 id="managers">包管理</h2><h3>Windows</h3><p><strong>WinGet</strong><br>Zig 在 <a href="https://github.com/microsoft/winget-pkgs/tree/master/manifests/z/zig/zig">WinGet</a> 上可用。</p><pre><code>winget install -e --id zig.zig
-</code></pre><p><strong>Chocolatey</strong><br>Zig 在 <a href="https://chocolatey.org/packages/zig">Chocolatey</a> 上可用。</p><pre><code>choco install zig
-</code></pre><p><strong>Scoop</strong><br>Zig 在 <a href="https://scoop.sh/#/apps?q=zig&amp;id=7e124d6047c32d426e4143ab395d863fc9d6d491">Scoop</a> 上可用。</p><pre><code>scoop install zig
-</code></pre><p>最新的 <a href="https://scoop.sh/#/apps?q=zig&amp;id=921df07e75042de645204262e784a17c2421944c">开发版本</a>:</p><pre><code>scoop bucket add versions
+<p>配置完成后，可以执行 <code>source &lt;配置文件&gt;</code> 使其立即生效，或者直接重启终端。</p><h2 id="managers">通过包管理器安装</h2><h3>Windows</h3><p><strong>WinGet</strong><br>可以通过 <a href="https://github.com/microsoft/winget-pkgs/tree/master/manifests/z/zig/zig">WinGet</a> 安装 Zig：</p><pre><code>winget install -e --id zig.zig
+</code></pre><p><strong>Chocolatey</strong><br>可以通过 <a href="https://chocolatey.org/packages/zig">Chocolatey</a> 安装 Zig：</p><pre><code>choco install zig
+</code></pre><p><strong>Scoop</strong><br>可以通过 <a href="https://scoop.sh/#/apps?q=zig&amp;id=7e124d6047c32d426e4143ab395d863fc9d6d491">Scoop</a> 安装 Zig：</p><pre><code>scoop install zig
+</code></pre><p>最新<a href="https://scoop.sh/#/apps?q=zig&amp;id=921df07e75042de645204262e784a17c2421944c">开发分支构建版本（dev build）</a>：</p><pre><code>scoop bucket add versions
 scoop install versions/zig-dev
-</code></pre><h3>macOS</h3><p><strong>Homebrew</strong><br>最新带标签版本：</p><pre><code>brew install zig
+</code></pre><h3>macOS</h3><p><strong>Homebrew</strong><br>最新正式发布版本：</p><pre><code>brew install zig
 </code></pre><p><strong>MacPorts</strong></p><pre><code>sudo port install zig
-</code></pre><h3>Linux</h3><p>Zig 也存在于许多 Linux 的包管理器中。</p><h2 id="source">从源码构建</h2><p>参见 <a href="https://codeberg.org/ziglang/zig#building-from-source">README.md</a>.</p><h1>推荐工具</h1><h2>语法高亮和语言服务器（LSP）</h2><p>所有主流文本编辑器都有 Zig 的语法高亮支持。有一些内置此功能，有一些需要安装插件。</p><p>如果你对 Zig 和你的编辑器的深度整合感兴趣，可以查看 <a href="https://github.com/zigtools/zls">zigtools/zls</a>。</p><p>如果你对其他的工具感兴趣，可以查看<a href="https://ziglang.org/zh-CN/intro/tools/">工具</a>章节。</p><h1>运行 Hello World</h1><p>如果你正确地完成了安装过程，你现在应该可以从你的 shell 中运行 Zig 编译器了。让我们创建你的第一个 Zig 程序来测试一下吧！</p><p>在你存放项目的目录，执行：</p><pre><code class="bash"><span class="constant function">mkdir</span> <span class="constant">hello-world</span>
+</code></pre><h3>Linux</h3><p>许多 Linux 发行版的官方包管理器与软件仓库中也已收录了 Zig。</p><h2 id="source">从源码构建</h2><p>详情请参见 <a href="https://codeberg.org/ziglang/zig#building-from-source">README.md</a>。</p><h1>推荐开发工具</h1><h2>语法高亮与语言服务器（LSP）</h2><p>所有主流文本编辑器均提供对 Zig 的语法高亮支持。部分编辑器已原生内置，其余则可通过安装插件获得支持。</p><p>如果你希望在编辑器中获得代码自动补全、跳转定义等深度集成体验，推荐使用官方语言服务器项目 <a href="https://github.com/zigtools/zls">zigtools/zls</a>。</p><p>如果你想探索更多社区开发工具，可以查阅<a href="https://ziglang.org/intro/tools/">工具一览（Tools）</a>章节。</p><h1>运行 Hello World</h1><p>如果你已经顺利完成上述安装与配置，现在应该可以在终端中直接调用 Zig 编译器了。让我们创建第一个 Zig 项目来快速检验一下！</p><p>进入你的代码工程目录并运行：</p><pre><code class="bash"><span class="constant function">mkdir</span> <span class="constant">hello-world</span>
 <span class="constant function">cd</span> <span class="constant">hello-world</span>
 <span class="constant function">zig</span> <span class="constant">init</span>
 </code></pre>
-<p>这将会输出：</p><pre><code>info: created build.zig
+<p>终端将输出类似如下信息：</p><pre><code>info: created build.zig
 info: created build.zig.zon
 info: created src/main.zig
 info: created src/root.zig
 info: see `zig build --help` for a menu of options
-</code></pre><p>执行 <code>zig build run</code> 应该会编译成可执行文件并运行，最终结果将会是：</p><pre><code>All your codebase are belong to us.
+</code></pre><p>接下来执行 <code>zig build run</code>，构建系统将编译并运行该程序，最终输出：</p><pre><code>All your codebase are belong to us.
 Run `zig build test` to run the tests.
-</code></pre><p>恭喜你，你已经安装好了 Zig！</p><h1>下一步</h1><p><strong>查看在<a href="https://ziglang.org/zh-CN/intro/">学习</a>章节的其他资源</strong>，请务必找到与你的 Zig 版本匹配的文档。（注意：夜间构建版本应该使用 <code>master</code> 分支上的文档），并考虑读一读 <a href="https://zig.guide/">zig.guide</a>。</p><p>Zig 是一个年轻的项目，遗憾的是我们还没有能力为所有的东西制作大量的文档和学习材料。因此，你应该考虑<a href="https://github.com/ziglang/zig/wiki/Community">加入其中一个 Zig 社区</a>以在遇到问题是获取帮助，同样也可以看看<a href="https://zig.show/">Zig SHOWTIME</a>。</p><p>最后，如果你喜欢 Zig 并想加速 Zig 开发，<a href="https://ziglang.org/zh-CN/zsf/">考虑捐助 Zig 软件基金会</a></p><img src="https://ziglang.org/heart.svg" style="vertical-align:middle; margin-right: 5px" alt="heart" width="300" height="150">.
+</code></pre><p>恭喜你！Zig 开发环境已成功安装并运行！</p><h1>后续学习建议</h1><p>欢迎继续阅读入门模块中的其他章节。请务必选择与你的 Zig 版本相匹配的官方文档（注意：使用 Nightly 开发版本的读者请查阅 master 分支文档），同时非常推荐阅读社区编写的教程 <a href="https://zig.guide/">zig.guide</a>。</p><p>Zig 是一门年轻而充满活力的语言，文档与学习资料仍在持续完善中。如果在探索过程中遇到任何疑问，欢迎<a href="https://github.com/ziglang/zig/wiki/Community">加入活跃的 Zig 中文与全球社区</a>获取帮助，也可以关注诸如 <a href="https://zig.show/">Zig SHOWTIME</a> 等精彩的社区活动与技术分享。</p><p>最后，如果你热爱 Zig 并希望加速它的发展，欢迎考虑<a href="https://ziglang.org/zsf/">向 Zig 软件基金会（ZSF）提供捐赠支持</a>。</p><img src="/heart.svg" style="vertical-align:middle; margin-right: 5px" alt="heart">.
 
   </div>
 
@@ -128,37 +145,28 @@ Run `zig build test` to run the tests.
     <div class="container" style="text-align: center; padding: 2em 0;">
       <div id="languages-menu">
   
-    <div class="container">
-      <span>This page was translated by the Zig community,
-        <a href="https://ziglang.org/intro/getting-started/">see the original version</a>
-        or
-        <a href="https://codeberg.org/ziglang/ziglang.org" class="external-link" target="_blank" rel="noopener">report errors</a>.</span>
-    </div>
-    <br>
-  
-  <span>此页面还提供以下语言的版本：</span>
+  <span>This page is also available in the following languages:</span>
   <br>
   <div>
-    <a href="https://ziglang.org/intro/getting-started/" style="white-space: nowrap;">English (original)</a>
+    <a href="/intro/getting-started/" style="white-space: nowrap;">English (original)</a>
   
-    <a href="https://ziglang.org/es-AR/intro/getting-started/" style="white-space: nowrap;">Español</a>
+    <a href="/es-AR/intro/getting-started/" style="white-space: nowrap;">Español</a>
   
-    <a href="https://ziglang.org/ru-RU/intro/getting-started/" style="white-space: nowrap;">Русский</a>
+    <a href="/ru-RU/intro/getting-started/" style="white-space: nowrap;">Русский</a>
   
-    <a href="https://ziglang.org/it-IT/intro/getting-started/" style="white-space: nowrap;">Italiano</a>
+    <a href="/it-IT/intro/getting-started/" style="white-space: nowrap;">Italiano</a>
   
-    <a href="https://ziglang.org/de-DE/intro/getting-started/" style="white-space: nowrap;">Deutsch</a>
+    <a href="/de-DE/intro/getting-started/" style="white-space: nowrap;">Deutsch</a>
   
-    <a href="https://ziglang.org/uk-UA/intro/getting-started/" style="white-space: nowrap;">Українська</a>
+    <a href="/uk-UA/intro/getting-started/" style="white-space: nowrap;">Українська</a>
   
-    <a href="https://ziglang.org/ja-JP/intro/getting-started/" style="white-space: nowrap;">日本語</a>
+    <a href="/ja-JP/intro/getting-started/" style="white-space: nowrap;">日本語</a>
   
-    <a href="https://ziglang.org/zh-CN/intro/getting-started/" style="white-space: nowrap;">中文</a>
+    <a href="/zh-CN/intro/getting-started/" style="white-space: nowrap;">中文</a>
   
-    <a href="https://ziglang.org/ko-KR/intro/getting-started/" style="white-space: nowrap;">한국어</a>
+    <a href="/ko-KR/intro/getting-started/" style="white-space: nowrap;">한국어</a>
   </div>
 </div>
     </div>
   
 
-</body></html>

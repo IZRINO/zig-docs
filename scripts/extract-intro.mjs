@@ -65,7 +65,7 @@ async function main() {
     if (!content.length)
       throw new Error(`Missing article content: ${page.slug}`);
     content
-      .find('img[src="https://ziglang.org/heart.svg"]')
+      .find('img[src="https://ziglang.org/heart.svg"], img[src="/heart.svg"]')
       .attr('src', '../../../../assets/zig-heart.svg');
     content.find('#back, h1.title').remove();
     const toc = content.children('ul').first();
