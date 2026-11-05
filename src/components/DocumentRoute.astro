@@ -34,6 +34,7 @@ const title =
   meta?.title ??
   (locale === 'zh-cn' ? `Zig ${version} 文档` : `Zig ${version} documentation`);
 const headings = meta?.headings ?? [
+  { depth: 2, slug: 'intro-index', text: t.intro },
   { depth: 2, slug: 'language-reference', text: t.reference },
   { depth: 2, slug: 'standard-library', text: t.library },
 ];
@@ -44,7 +45,7 @@ const headings = meta?.headings ?? [
   frontmatter={{
     title,
     description: meta
-      ? `${title} · Zig ${version} ${meta.kind === 'std' ? t.library : meta.kind === 'intro' ? t.intro : t.reference}`
+      ? `${title} · ${meta.kind === 'intro' ? t.sharedIntro : `Zig ${version} ${meta.kind === 'std' ? t.library : t.reference}`}`
       : t.siteDescription,
     pagefind: true,
   }}
@@ -62,7 +63,9 @@ const headings = meta?.headings ?? [
                 ? t.intro
                 : t.reference}
           </span>
-          <span class="document-version">Zig {version}</span>
+          <span class="document-version">
+            {meta.kind === 'intro' ? t.sharedIntro : `Zig ${version}`}
+          </span>
           <a href={meta.sourceUrl} title={t.viewSource}>
             {t.source}
             <Icon name="external" size="0.85rem" />

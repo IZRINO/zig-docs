@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head id="head">
+    <meta charset="utf-8">
+    <title id="title">
+      Why Zig When There is Already C++, D, and Rust?
+      ⚡
+      Zig Programming Language
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
+    <link rel="icon" href="/favicon.png">
+    <link rel="icon" href="/favicon.svg">
+    <link type="text/css" rel="stylesheet" href="/css/style.css">
+    <link type="text/css" rel="stylesheet" href="/css/navigation.css">
+    
+  <link type="text/css" rel="stylesheet" href="/css/home.css">
+
+  </head>
+  <body>
+    <div class="container">
+      <a href="/"><span id="header-image"></span></a>
+    </div>
+    <nav id="mobile-navbar" class="nav container">
+      <span style="overflow:hidden; max-width: 80%; display: inline-block; vertical-align:bottom;">Why Zig?
+      </span>
+      <label for="mobile-toggle" id="hamburger">
+        <svg style="width:2em;height:2em;" viewBox="0 0 24 24">
+          <path fill="currentColor" d="M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z"/>
+        </svg>
+      </label>
+    </nav>
+    <div id="mobile-subnav">
+      <input type="checkbox" name="mobile-toggle" id="mobile-toggle">
+      <div class="" id="menu">
+        
+          <a class="navbar-item" href="/download/">Download &amp; Documentation</a>
+        
+        
+          <a class="navbar-item" href="/intro/">Intro</a>
+        
+        
+          <a class="navbar-item" href="/news/">News</a>
+        
+        <a href="https://codeberg.org/ziglang/zig" class="navbar-item external-link external-link-light">Source</a>
+        <a href="/community" class="navbar-item">Community</a>
+        
+          <a class="navbar-item" href="/zsf/">Zig Software Foundation</a>
+        
+        
+          <a class="navbar-item" href="/devlog/2026/">Devlog</a>
+        
+      </div>
+    </div>
+    <nav id="navbar" class="nav">
+      <div class="container" style="display:flex; justify-content: space-between;">
+        <div>
+          
+            <a class="navbar-item" href="/download/">Download &amp; Documentation</a>
+          
+          
+            <a class="navbar-item" href="/intro/">Introduction</a>
+          
+          
+            <a class="navbar-item" href="/news/">News</a>
+          
+          
+            <a class="navbar-item" href="/zsf/">Zig Software Foundation</a>
+          
+          
+            <a class="navbar-item" href="/devlog/2026/">Devlog</a>
+          
+          <a href="https://codeberg.org/ziglang/zig" class="navbar-item external-link external-link-light">Source</a>
+          <a href="/community" class="navbar-item">Community</a>
+        </div>
+      </div>
+    </nav>
+    <div id="content" role="main">
+      
+  <div class="container">
+    
+      <a id="back" href="/intro/">
+        ← Back to
+        <b>Introduction</b>
+      </a>
+    
+    <h1 class="title">Why Zig When There is Already C++, D, and Rust?</h1>
+    
+    <h1>No hidden control flow</h1><p>If Zig code doesn’t look like it’s jumping away to call a function, then it isn’t. This means you can be sure that the following code calls only <code>foo()</code> and then <code>bar()</code>, and this is guaranteed without needing to know the types of anything:</p><pre><code class="zig"><span class="keyword">var</span> <span class="constant variable_builtin type variable">a</span> <span class="operator">=</span> <span class="constant variable_builtin type variable">b</span> <span class="operator">+</span> <span class="constant variable_builtin type variable">c</span><span class="punctuation_delimiter">.</span><span class="constant variable_builtin type variable_member variable">d</span><span class="punctuation_delimiter">;</span>
+<span class="constant variable_builtin function_call variable type">foo</span><span class="punctuation_bracket">(</span><span class="punctuation_bracket">)</span><span class="punctuation_delimiter">;</span>
+bar<span class="punctuation_bracket">(</span><span class="punctuation_bracket">)</span><span class="punctuation_delimiter">;</span>
+</code></pre>
+<p>Examples of hidden control flow:</p><ul><li>D has <code>@property</code> functions, which are methods that you call with what looks like field access, so in the above example, <code>c.d</code> might call a function.</li><li>C++, D, and Rust have operator overloading, so the <code>+</code> operator might call a function.</li><li>C++, D, and Go have throw/catch exceptions (sometimes also called panic/recover), so <code>foo()</code> might throw an exception, and prevent <code>bar()</code> from being called. (Of course, even in Zig <code>foo()</code> could deadlock and prevent <code>bar()</code> from being called, but that can happen in any Turing-complete language.)</li></ul><p>The purpose of this design decision is to improve readability.</p><h1>No hidden allocations</h1><p>Zig has a hands-off approach when it comes to heap allocation. There is no <code>new</code> keyword or any other language feature that uses a heap allocator (e.g. string concatenation operator[1]). The entire concept of the heap is managed by library and application code, not by the language.</p><p>Examples of hidden allocations:</p><ul><li>Go’s <code>defer</code> allocates memory to a function-local stack. In addition to being an unintuitive way for this control flow to work, it can cause out-of-memory failures if you use <code>defer</code> inside a loop.</li><li>C++ coroutines allocate heap memory in order to call a coroutine.</li><li>In Go, a function call can cause heap allocation because goroutines allocate small stacks that get resized when the call stack gets deep enough.</li><li>The main Rust standard library APIs panic on out of memory conditions, and the alternate APIs that accept allocator parameters are an afterthought (see <a href="https://github.com/rust-lang/rust/issues/29802">rust-lang/rust#29802</a>).</li></ul><p>Nearly all garbage collected languages have hidden allocations strewn about, since the garbage collector hides the evidence on the cleanup side.</p><p>The main problem with hidden allocations is that it prevents the <em>reusability</em> of a piece of code, unnecessarily limiting the number of environments that code would be appropriate to be deployed to. Simply put, there are use cases where one must be able to rely on control flow and function calls not to have the side-effect of memory allocation, therefore a programming language can only serve these use cases if it can realistically provide this guarantee.</p><p>In Zig, there are standard library features that provide and work with heap allocators, but those are optional standard library features, not built into the language itself. If you never initialize a heap allocator, you can be confident your program will not heap allocate.</p><p>Every standard library feature that needs to allocate heap memory accepts an <code>Allocator</code> parameter in order to do it. This means that the Zig standard library supports freestanding targets. For example <code>std.ArrayList</code> and <code>std.AutoHashMap</code> can be used for bare metal programming!</p><p>Custom allocators make manual memory management a breeze. Zig has a debug allocator that maintains memory safety in the face of use-after-free and double-free. It automatically detects and prints stack traces of memory leaks. There is an arena allocator so that you can bundle any number of allocations into one and free them all at once rather than manage each allocation independently. Special-purpose allocators can be used to improve performance or memory usage for any particular application’s needs.</p><p>[1]: Actually there is a string concatenation operator (generally an array concatenation operator), but it only works at compile time, so it still doesn’t do any runtime heap allocation.</p><h1>First-class support for no standard library</h1><p>As hinted above, Zig has an entirely optional standard library. Each std lib API only gets compiled into your program if you use it. Zig has equal support for either linking against libc or not linking against it. Zig is friendly to bare-metal and high-performance development.</p><p>It’s the best of both worlds; for example in Zig, WebAssembly programs can both use the normal features of the standard library, and still result in the tiniest binaries when compared to other programming languages that support compiling to WebAssembly.</p><h1>A Portable Language for Libraries</h1><p>One of the holy grails of programming is code reuse. Sadly, in practice, we find ourselves re-inventing the wheel many times over again. Often it’s justified.</p><ul><li>If an application has real-time requirements, then any library that uses garbage collection or any other non-deterministic behavior is disqualified as a dependency.</li><li>If a language makes it too easy to ignore errors, and thus hard to verify that a library correctly handles and bubbles up errors, it can be tempting to ignore the library and re-implement it, knowing that one handled all the relevant errors correctly. Zig is designed such that the laziest thing a programmer can do is handle errors correctly, and thus one can be reasonably confident that a library will properly bubble errors up.</li><li>Currently it is pragmatically true that C is the most versatile and portable language. Any language that does not have the ability to interact with C code risks obscurity. Zig is attempting to become the new portable language for libraries by simultaneously making it straightforward to conform to the C ABI for external functions, and introducing safety and language design that prevents common bugs within the implementations.</li></ul><h1>A Package Manager and Build System for Existing Projects</h1><p>Zig is a toolchain in addition to a programming language. It comes with a <a href="/intro/build-system/">build system and package manager</a> that are useful even in the context of a traditional C/C++ project.</p><p>Not only can you write Zig code instead of C or C++ code, but you can use Zig as a replacement for autotools, cmake, make, scons, ninja, etc. And on top of this, it provides a package manager for native dependencies. This build system is appropriate even if the entirety of a project’s codebase is in C or C++. For example, by <a href="https://github.com/andrewrk/ffmpeg">porting ffmpeg to the zig build system</a>, it becomes possible to compile ffmpeg on any supported system for any supported system using only a <a href="/download/">50 MiB download of zig</a>. For open source projects, this streamlined ability to build from source - and even cross-compile - can be the difference between gaining or losing valuable contributors.</p><p>System package managers such as apt-get, pacman, homebrew, and others are instrumental for end user experience, but they can be insufficient for the needs of developers. A language-specific package manager can be the difference between having no contributors and having many. For open source projects, the difficulty of getting the project to build at all is a huge hurdle for potential contributors. For C/C++ projects, having dependencies can be fatal, especially on Windows, where there is no package manager. Even when just building Zig itself, most potential contributors have a difficult time with the LLVM dependency. Zig offers a way for projects to depend on native libraries directly - without depending on the users’ system package manager to have the correct version available, and in a way that is practically guaranteed to successfully build projects on the first try regardless of what system is being used and independent of what platform is being targeted.</p><p><strong>Other languages have package managers but they do not eliminate pesky system dependencies like Zig does.</strong></p><p>Zig can replace a project’s build system with a reasonable language using a declarative API for building projects, that also provides package management, and thus the ability to actually depend on other C libraries. The ability to have dependencies enables higher level abstractions, and thus the proliferation of reusable high-level code.</p><h1>Simplicity</h1><p>C++, Rust, and D have such a large number of features that they can be distracting from the actual meaning of the application you are working on. One finds oneself debugging one’s knowledge of the programming language instead of debugging the application itself.</p><p>Zig has no macros yet is still powerful enough to express complex programs in a clear, non-repetitive way. Even Rust has macros with special cases like <code>format!</code>, which is implemented in the compiler itself. Meanwhile in Zig, the equivalent function is implemented in the standard library with no special case code in the compiler.</p><h1>Tooling</h1><p>Zig can be downloaded from <a href="/download/">the downloads section</a>.  Zig provides binary archives for Linux, Windows, and macOS. The following describes what you get with one of these archives:</p><ul><li>installed by downloading and extracting a single archive, no system configuration needed</li><li>statically compiled so there are no runtime dependencies</li><li>supports using LLVM for optimized release builds while using Zig’s custom backends for faster compilation performance</li><li>additionally supports a backend for outputting C code</li><li>out of the box cross-compilation to most major platforms</li><li>ships with source code for libc that will be dynamically compiled when needed for any supported platform</li><li>includes build system with concurrency and caching</li><li>compiles C and C++ code with libc support</li><li>drop-in GCC/Clang command line compatibility with <code>zig cc</code></li><li>Windows resource compiler</li></ul>
+  </div>
+
+    </div>
+    <div class="container" style="text-align: center; padding: 2em 0;">
+      <div id="languages-menu">
+  
+  <span>This page is also available in the following languages:</span>
+  <br>
+  <div>
+    <a href="/intro/why_zig_rust_d_cpp/" style="white-space: nowrap;">English (original)</a>
+  
+    <a href="/es-AR/intro/why_zig_rust_d_cpp/" style="white-space: nowrap;">Español</a>
+  
+    <a href="/ru-RU/intro/why_zig_rust_d_cpp/" style="white-space: nowrap;">Русский</a>
+  
+    <a href="/it-IT/intro/why_zig_rust_d_cpp/" style="white-space: nowrap;">Italiano</a>
+  
+    <a href="/de-DE/intro/why_zig_rust_d_cpp/" style="white-space: nowrap;">Deutsch</a>
+  
+    <a href="/uk-UA/intro/why_zig_rust_d_cpp/" style="white-space: nowrap;">Українська</a>
+  
+    <a href="/ja-JP/intro/why_zig_rust_d_cpp/" style="white-space: nowrap;">日本語</a>
+  
+    <a href="/zh-CN/intro/why_zig_rust_d_cpp/" style="white-space: nowrap;">中文</a>
+  
+    <a href="/ko-KR/intro/why_zig_rust_d_cpp/" style="white-space: nowrap;">한국어</a>
+  </div>
+</div>
+    </div>
+  </body>
+</html>

@@ -1,4 +1,5 @@
 import { readFile } from 'node:fs/promises';
+import { readGrammar } from './lib/grammar.mjs';
 import { createTokenizer } from './lib/tokenizer.mjs';
 import {
   collectCommentUnits,
@@ -69,3 +70,8 @@ for (const unit of nextUnits)
     nextPolicy.protectedExceptions,
   );
 console.log(`Validated ${nextUnits.length} Zig 0.17.1 comment translations.`);
+
+const grammar = await readGrammar();
+console.log(
+  `Validated ${Object.keys(grammar.translation.comments).length} grammar comment translations.`,
+);

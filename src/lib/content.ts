@@ -47,9 +47,8 @@ export function manifest(
       'utf8',
     ).then(async (raw) => {
       const docs = JSON.parse(raw) as DocumentMeta[];
-      if (locale !== 'zh-cn' || version !== latestVersion) return docs;
       const intro = await readFile(
-        resolve(contentRoot, version, locale, 'intro', 'manifest.json'),
+        resolve(contentRoot, locale, 'intro', 'manifest.json'),
         'utf8',
       );
       return [...(JSON.parse(intro) as DocumentMeta[]), ...docs];
@@ -67,7 +66,7 @@ export async function readDocument(
   const raw = await readFile(
     resolve(
       contentRoot,
-      version === '0.17.0' ? '' : version,
+      meta.kind === 'intro' || version === '0.17.0' ? '' : version,
       locale,
       meta.file,
     ),
@@ -111,6 +110,7 @@ export const labels = {
   'zh-cn': {
     home: '文档概览',
     intro: '入门',
+    sharedIntro: '通用入门资料',
     reference: '语言参考',
     library: '标准库',
     modules: '相关模块',
@@ -145,6 +145,7 @@ export const labels = {
   en: {
     home: 'Documentation',
     intro: 'Introduction',
+    sharedIntro: 'Shared introduction',
     reference: 'Language reference',
     library: 'Standard library',
     modules: 'Related modules',

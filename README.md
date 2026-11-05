@@ -6,6 +6,18 @@
 - 官方原文：<https://ziglang.org/documentation/0.17.0/>、<https://ziglang.org/documentation/0.17.1/>
 - 默认语言：简体中文。0.17.0 保留 `/zh-cn/`、`/en/`；0.17.1 使用 `/zh-cn/0.17.1/`、`/en/0.17.1/`。
 
+## 入门资料
+
+“入门”在全部版本的中英文概览与侧栏中可见，各版本共用同一组内容，不随版本切换更新。英文采用官方英文原文，现有中文章节保留原有译文；新增“语法规则”保留完整 PEG 规则，仅翻译自然语言注释。
+
+原文存放在 `upstream/intro/{en,zh-CN}/` 和 `upstream/intro/grammar/`；语法原文固定到来源提交并记录大小与 SHA-256，译文维护在 `translations/intro/grammar.zh-cn.json`。语法文件来自 `ziglang/zig-spec` 的 `master` 分支，不标作特定 Zig 发行版本的规范。
+
+```sh
+npm run extract:intro
+```
+
+该命令离线生成 `content/{en,zh-cn}/intro/`，内容校验会核对原文快照、译文覆盖与生成后的完整语法文本。
+
 ## 本地开发
 
 需要 Node.js 24。日常构建直接读取仓库中的快照与译文，不联网抓取，也不调用翻译服务。

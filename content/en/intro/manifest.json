@@ -2,39 +2,39 @@
   {
     "id": "intro/getting-started",
     "kind": "intro",
-    "title": "快速入门",
-    "sourceUrl": "https://ziglang.org/zh-CN/intro/getting-started/",
+    "title": "Getting Started",
+    "sourceUrl": "https://ziglang.org/intro/getting-started/",
     "file": "intro/getting-started.json",
     "headings": [
       {
         "depth": 2,
         "slug": "intro-section-1",
-        "text": "选择发布版本还是开发版本？"
+        "text": "Tagged release or development build?"
       },
       {
         "depth": 2,
         "slug": "intro-section-2",
-        "text": "安装 Zig"
+        "text": "Installing Zig"
       },
       {
         "depth": 3,
         "slug": "direct",
-        "text": "直接下载安装包"
+        "text": "Direct download"
       },
       {
         "depth": 4,
         "slug": "intro-section-4",
-        "text": "Windows"
+        "text": "Setting up PATH on Windows"
       },
       {
         "depth": 4,
         "slug": "intro-section-5",
-        "text": "macOS"
+        "text": "Setting up PATH on Linux, macOS, BSD"
       },
       {
         "depth": 3,
         "slug": "managers",
-        "text": "通过包管理器安装"
+        "text": "Package managers"
       },
       {
         "depth": 4,
@@ -54,338 +54,382 @@
       {
         "depth": 3,
         "slug": "source",
-        "text": "从源码构建"
+        "text": "Building from source"
       },
       {
         "depth": 2,
         "slug": "intro-section-11",
-        "text": "推荐开发工具"
+        "text": "Recommended tools"
       },
       {
         "depth": 3,
         "slug": "intro-section-12",
-        "text": "语法高亮与语言服务器（LSP）"
+        "text": "Syntax Highlighters and LSP"
       },
       {
         "depth": 2,
         "slug": "intro-section-13",
-        "text": "运行 Hello World"
+        "text": "Run Hello World"
       },
       {
         "depth": 2,
         "slug": "intro-section-14",
-        "text": "后续学习建议"
+        "text": "Next steps"
       }
     ]
   },
   {
     "id": "intro/overview",
     "kind": "intro",
-    "title": "深入了解",
-    "sourceUrl": "https://ziglang.org/zh-CN/intro/overview/",
+    "title": "Overview",
+    "sourceUrl": "https://ziglang.org/intro/overview/",
     "file": "intro/overview.json",
     "headings": [
       {
         "depth": 2,
         "slug": "intro-section-1",
-        "text": "核心特性一览"
+        "text": "Feature Highlights"
       },
       {
         "depth": 3,
         "slug": "small-simple-language",
-        "text": "小巧而精炼的语言"
+        "text": "Small, simple language"
       },
       {
         "depth": 3,
         "slug": "performance-and-safety-choose-two",
-        "text": "性能与安全：两者兼得"
+        "text": "Performance and Safety: Choose Two"
       },
       {
         "depth": 3,
         "slug": "intro-section-4",
-        "text": "Zig 与 C 竞争，而非依赖于 C"
+        "text": "Zig competes with C instead of depending on it"
       },
       {
         "depth": 3,
         "slug": "intro-section-5",
-        "text": "顶层声明顺序无关"
+        "text": "Order independent top level declarations"
       },
       {
         "depth": 3,
         "slug": "intro-section-6",
-        "text": "用可选类型替代空指针"
+        "text": "Optional type instead of null pointers"
       },
       {
         "depth": 3,
         "slug": "intro-section-7",
-        "text": "手动内存管理"
+        "text": "Manual memory management"
       },
       {
         "depth": 3,
         "slug": "a-fresh-take-on-error-handling",
-        "text": "全新视角的错误处理"
+        "text": "A fresh take on error handling"
       },
       {
         "depth": 4,
         "slug": "stack-traces-on-all-targets",
-        "text": "所有目标平台均支持调用栈回溯"
+        "text": "Stack traces on all targets"
       },
       {
         "depth": 3,
         "slug": "intro-section-10",
-        "text": "泛型数据结构与泛型函数"
+        "text": "Generic data structures and functions"
       },
       {
         "depth": 3,
         "slug": "compile-time-reflection-and-compile-time-code-execution",
-        "text": "编译期反射与编译期代码执行"
+        "text": "Compile-time reflection and compile-time code execution"
       },
       {
         "depth": 3,
         "slug": "integration-with-c-libraries-without-ffibindings",
-        "text": "无需 FFI 与绑定即可直接集成 C 库"
+        "text": "Integration with C libraries without FFI/bindings"
       },
       {
         "depth": 4,
         "slug": "zig-is-also-a-c-compiler",
-        "text": "Zig 本身就是一个顶级的 C 语言编译器"
+        "text": "Zig is also a C compiler"
       },
       {
         "depth": 4,
         "slug": "intro-section-14",
-        "text": "导出函数、变量与类型供 C 代码调用"
+        "text": "Export functions, variables, and types for C code to depend on"
       },
       {
         "depth": 3,
         "slug": "cross-compiling-is-a-first-class-use-case",
-        "text": "交叉编译是一等公民"
+        "text": "Cross-compiling is a first-class use case"
       },
       {
         "depth": 4,
         "slug": "zig-ships-with-libc",
-        "text": "Zig 自带完备的 libc"
+        "text": "Zig ships with libc"
       },
       {
         "depth": 3,
         "slug": "zig-build-system",
-        "text": "Zig 构建系统与包管理器"
+        "text": "Zig Build System and Package Manager"
       },
       {
         "depth": 3,
         "slug": "intro-section-18",
-        "text": "广泛的目标平台支持"
+        "text": "Wide range of targets supported"
       },
       {
         "depth": 3,
         "slug": "intro-section-19",
-        "text": "对软件包维护者极其友好"
+        "text": "Friendly toward package maintainers"
       }
     ]
   },
   {
     "id": "intro/build-system",
     "kind": "intro",
-    "title": "Zig 构建系统",
-    "sourceUrl": "https://ziglang.org/zh-CN/intro/build-system/",
+    "title": "Zig Build System",
+    "sourceUrl": "https://ziglang.org/intro/build-system/",
     "file": "intro/build-system.json",
     "headings": [
       {
         "depth": 2,
         "slug": "build-system",
-        "text": "何时需要使用 Zig 构建系统？"
+        "text": "When to bust out the Zig Build System?"
       },
       {
         "depth": 2,
         "slug": "getting-started",
-        "text": "快速上手"
+        "text": "Getting Started"
       },
       {
         "depth": 3,
         "slug": "simple",
-        "text": "构建简单的可执行文件"
+        "text": "Simple Executable"
       },
       {
         "depth": 3,
         "slug": "installing-artifacts",
-        "text": "安装构建产物"
+        "text": "Installing Build Artifacts"
       },
       {
         "depth": 3,
         "slug": "run-step",
-        "text": "添加用于运行应用程序的便捷构建步骤"
+        "text": "Adding a Convenience Step for Running the Application"
       },
       {
         "depth": 2,
         "slug": "basics",
-        "text": "核心基础"
+        "text": "The Basics"
       },
       {
         "depth": 3,
         "slug": "user-options",
-        "text": "用户自定义配置选项"
+        "text": "User-Provided Options"
       },
       {
         "depth": 3,
         "slug": "standard-options",
-        "text": "标准配置选项"
+        "text": "Standard Configuration Options"
       },
       {
         "depth": 3,
         "slug": "conditional-compilation",
-        "text": "基于选项的条件编译与配置传递"
+        "text": "Options for Conditional Compilation"
       },
       {
         "depth": 3,
         "slug": "static-library",
-        "text": "构建静态库"
+        "text": "Static Library"
       },
       {
         "depth": 3,
         "slug": "dynamic-library",
-        "text": "构建共享库（动态链接库）"
+        "text": "Dynamic Library"
       },
       {
         "depth": 3,
         "slug": "testing",
-        "text": "单元测试集成"
+        "text": "Testing"
       },
       {
         "depth": 3,
         "slug": "linking-to-system-libraries",
-        "text": "查找并链接系统级动态库"
+        "text": "Linking to System Libraries"
       },
       {
         "depth": 2,
         "slug": "generating-files",
-        "text": "代码与资源文件生成"
+        "text": "Generating Files"
       },
       {
         "depth": 3,
         "slug": "system-tools",
-        "text": "运行系统工具生成文件"
+        "text": "Running System Tools"
       },
       {
         "depth": 3,
         "slug": "project-tools",
-        "text": "运行工程自身工具生成代码"
+        "text": "Running the Project’s Tools"
       },
       {
         "depth": 3,
         "slug": "embed-file",
-        "text": "生成用于 @embedFile 嵌入的资产"
+        "text": "Producing Assets for @embedFile"
       },
       {
         "depth": 3,
         "slug": "generating-zig",
-        "text": "生成 Zig 源代码并作为模块导入"
+        "text": "Generating Zig Source Code"
       },
       {
         "depth": 3,
         "slug": "write-files",
-        "text": "通过 WriteFiles 统一管理生成的文件"
+        "text": "Dealing With One or More Generated Files"
       },
       {
         "depth": 3,
         "slug": "mutating-source",
-        "text": "就地生成与更新版本控制下的源码文件"
+        "text": "Mutating Source Files in Place"
       },
       {
         "depth": 2,
         "slug": "examples",
-        "text": "实用构建示例"
+        "text": "Handy Examples"
       },
       {
         "depth": 3,
         "slug": "release",
-        "text": "面向多个目标平台批量交叉构建发布包"
+        "text": "Build for multiple targets to make a release"
       }
     ]
   },
   {
     "id": "intro/samples",
     "kind": "intro",
-    "title": "代码示例",
-    "sourceUrl": "https://ziglang.org/zh-CN/intro/samples/",
+    "title": "Samples",
+    "sourceUrl": "https://ziglang.org/intro/samples/",
     "file": "intro/samples.json",
     "headings": [
       {
         "depth": 2,
         "slug": "hello",
-        "text": "Hello World"
+        "text": "Hello world"
       },
       {
         "depth": 2,
         "slug": "ext",
-        "text": "调用外部动态库函数"
+        "text": "Calling external library functions"
       },
       {
         "depth": 2,
         "slug": "leak",
-        "text": "内存泄漏与非法释放检测"
+        "text": "Memory leak detection"
       },
       {
         "depth": 2,
         "slug": "c-interop",
-        "text": "C 语言互操作性"
+        "text": "C interoperability"
       },
       {
         "depth": 2,
         "slug": "zigg-zagg",
-        "text": "Zigg Zagg 趣味算法"
+        "text": "Zigg Zagg"
       },
       {
         "depth": 2,
         "slug": "generic",
-        "text": "泛型数据类型"
+        "text": "Generic Types"
       },
       {
         "depth": 2,
         "slug": "curl",
-        "text": "在 Zig 中直接调用 libcurl 网络库"
+        "text": "Using cURL from Zig"
       }
     ]
   },
   {
     "id": "intro/why_zig_rust_d_cpp",
     "kind": "intro",
-    "title": "有了 C++、D 和 Rust，为什么还需要 Zig？",
-    "sourceUrl": "https://ziglang.org/zh-CN/intro/why_zig_rust_d_cpp/",
+    "title": "Why Zig When There is Already C++, D, and Rust?",
+    "sourceUrl": "https://ziglang.org/intro/why_zig_rust_d_cpp/",
     "file": "intro/why_zig_rust_d_cpp.json",
     "headings": [
       {
         "depth": 2,
         "slug": "intro-section-1",
-        "text": "无隐式控制流"
+        "text": "No hidden control flow"
       },
       {
         "depth": 2,
         "slug": "intro-section-2",
-        "text": "无隐式内存分配"
+        "text": "No hidden allocations"
       },
       {
         "depth": 2,
         "slug": "intro-section-3",
-        "text": "对无标准库环境的一等支持"
+        "text": "First-class support for no standard library"
       },
       {
         "depth": 2,
         "slug": "intro-section-4",
-        "text": "为构建通用便携库量身打造的语言"
+        "text": "A Portable Language for Libraries"
       },
       {
         "depth": 2,
         "slug": "intro-section-5",
-        "text": "为既有项目打造的包管理器与构建系统"
+        "text": "A Package Manager and Build System for Existing Projects"
       },
       {
         "depth": 2,
         "slug": "intro-section-6",
-        "text": "极致精简与纯粹性"
+        "text": "Simplicity"
       },
       {
         "depth": 2,
         "slug": "intro-section-7",
-        "text": "完备卓越的现代化工具链"
+        "text": "Tooling"
+      }
+    ]
+  },
+  {
+    "id": "intro/grammar",
+    "kind": "intro",
+    "title": "Grammar Rules",
+    "sourceUrl": "https://codeberg.org/ziglang/zig-spec/raw/branch/master/grammar/grammar.peg",
+    "file": "intro/grammar.json",
+    "headings": [
+      {
+        "depth": 2,
+        "slug": "grammar-ll-k",
+        "text": "LL(k)"
+      },
+      {
+        "depth": 2,
+        "slug": "grammar-top-level",
+        "text": "Top level"
+      },
+      {
+        "depth": 2,
+        "slug": "grammar-block-level",
+        "text": "Block Level"
+      },
+      {
+        "depth": 2,
+        "slug": "grammar-expression-level",
+        "text": "Expression Level"
+      },
+      {
+        "depth": 2,
+        "slug": "grammar-assembly",
+        "text": "Assembly"
+      },
+      {
+        "depth": 2,
+        "slug": "grammar-helper-grammar",
+        "text": "Helper grammar"
+      },
+      {
+        "depth": 2,
+        "slug": "grammar-tokens",
+        "text": "Tokens"
       }
     ]
   }

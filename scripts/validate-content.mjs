@@ -1,5 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
+import { readGrammar } from './lib/grammar.mjs';
 import { load } from 'cheerio';
 import assert from 'node:assert/strict';
 import { createTokenizer } from './lib/tokenizer.mjs';
@@ -243,3 +244,39 @@ async function validate(version) {
   );
 }
 for (const version of ['0.17.0', '0.17.1']) await validate(version);
+
+const introSnapshot = await json('upstream/intro/manifest.json');
+for (const asset of introSnapshot.assets) {
+  const bytes = await readFile(new URL(asset.file, root));
+  assert.equal(
+    createHash('sha256').update(bytes).digest('hex'),
+    asset.sha256,
+    `Intro snapshot checksum: ${asset.file}`,
+  );
+}
+const grammar = await readGrammar();
+const introEnglish = await json('content/en/intro/manifest.json');
+const introChinese = await json('content/zh-cn/intro/manifest.json');
+assert.deepEqual(
+  introEnglish.map((page) => page.id),
+  introChinese.map((page) => page.id),
+  'Intro locale document sets differ',
+);
+for (const [locale, expected] of [
+  ['en', grammar.source],
+  ['zh-cn', grammar.translated],
+]) {
+  const page = await json(`content/${locale}/intro/grammar.json`);
+  const $ = load(page.html, null, false);
+  assert.equal(
+    $('pre')
+      .map((_, element) => $(element).text())
+      .get()
+      .join(''),
+    expected,
+    `Rendered grammar changed: ${locale}`,
+  );
+}
+console.log(
+  `Verified ${introEnglish.length} shared bilingual intro pages and the grammar translation.`,
+);

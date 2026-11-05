@@ -7,7 +7,7 @@ const t = labels[locale];
 <footer class="document-footer" data-pagefind-ignore>
   <p>
     {
-      locale === 'zh-cn' && id.startsWith('intro/')
+      locale === 'zh-cn' && id.startsWith('intro/') && id !== 'intro/grammar'
         ? t.officialIntroAttribution
         : t.attribution
     }

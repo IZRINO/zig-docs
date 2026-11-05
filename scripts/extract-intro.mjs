@@ -3,7 +3,8 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { load } from 'cheerio';
-import { enhanceIntroCodeBlocks } from './lib/code-frame.mjs';
+import { enhanceIntroCodeBlocks, renderCodeFrame } from './lib/code-frame.mjs';
+import { readGrammar } from './lib/grammar.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const pages = [
@@ -16,26 +17,31 @@ const pages = [
   slug,
   id: `intro/${slug}`,
   title,
-  sourceUrl: `https://ziglang.org/zh-CN/intro/${slug}/`,
-  sourceFile: `upstream/intro/zh-CN/${slug}.html`,
   file: `intro/${slug}.json`,
 }));
 const pageBySourcePath = new Map(
-  pages.map((page) => [`/zh-CN/intro/${page.slug}/`, page.slug]),
+  pages.flatMap((page) => [
+    [`/zh-CN/intro/${page.slug}/`, page.slug],
+    [`/intro/${page.slug}/`, page.slug],
+  ]),
 );
 
-function localizeLinks($, slug) {
+function localizeLinks($, slug, sourceUrl) {
   $('a[href]').each((_, element) => {
     const href = $(element).attr('href');
     if (!href) return;
     let url;
     try {
-      url = new URL(href, `https://ziglang.org/zh-CN/intro/${slug}/`);
+      url = new URL(href, sourceUrl);
     } catch {
       return;
     }
+    if (url.origin !== 'https://ziglang.org') return;
     const target = pageBySourcePath.get(url.pathname);
-    if (!target) return;
+    if (!target) {
+      if (!href.startsWith('#')) $(element).attr('href', url.href);
+      return;
+    }
     const path = target === slug ? '' : `../${target}/`;
     $(element).attr('href', `${path}${url.hash}` || './');
   });
@@ -43,8 +49,6 @@ function localizeLinks($, slug) {
 
 async function main() {
   const sourceAssets = [];
-  const outputRoot = resolve(root, 'content/0.17.1/zh-cn/intro');
-  await mkdir(outputRoot, { recursive: true });
   const heartPath = 'upstream/intro/zh-CN/heart.svg';
   const heart = await readFile(resolve(root, heartPath));
   sourceAssets.push({
@@ -54,82 +58,141 @@ async function main() {
   const heartOutput = resolve(root, 'public/assets/zig-heart.svg');
   await mkdir(dirname(heartOutput), { recursive: true });
   await writeFile(heartOutput, heart);
-  for (const page of pages) {
-    const bytes = await readFile(resolve(root, page.sourceFile));
-    sourceAssets.push({
-      file: page.sourceFile.replaceAll('\\', '/'),
-      sha256: createHash('sha256').update(bytes).digest('hex'),
-    });
-    const $ = load(bytes.toString('utf8'), null, false);
-    const content = $('#content .container').last();
-    if (!content.length)
-      throw new Error(`Missing article content: ${page.slug}`);
-    content
-      .find('img[src="https://ziglang.org/heart.svg"], img[src="/heart.svg"]')
-      .attr('src', '../../../../assets/zig-heart.svg');
-    content.find('#back, h1.title').remove();
-    const toc = content.children('ul').first();
-    const firstSection = content.children('h1').first();
-    if (toc.length && firstSection.length && toc.index() < firstSection.index())
-      toc.remove();
-
-    const ids = new Set(
+  const grammar = await readGrammar();
+  await writeFile(
+    resolve(root, 'public/licenses/zig-spec-LICENSE.txt'),
+    await readFile(resolve(root, 'upstream/intro/grammar/LICENSE')),
+  );
+  for (const locale of ['en', 'zh-cn']) {
+    const outputRoot = resolve(root, `content/${locale}/intro`);
+    await mkdir(outputRoot, { recursive: true });
+    const entries = [];
+    for (const page of pages) {
+      const sourceLocale = locale === 'en' ? 'en' : 'zh-CN';
+      const sourceUrl = `https://ziglang.org/${locale === 'en' ? '' : 'zh-CN/'}intro/${page.slug}/`;
+      const sourceFile = `upstream/intro/${sourceLocale}/${page.slug}.html`;
+      const bytes = await readFile(resolve(root, sourceFile));
+      sourceAssets.push({
+        file: sourceFile,
+        sourceUrl,
+        sha256: createHash('sha256').update(bytes).digest('hex'),
+      });
+      const $ = load(bytes.toString('utf8'), null, false);
+      const content = $('#content .container').last();
+      if (!content.length)
+        throw new Error(`Missing article content: ${page.slug}`);
       content
-        .find('[id]')
-        .map((_, element) => $(element).attr('id'))
-        .get(),
-    );
-    const headings = [];
-    content.find('h1,h2,h3,h4,h5').each((index, element) => {
-      const heading = $(element);
-      const depth = Number(element.tagName.slice(1)) + 1;
-      let slug = heading.attr('id');
-      if (!slug) {
-        slug = `intro-section-${index + 1}`;
-        while (ids.has(slug)) slug += '-section';
-        heading.attr('id', slug);
-        ids.add(slug);
-      }
-      const replacement = $(`<h${depth}></h${depth}>`);
-      for (const [name, value] of Object.entries(element.attribs))
-        replacement.attr(name, value);
-      replacement.append(heading.contents());
-      heading.replaceWith(replacement);
-      headings.push({ depth, slug, text: replacement.text().trim() });
-    });
+        .find('img[src="https://ziglang.org/heart.svg"], img[src="/heart.svg"]')
+        .attr('src', '/zig-docs/assets/zig-heart.svg');
+      const title =
+        locale === 'en' ? content.find('h1.title').text().trim() : page.title;
+      content.find('#back, h1.title').remove();
+      const toc = content.children('ul').first();
+      const firstSection = content.children('h1').first();
+      if (
+        toc.length &&
+        firstSection.length &&
+        toc.index() < firstSection.index()
+      )
+        toc.remove();
 
-    localizeLinks($, page.slug);
-    const html = await enhanceIntroCodeBlocks(content.html() ?? '', {
-      locale: 'zh-cn',
-    });
+      const ids = new Set(
+        content
+          .find('[id]')
+          .map((_, element) => $(element).attr('id'))
+          .get(),
+      );
+      const headings = [];
+      content.find('h1,h2,h3,h4,h5').each((index, element) => {
+        const heading = $(element);
+        const depth = Number(element.tagName.slice(1)) + 1;
+        let slug = heading.attr('id');
+        if (!slug) {
+          slug = `intro-section-${index + 1}`;
+          while (ids.has(slug)) slug += '-section';
+          heading.attr('id', slug);
+          ids.add(slug);
+        }
+        const replacement = $(`<h${depth}></h${depth}>`);
+        for (const [name, value] of Object.entries(element.attribs))
+          replacement.attr(name, value);
+        replacement.append(heading.contents());
+        heading.replaceWith(replacement);
+        headings.push({ depth, slug, text: replacement.text().trim() });
+      });
+
+      localizeLinks($, page.slug, sourceUrl);
+      const html = await enhanceIntroCodeBlocks(content.html() ?? '', {
+        locale,
+      });
+      const meta = {
+        id: page.id,
+        kind: 'intro',
+        title,
+        sourceUrl,
+        file: page.file,
+        headings,
+      };
+      await writeFile(
+        resolve(root, `content/${locale}`, page.file),
+        `${JSON.stringify({ ...meta, html })}\n`,
+      );
+      entries.push(meta);
+    }
+
+    const source = locale === 'en' ? grammar.source : grammar.translated;
+    const originalSections = grammar.source.split(/(?=^# \*\*\* .+ \*\*\*$)/m);
+    const sections = source.split(/(?=^# \*\*\* .+ \*\*\*$)/m);
+    const headings = [];
+    const body = [];
+    for (let index = 0; index < sections.length; index++) {
+      const originalTitle =
+        originalSections[index].match(/^# \*\*\* (.+) \*\*\*$/m)?.[1] ??
+        'LL(k)';
+      const text =
+        sections[index].match(/^# \*\*\* (.+) \*\*\*$/m)?.[1] ?? 'LL(k)';
+      const slug = `grammar-${originalTitle
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/-$/, '')}`;
+      headings.push({ depth: 2, slug, text });
+      body.push(`<h2 id="${slug}">${text}</h2>`);
+      body.push(
+        await renderCodeFrame(sections[index], {
+          locale,
+          language: 'text',
+          title: 'grammar.peg',
+        }),
+      );
+    }
     const meta = {
-      id: page.id,
+      id: 'intro/grammar',
       kind: 'intro',
-      title: page.title,
-      sourceUrl: page.sourceUrl,
-      file: page.file,
+      title: locale === 'en' ? 'Grammar Rules' : grammar.translation.title,
+      sourceUrl: grammar.snapshot.sourceUrl,
+      file: 'intro/grammar.json',
       headings,
     };
+    const note =
+      locale === 'en'
+        ? 'Shared introduction material, independent of the selected documentation version.'
+        : '各版本共用的入门资料，不随所选文档版本变化。';
+    const html = `<p>${note}</p><p><a href="https://codeberg.org/ziglang/zig-spec/src/commit/${grammar.snapshot.commit}/grammar/grammar.peg">ziglang/zig-spec · master · ${grammar.snapshot.commit.slice(0, 12)}</a> · <a href="/zig-docs/licenses/zig-spec-LICENSE.txt">MIT License</a></p>${body.join('\n')}`;
     await writeFile(
-      resolve(root, 'content/0.17.1/zh-cn', page.file),
+      resolve(root, `content/${locale}`, meta.file),
       `${JSON.stringify({ ...meta, html })}\n`,
     );
-    page.meta = meta;
+    entries.push(meta);
+    await writeFile(
+      resolve(outputRoot, 'manifest.json'),
+      `${JSON.stringify(entries, null, 2)}\n`,
+    );
   }
-
   await writeFile(
     resolve(root, 'upstream/intro/manifest.json'),
-    `${JSON.stringify({ source: 'https://ziglang.org/zh-CN/intro/', assets: sourceAssets }, null, 2)}\n`,
+    `${JSON.stringify({ sources: { en: 'https://ziglang.org/intro/', 'zh-cn': 'https://ziglang.org/zh-CN/intro/' }, assets: sourceAssets }, null, 2)}\n`,
   );
-  await writeFile(
-    resolve(outputRoot, 'manifest.json'),
-    `${JSON.stringify(
-      pages.map((page) => page.meta),
-      null,
-      2,
-    )}\n`,
-  );
-  console.log(`Generated ${pages.length} official Chinese intro pages.`);
+  console.log(`Generated ${pages.length + 1} shared intro pages per locale.`);
 }
 
 await main();

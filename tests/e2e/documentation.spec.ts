@@ -106,16 +106,13 @@ test('语言根目录默认显示最新版本，旧版概览可显式访问', as
 test('官方中文入门章节出现在新版概览和侧栏', async ({ page }) => {
   const intro = JSON.parse(
     readFileSync(
-      new URL(
-        '../../content/0.17.1/zh-cn/intro/manifest.json',
-        import.meta.url,
-      ),
+      new URL('../../content/zh-cn/intro/manifest.json', import.meta.url),
       'utf8',
     ),
   ) as DocumentMeta[];
-  expect(intro).toHaveLength(5);
+  expect(intro).toHaveLength(6);
   await page.goto(`${base}/zh-cn/`);
-  await expect(page.locator('.intro-index a')).toHaveCount(5);
+  await expect(page.locator('.intro-index a')).toHaveCount(6);
   const route = `${base}/zh-cn/0.17.1/intro/getting-started/`;
   await page.goto(route);
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('快速入门');
@@ -130,10 +127,10 @@ test('官方中文入门章节出现在新版概览和侧栏', async ({ page }) 
   ).toHaveAttribute('href', route);
   await expect(
     page.locator('zig-version-select select').first().locator('option').nth(1),
-  ).toHaveAttribute('value', '/zig-docs/zh-cn/0.17.0/');
+  ).toHaveAttribute('value', '/zig-docs/zh-cn/intro/getting-started/');
   await expect(
     page.locator('zig-language-select select').first().locator('option').nth(1),
-  ).toHaveAttribute('value', '/zig-docs/en/0.17.1/');
+  ).toHaveAttribute('value', '/zig-docs/en/0.17.1/intro/getting-started/');
 });
 
 test('版本切换保持文档与共享锚点，旧版路由不变', async ({ page }) => {
@@ -546,3 +543,108 @@ for (const [locale, id] of [
     expect(metrics.bytes).toBeLessThan(5 * 1024 * 1024);
   });
 }
+
+for (const locale of ['en', 'zh-cn']) {
+  for (const version of ['0.17.0', '0.17.1']) {
+    test(`${locale} ${version} 的概览与文档共用入门，切换语言版本保留语法章节锚点`, async ({
+      page,
+    }) => {
+      const prefix = version === '0.17.0' ? '' : `${version}/`;
+      const route = `${base}/${locale}/${prefix}intro/grammar/`;
+      const title = locale === 'en' ? 'Grammar Rules' : '语法规则';
+      await page.goto(`${base}/${locale}/${version}/`);
+      await expect(page.locator('.intro-index a')).toHaveCount(6);
+      await expect(page.locator('a[href="#intro-index"]')).toHaveCount(2);
+      await expect(
+        page.locator('.intro-index').getByRole('link', { name: title }),
+      ).toHaveAttribute('href', route);
+      for (const id of ['reference/Hello-World', 'std/ascii']) {
+        await page.goto(`${base}/${locale}/${prefix}${id}/`);
+        const introSummary = page
+          .locator('#starlight__sidebar summary')
+          .filter({
+            hasText: locale === 'en' ? /^Introduction$/ : /^入门$/,
+          });
+        if (
+          !(await introSummary.evaluate((element) =>
+            element.parentElement?.hasAttribute('open'),
+          ))
+        )
+          await introSummary.click();
+        await expect(
+          page
+            .locator('#starlight__sidebar')
+            .getByRole('link', { name: title }),
+        ).toHaveAttribute('href', route);
+      }
+      await page.goto(`${route}#grammar-tokens`);
+      await expect(page.getByRole('heading', { level: 1 })).toHaveText(title);
+      await expect(page.locator('.doc-content pre')).toHaveCount(7);
+      await expect(page.locator('.document-version')).toHaveText(
+        locale === 'en' ? 'Shared introduction' : '通用入门资料',
+      );
+      await expect(page.locator('.document-meta a')).toHaveAttribute(
+        'href',
+        'https://codeberg.org/ziglang/zig-spec/raw/branch/master/grammar/grammar.peg',
+      );
+      await expect(page.locator('link[hreflang="en"]')).toHaveAttribute(
+        'href',
+        new RegExp(`/en/${prefix}intro/grammar/$`),
+      );
+      const otherVersion = version === '0.17.0' ? '0.17.1' : '0.17.0';
+      const otherPrefix = otherVersion === '0.17.0' ? '' : `${otherVersion}/`;
+      await page
+        .locator('zig-version-select select')
+        .first()
+        .selectOption(`${base}/${locale}/${otherPrefix}intro/grammar/`);
+      await expect(page).toHaveURL(
+        `${base}/${locale}/${otherPrefix}intro/grammar/#grammar-tokens`,
+      );
+      const otherLocale = locale === 'en' ? 'zh-cn' : 'en';
+      await page
+        .locator('zig-language-select select')
+        .first()
+        .selectOption(`${base}/${otherLocale}/${otherPrefix}intro/grammar/`);
+      await expect(page).toHaveURL(
+        `${base}/${otherLocale}/${otherPrefix}intro/grammar/#grammar-tokens`,
+      );
+      await expect(page.getByRole('heading', { level: 1 })).toHaveText(
+        otherLocale === 'en' ? 'Grammar Rules' : '语法规则',
+      );
+    });
+  }
+}
+
+test('移动端可从普通文档的入门导航进入语法规则，页面无水平溢出', async ({
+  browser,
+}) => {
+  const context = await browser.newContext({
+    viewport: { width: 390, height: 844 },
+    isMobile: true,
+    hasTouch: true,
+  });
+  const page = await context.newPage();
+  await page.goto(`${base}/zh-cn/std/ascii/`);
+  await page.locator('button[popovertarget="starlight__sidebar"]').click();
+  const summary = page
+    .locator('#starlight__sidebar summary')
+    .filter({ hasText: /^入门$/ });
+  if (
+    !(await summary.evaluate((element) =>
+      element.parentElement?.hasAttribute('open'),
+    ))
+  )
+    await summary.click();
+  await page
+    .locator('#starlight__sidebar')
+    .getByRole('link', { name: '语法规则' })
+    .click();
+  await expect(page).toHaveURL(`${base}/zh-cn/intro/grammar/`);
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('语法规则');
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= window.innerWidth,
+    ),
+  ).toBe(true);
+  await context.close();
+});

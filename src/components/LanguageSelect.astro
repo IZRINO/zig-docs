@@ -3,7 +3,6 @@ import { Icon } from '@astrojs/starlight/components';
 import { currentDocument, docHref, labels } from '../lib/content';
 
 const { locale, id, version } = currentDocument(Astro.url.pathname);
-const englishId = id.startsWith('intro/') ? '' : id;
 ---
 
 <zig-language-select class="language-control">
@@ -12,7 +11,7 @@ const englishId = id.startsWith('intro/') ? '' : id;
     <option value={docHref('zh-cn', id, version)} selected={locale === 'zh-cn'}
       >中文</option
     >
-    <option value={docHref('en', englishId, version)} selected={locale === 'en'}
+    <option value={docHref('en', id, version)} selected={locale === 'en'}
       >English</option
     >
   </select>

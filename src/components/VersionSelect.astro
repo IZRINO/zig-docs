@@ -9,11 +9,7 @@ const { locale, id, version } = currentDocument(Astro.url.pathname);
     {
       versions.map((candidate) => (
         <option
-          value={docHref(
-            locale,
-            id.startsWith('intro/') && candidate !== version ? '' : id,
-            candidate,
-          )}
+          value={docHref(locale, id, candidate)}
           selected={candidate === version}
         >
           {candidate}

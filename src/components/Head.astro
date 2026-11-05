@@ -1,13 +1,8 @@
 ---
-import { currentDocument } from '../lib/content';
 import sourceSansLatin from '@fontsource-variable/source-sans-3/files/source-sans-3-latin-wght-normal.woff2?url';
 import sourceSansLatinExt from '@fontsource-variable/source-sans-3/files/source-sans-3-latin-ext-wght-normal.woff2?url';
 
-const { id } = currentDocument(Astro.url.pathname);
-const head = Astro.locals.starlightRoute.head.filter(
-  ({ tag, attrs }) =>
-    !(id.startsWith('intro/') && tag === 'link' && attrs?.hreflang === 'en'),
-);
+const head = Astro.locals.starlightRoute.head;
 ---
 
 {

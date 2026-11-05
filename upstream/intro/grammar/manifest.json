@@ -1,0 +1,21 @@
+{
+  "sourceUrl": "https://codeberg.org/ziglang/zig-spec/raw/branch/master/grammar/grammar.peg",
+  "repository": "https://codeberg.org/ziglang/zig-spec",
+  "branch": "master",
+  "commit": "878f52ea2f4fdebe3e145949a871b300801a0635",
+  "license": "MIT",
+  "assets": [
+    {
+      "file": "grammar.peg",
+      "sourceUrl": "https://codeberg.org/ziglang/zig-spec/raw/commit/878f52ea2f4fdebe3e145949a871b300801a0635/grammar/grammar.peg",
+      "bytes": 23125,
+      "sha256": "7ab27c5f16205363296fcc2770a3e42793453234b2557428beb5bfc5713b5eed"
+    },
+    {
+      "file": "LICENSE",
+      "sourceUrl": "https://codeberg.org/ziglang/zig-spec/raw/commit/878f52ea2f4fdebe3e145949a871b300801a0635/LICENSE",
+      "bytes": 1081,
+      "sha256": "e1521f94237e3c51a4d68bd1315841c8bd809830cd40b85c0268c4476de4c776"
+    }
+  ]
+}
