@@ -1,5 +1,5 @@
 {
-  "reference/Introduction::text:1": "<0>Zig</0> 是一种通用编程语言及工具链，用于编写<1>健壮</1>、<2>最优</2>且<3>可复用</3>的软件。",
+  "reference/Introduction::text:1": "<0>Zig</0> 是一种通用编程语言及工具链，用于维护<1>健壮</1>、<2>最优</2>且<3>可复用</3>的软件。",
   "reference/Introduction::text:2": "健壮",
   "reference/Introduction::text:3": "即使遇到内存不足等边界情况，行为也保持正确。",
   "reference/Introduction::text:4": "最优",

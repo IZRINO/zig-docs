@@ -1,8 +1,8 @@
-
-
-  
+<!DOCTYPE html><html lang="zh-CN"><head id="head">
     <meta charset="utf-8">
-    <title id="title">有了 C++、D 和 Rust，为什么还需要 Zig？ ⚡ Zig 编程语言</title>
+    <title id="title">
+      有了 C++、D 和 Rust，为什么还需要 Zig？ ⚡ Zig 编程语言
+    </title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="light dark">
     <link rel="icon" href="/favicon.png">
@@ -12,8 +12,8 @@
     
   <link type="text/css" rel="stylesheet" href="/css/home.css">
 
-  
-  
+  </head>
+  <body>
     <div class="container">
       <a href="/"><span id="header-image"></span></a>
     </div>
@@ -75,15 +75,15 @@
       
   <div class="container">
     
-      <a id="back" href="/intro/">← 返回 <b>学习</b></a>
+      <a id="back" href="/intro/"> ← 返回<b>入门</b> </a>
     
     <h1 class="title">有了 C++、D 和 Rust，为什么还需要 Zig？</h1>
     
-    <h1>无隐式控制流</h1><p>如果一段 Zig 代码看起来没有跳转去调用函数，那它就绝对没有。这意味着你可以完全确定：下面的代码只会先调用 <code>foo()</code>，紧接着调用 <code>bar()</code>，并且无需预先了解任何变量的具体类型就能做出这一绝对保证：</p><pre><code class="zig"><span class="keyword">var</span> <span class="constant variable_builtin type variable">a</span> <span class="operator">=</span> <span class="constant variable_builtin type variable">b</span> <span class="operator">+</span> <span class="constant variable_builtin type variable">c</span><span class="punctuation_delimiter">.</span><span class="constant variable_builtin type variable_member variable">d</span><span class="punctuation_delimiter">;</span>
+    <h1>没有隐式控制流</h1><p>如果一段 Zig 代码看起来不像是跳转去调用某个函数，那它就确实没有调用。这意味着你可以确定，下面的代码只会先调用 <code>foo()</code>，再调用 <code>bar()</code>；即使不知道其中任何东西的类型，这一点也有保证：</p><pre><code class="zig"><span class="keyword">var</span> <span class="constant variable_builtin type variable">a</span> <span class="operator">=</span> <span class="constant variable_builtin type variable">b</span> <span class="operator">+</span> <span class="constant variable_builtin type variable">c</span><span class="punctuation_delimiter">.</span><span class="constant variable_builtin type variable_member variable">d</span><span class="punctuation_delimiter">;</span>
 <span class="constant variable_builtin function_call variable type">foo</span><span class="punctuation_bracket">(</span><span class="punctuation_bracket">)</span><span class="punctuation_delimiter">;</span>
 bar<span class="punctuation_bracket">(</span><span class="punctuation_bracket">)</span><span class="punctuation_delimiter">;</span>
 </code></pre>
-<p>隐式控制流的典型反例：</p><ul><li>D 语言拥有 <code>@property</code> 函数，使得看似普通的字段访问实际上在隐式调用方法。</li><li>C++、D 和 Rust 拥有运算符重载，因此 <code>+</code> 运算符可能会悄悄调用函数。</li><li>C++、D 和 Go 拥有抛出/捕获异常机制（有时也称为 panic），因此 <code>foo()</code> 可能会抛出异常并阻止 <code>bar()</code> 的调用。</li></ul><p>这一核心设计决策的根本宗旨是全方位提升代码的可读性与可维护性。</p><h1>无隐式内存分配</h1><p>Zig 在堆内存分配上采取完全显式且自主掌控的策略。语言本身绝不背着你在堆上偷偷分配内存，更没有垃圾回收（Garbage Collection）机制<sup><a href="#footnote-1">[1]</a></sup>。</p><p>隐式内存分配的典型反例：</p><ul><li>Go 语言的 <code>defer</code> 会在函数局部栈之外分配内存。除开性能损耗之外，如果在一个循环中滥用 <code>defer</code>，很可能会意外耗尽内存。</li><li>C++ 协程在调用协程时会在堆上隐式分配内存。</li><li>在 Go 语言中，一次普通的函数调用也可能导致堆分配，因为 goroutine 需要在运行时动态增长栈空间。</li><li>Rust 标准库的核心 API 在遭遇内存耗尽（OOM）时会直接触发 panic，只有特定定制分配器环境才提供受限的备用返回策略。</li></ul><p>几乎所有依赖垃圾回收（GC）的编程语言，其内部都充斥着大量的隐式内存分配。更糟糕的是，GC 往往会诱使开发者误以为内存管理是“免费”的，从而忽视底层资源生命周期。</p><p>隐式内存分配最严重的问题在于：它极大限制了代码库的通用可复用性。一旦某个库在底层悄悄使用了堆分配或垃圾回收，那么它就无法被应用于嵌入式设备、实时音视频处理、操作系统内核等严苛场景中。</p><p>在 Zig 中，标准库提供了各种分配器并接收分配器作为显式参数，但这是可选的扩展功能，而非硬编码进语言规范的强制特权。</p><p>每一个需要分配堆内存的标准库函数都显式接收一个 <code>Allocator</code> 参数。这使得 Zig 能够原生适应从单片机裸机到大型服务器的任何严苛环境。</p><p>高度可插拔的自定义分配器让手动内存管理变得轻而易举。Zig 还提供了测试专用的内存分配器，可以在测试结束时自动捕获所有未释放的内存泄漏。</p><p><a id="footnote-1"></a>[1]: 严格来说，编译期求值环境存在一个字符串拼接运算符（本质上是一个数组连接运算符），但它仅在编译期可用，运行时绝对没有任何隐式内存分配。</p><h1>对无标准库环境的一等支持</h1><p>正如前文所述，Zig 的标准库完全是可选的。每一个标准库特性如果不需要堆分配，在裸机上也能直接工作。</p><p>这兼顾了两者的长处：例如在 Zig 中，WebAssembly 程序可以像其他程序一样自由复用标准库中的常规算法与数据结构，同时保持极小的生成二进制体积。</p><h1>为构建通用便携库量身打造的语言</h1><p>代码复用向来是软件工程领域的崇高追求。但在工程实践中，由于不同语言间存在着巨大的范式鸿沟，真正跨语言、跨场景的复用往往十分艰难：</p><ul><li>如果一个应用程序有严格的实时性要求，那么任何依赖垃圾回收（GC）或包含隐式停顿的库都会被直接淘汰。</li><li>如果一门语言过于容易忽略错误，那么验证库在边界条件下的正确性就会变得极其困难。</li><li>目前在工程现实中，C 语言依然是生态最广、可移植性最强的基石。任何不能与 C 代码无缝互操作的语言，都难以成为通用的系统库开发语言。</li></ul><h1>为既有项目打造的包管理器与构建系统</h1><p>Zig 不仅是一门现代系统编程语言，更是一套强大、完备的现代化工具链。它开箱即带高性能构建系统与去中心化包管理器。</p><p>你不仅可以用 Zig 编写全新代码，还可以用它直接替代 CMake、Make、Autotools 或 Meson 等繁琐晦涩的传统构建工具。</p><p>传统的系统级包管理器（如 apt-get、pacman、Homebrew 等）常常让跨平台分发变得割裂和支离破碎。</p><p>许多现代语言虽然拥有自己的包管理器，但它们往往无法处理 C/C++ 依赖与复杂的底层交叉编译。</p><p>Zig 构建系统用一门清晰合理的现代语言统一了这一切，无论是纯 Zig 项目还是混合 C/C++ 的大型项目，都能得到开箱即用的优雅管理。</p><h1>极致精简与纯粹性</h1><p>C++、Rust 和 D 包含了如此庞大繁复的语法特性，以至于开发者常常把大量精力浪费在与复杂的类型系统或特殊语法规则搏斗上，从而分散了对实际工程业务逻辑的专注。</p><p>Zig 没有任何复杂的预处理器宏系统，但凭借一等公民的编译期代码执行（comptime），依然具备极强的表达力，足以优雅支撑高度复杂的大型系统程序。</p><h1>完备卓越的现代化工具链</h1><p>Zig 可以直接从<a href="https://ziglang.org/download/">下载页面</a>获取。官方提供的二进制发行包具备以下卓越特性：</p><ul><li>完全绿色便携：下载并解压单个压缩包即可使用，无需复杂的系统安装程序。</li><li>完全静态编译，不依赖任何外部运行时环境或动态库。</li><li>针对优化发布构建深度集成 LLVM，同时配备 Zig 专有的快速编译后端。</li><li>额外提供输出纯 C 代码的编译后端，便于在极端特殊平台上移植。</li><li>开箱即用支持面向绝大多数主流操作系统与硬件架构的无缝交叉编译。</li><li>自带完整 libc 源码，并在目标需要时自动按需动态编译。</li><li>内置支持高度多核并发与智能增量缓存的现代化构建系统。</li><li>原生支持编译包含 libc/libc++ 依赖的 C 和 C++ 代码。</li><li>通过 `zig cc` 和 `zig c++` 提供与 GCC/Clang 命令行参数的无缝即插即用兼容。</li><li>内置 Windows 平台专用的资源文件编译器（RC）。</li></ul>
+<p>隐式控制流的例子：</p><ul><li>D 有 <code>@property</code> 函数。这类方法的调用写法看起来像访问字段，所以在上面的例子中，<code>c.d</code> 可能会调用函数。</li><li>C++、D 和 Rust 支持运算符重载，所以 <code>+</code> 运算符可能会调用函数。</li><li>C++、D 和 Go 有 throw/catch 异常（有时也叫 panic/recover），所以 <code>foo()</code> 可能抛出异常，导致 <code>bar()</code> 不被调用。（当然，即使在 Zig 中，<code>foo()</code> 也可能发生死锁，导致 <code>bar()</code> 不被调用，但这在任何图灵完备的语言中都可能发生。）</li></ul><p>这一设计决策的目的是提高可读性。</p><h1>没有隐式内存分配</h1><p>在堆内存分配上，Zig 采取不插手的做法。Zig 没有 <code>new</code> 关键字，也没有任何会使用堆分配器的语言特性（例如字符串拼接运算符[1]）。堆这一整套概念由库和应用代码管理，而不是由语言管理。</p><p>隐式内存分配的例子：</p><ul><li>Go 的 <code>defer</code> 会在函数局部的栈上分配内存。这种控制流的工作方式本身就不直观，而且如果在循环中使用 <code>defer</code>，还可能导致内存不足。</li><li>C++ 协程为了调用协程会分配堆内存。</li><li>在 Go 中，函数调用可能导致堆分配，因为 goroutine 分配的栈很小，调用栈足够深时就需要调整栈的大小。</li><li>Rust 标准库的主要 API 在内存不足时会 panic，而接受分配器参数的替代 API 只是事后补上的（参见 <a href="https://github.com/rust-lang/rust/issues/29802">rust-lang/rust#29802</a>）。</li></ul><p>几乎所有带垃圾回收的语言都到处散布着隐式内存分配，因为垃圾回收器在回收一侧掩盖了这些分配的痕迹。</p><p>隐式内存分配的主要问题在于，它妨碍了一段代码的<em>可复用性</em>，不必要地限制了这段代码可以部署的环境。简单来说，有些使用场景必须能够确信控制流和函数调用不会带来内存分配这一副作用，因此，只有真正能提供这种保证的编程语言，才能满足这些场景。</p><p>Zig 的标准库中有提供堆分配器、使用堆分配器的功能，但这些都是可选的标准库功能，并没有内置于语言本身。只要从不初始化堆分配器，就可以确信程序不会进行堆分配。</p><p>标准库中每个需要分配堆内存的功能，都通过接受一个 <code>Allocator</code> 参数来完成分配。这意味着 Zig 标准库支持独立环境（freestanding）目标。例如，<code>std.ArrayList</code> 和 <code>std.AutoHashMap</code> 可以用于裸机编程！</p><p>自定义分配器让手动内存管理变得轻松。Zig 有一个调试分配器，即使出现释放后使用和重复释放，也能保持内存安全。它会自动检测内存泄漏并打印对应的栈跟踪。arena 分配器可以把任意数量的分配合并为一个，一次性全部释放，而不必逐个管理每次分配。专用分配器则可以针对特定应用的需求，提升性能或改善内存使用。</p><p>[1]：实际上确实有字符串拼接运算符（更准确地说是数组拼接运算符），但它只在编译时起作用，所以仍然不会在运行时进行任何堆分配。</p><h1>对不使用标准库的一等支持</h1><p>正如上文所说，Zig 的标准库完全是可选的。每个标准库 API 只有在用到时才会编译进程序。无论链接 libc 还是不链接 libc，Zig 都同样支持。Zig 对裸机开发和高性能开发都很友好。</p><p>这样可以两全其美：例如在 Zig 中，WebAssembly 程序既能使用标准库的常规功能，生成的二进制文件又比其他支持编译为 WebAssembly 的编程语言更小。</p><h1>适合编写库的可移植语言</h1><p>代码复用是编程的终极理想之一。遗憾的是，实践中我们发现自己一次又一次地重新发明轮子。这往往也是有道理的。</p><ul><li>如果应用有实时性要求，那么任何使用垃圾回收或其他不确定性行为的库都不能作为依赖。</li><li>如果一门语言让忽略错误变得太容易，就很难验证一个库是否正确处理并向上传递了错误。这时人们往往想抛开这个库，自己重新实现一遍，因为这样才能确定所有相关错误都得到了正确处理。Zig 的设计让程序员最省事的做法就是正确处理错误，因此可以有相当的把握认为，一个库会正确地向上传递错误。</li><li>从现实情况看，C 目前确实是用途最广、可移植性最好的语言。任何不能与 C 代码交互的语言，都有被边缘化的风险。Zig 正尝试成为新的、适合编写库的可移植语言：一方面让外部函数遵循 C ABI 变得简单直接，另一方面引入安全机制和语言设计，防止实现中出现常见的 bug。</li></ul><h1>适用于现有项目的包管理器和构建系统</h1><p>Zig 不仅是一门编程语言，还是一套工具链。它自带<a href="/intro/build-system/">构建系统和包管理器</a>，即使在传统的 C/C++ 项目中也很有用。</p><p>你不仅可以用 Zig 代码代替 C 或 C++ 代码，还可以用 Zig 替代 autotools、cmake、make、scons、ninja 等工具。在此之上，它还提供了针对原生依赖的包管理器。即使项目的全部代码都是 C 或 C++，这个构建系统也同样适用。例如，<a href="https://github.com/andrewrk/ffmpeg">将 ffmpeg 移植到 zig 构建系统</a>之后，只需<a href="/download/">下载 50 MiB 的 zig</a>，就能在任何受支持的系统上为任何受支持的系统编译 ffmpeg。对开源项目来说，这种简化的从源码构建（甚至交叉编译）的能力，可能决定能否赢得宝贵的贡献者，还是失去他们。</p><p>apt-get、pacman、homebrew 等系统包管理器对终端用户的体验至关重要，但可能满足不了开发者的需求。一个语言专属的包管理器，可能决定项目是没有贡献者还是有很多贡献者。对开源项目来说，光是让项目成功构建就很困难，这对潜在贡献者是一道很大的门槛。对 C/C++ 项目来说，有依赖可能是致命的，在没有包管理器的 Windows 上尤其如此。即使只是构建 Zig 本身，大多数潜在贡献者也会被 LLVM 依赖难住。Zig 让项目可以直接依赖原生库，无需指望用户的系统包管理器提供正确的版本；而且无论使用什么系统、面向什么目标平台，几乎都能保证项目第一次就构建成功。</p><p><strong>其他语言也有包管理器，但不能像 Zig 这样消除烦人的系统依赖。</strong></p><p>Zig 可以用一门合理的语言取代项目的构建系统：它通过声明式 API 构建项目，同时提供包管理，从而让项目能够真正依赖其他 C 库。能够拥有依赖，就能构建更高层的抽象，可复用的高层代码也会因此大量涌现。</p><h1>简单</h1><p>C++、Rust 和 D 的特性太多，多到会让人无法专注于正在开发的应用本身的含义。你会发现自己在调试对编程语言的理解，而不是调试应用本身。</p><p>Zig 没有宏，但依然足够强大，能以清晰、不重复的方式表达复杂的程序。就连 Rust 的宏也有像 <code>format!</code> 这样的特殊情况，它是在编译器内部实现的。而在 Zig 中，等效的函数在标准库中实现，编译器里没有任何特殊处理的代码。</p><h1>工具</h1><p>Zig 可以从<a href="/download/">下载页面</a>下载。Zig 提供 Linux、Windows 和 macOS 的二进制归档文件。下面列出其中一个归档文件包含的内容：</p><ul><li>下载并解压一个归档文件即可完成安装，无需任何系统配置</li><li>静态编译，没有运行时依赖</li><li>支持使用 LLVM 生成优化的发布构建，同时使用 Zig 自己的后端获得更快的编译速度</li><li>另外还支持输出 C 代码的后端</li><li>开箱即可交叉编译到大多数主流平台</li><li>附带 libc 的源码，需要时会为任何受支持的平台动态编译</li><li>包含支持并发和缓存的构建系统</li><li>支持编译 C 和 C++ 代码，并提供 libc 支持</li><li>通过 <code>zig cc</code> 直接替代 GCC/Clang，命令行兼容</li><li>Windows 资源编译器</li></ul>
   </div>
 
     </div>
@@ -115,3 +115,4 @@ bar<span class="punctuation_bracket">(</span><span class="punctuation_bracket">)
     </div>
   
 
+</body></html>

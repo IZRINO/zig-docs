@@ -6,12 +6,18 @@ import { test } from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { load } from 'cheerio';
 import { readGrammar, translateGrammar } from '../scripts/lib/grammar.mjs';
+import {
+  checkSegment,
+  introSegments,
+  sha256,
+  translateIntroPage,
+} from '../scripts/lib/intro-translation.mjs';
 
 const root = resolve(fileURLToPath(new URL('../', import.meta.url)));
 const json = async (path) =>
   JSON.parse(await readFile(resolve(root, path), 'utf8'));
 
-test('官方中文入门快照校验来源、章节锚点与代码块', async () => {
+test('中文入门快照校验来源、章节锚点与代码块', async () => {
   const snapshot = await json('upstream/intro/manifest.json');
   const pages = (await json('content/zh-cn/intro/manifest.json')).filter(
     (page) => page.id !== 'intro/grammar',
@@ -59,7 +65,7 @@ test('官方中文入门快照校验来源、章节锚点与代码块', async ()
       source$('#content .container').last().find('pre').length,
       'Code block count: ' + meta.id,
     );
-    assert.ok(meta.sourceUrl.startsWith('https://ziglang.org/zh-CN/intro/'));
+    assert.ok(meta.sourceUrl.startsWith('https://ziglang.org/intro/'));
   }
 
   for (const meta of pages) {
@@ -80,6 +86,62 @@ test('官方中文入门快照校验来源、章节锚点与代码块', async ()
       );
     });
   }
+});
+
+test('中文入门页由英文快照和译文生成，不增删原文内容', async () => {
+  const pages = (await json('content/en/intro/manifest.json')).filter(
+    (page) => page.id !== 'intro/grammar',
+  );
+  for (const meta of pages) {
+    const slug = meta.id.slice('intro/'.length);
+    const source = await readFile(
+      resolve(root, `upstream/intro/en/${slug}.html`),
+      'utf8',
+    );
+    const translation = await json(`translations/intro/${slug}.zh-cn.json`);
+    assert.equal(translation.sourceHash, sha256(source));
+    assert.deepEqual(
+      Object.keys(translation.segments).sort(),
+      introSegments(source).sort(),
+      `Intro segments differ: ${slug}`,
+    );
+    assert.equal(
+      await readFile(
+        resolve(root, `upstream/intro/zh-CN/${slug}.html`),
+        'utf8',
+      ),
+      translateIntroPage(source, translation, slug),
+      `Run npm run extract:intro: ${slug}`,
+    );
+  }
+});
+
+test('入门译文缺段、改动标记、丢失数字或原文变动均被拒绝', async () => {
+  const source = await readFile(
+    resolve(root, 'upstream/intro/en/why_zig_rust_d_cpp.html'),
+    'utf8',
+  );
+  const translation = await json(
+    'translations/intro/why_zig_rust_d_cpp.zh-cn.json',
+  );
+  assert.throws(
+    () => translateIntroPage(source + '\n', translation),
+    /English intro source changed/,
+  );
+  const [first] = Object.keys(translation.segments);
+  const missing = structuredClone(translation);
+  delete missing.segments[first];
+  assert.throws(() => translateIntroPage(source, missing), /Missing 1 intro/);
+  assert.throws(
+    () => checkSegment('Use <0/> with <1>care</1>.', '使用 <0/> 时要小心。'),
+    /Placeholder structure differs/,
+  );
+  assert.throws(
+    () =>
+      checkSegment('<0>580-line PEG grammar file</0>', '<0>PEG 语法文件</0>'),
+    /Number 580 missing/,
+  );
+  checkSegment('Use <0/> with <1>care</1>.', '<1>小心</1>使用 <0/>。');
 });
 
 test('共享入门章节的双语标识与锚点一致，英文保留官方原文', async () => {

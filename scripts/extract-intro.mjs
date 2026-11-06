@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { load } from 'cheerio';
 import { enhanceIntroCodeBlocks, renderCodeFrame } from './lib/code-frame.mjs';
 import { readGrammar } from './lib/grammar.mjs';
+import { translateIntroPage } from './lib/intro-translation.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const pages = [
@@ -47,7 +48,29 @@ function localizeLinks($, slug, sourceUrl) {
   });
 }
 
+// The Chinese pages are translated from the official English snapshot with the
+// reviewed segments in translations/intro/, then extracted like any source.
+async function translateIntro() {
+  for (const page of pages) {
+    const source = await readFile(
+      resolve(root, `upstream/intro/en/${page.slug}.html`),
+      'utf8',
+    );
+    const translation = JSON.parse(
+      await readFile(
+        resolve(root, `translations/intro/${page.slug}.zh-cn.json`),
+        'utf8',
+      ),
+    );
+    await writeFile(
+      resolve(root, `upstream/intro/zh-CN/${page.slug}.html`),
+      translateIntroPage(source, translation, page.slug),
+    );
+  }
+}
+
 async function main() {
+  await translateIntro();
   const sourceAssets = [];
   const heartPath = 'upstream/intro/zh-CN/heart.svg';
   const heart = await readFile(resolve(root, heartPath));
@@ -69,12 +92,17 @@ async function main() {
     const entries = [];
     for (const page of pages) {
       const sourceLocale = locale === 'en' ? 'en' : 'zh-CN';
-      const sourceUrl = `https://ziglang.org/${locale === 'en' ? '' : 'zh-CN/'}intro/${page.slug}/`;
+      const sourceUrl = `https://ziglang.org/intro/${page.slug}/`;
       const sourceFile = `upstream/intro/${sourceLocale}/${page.slug}.html`;
       const bytes = await readFile(resolve(root, sourceFile));
       sourceAssets.push({
         file: sourceFile,
-        sourceUrl,
+        ...(locale === 'en'
+          ? { sourceUrl }
+          : {
+              translatedFrom: `upstream/intro/en/${page.slug}.html`,
+              translation: `translations/intro/${page.slug}.zh-cn.json`,
+            }),
         sha256: createHash('sha256').update(bytes).digest('hex'),
       });
       const $ = load(bytes.toString('utf8'), null, false);
@@ -190,7 +218,7 @@ async function main() {
   }
   await writeFile(
     resolve(root, 'upstream/intro/manifest.json'),
-    `${JSON.stringify({ sources: { en: 'https://ziglang.org/intro/', 'zh-cn': 'https://ziglang.org/zh-CN/intro/' }, assets: sourceAssets }, null, 2)}\n`,
+    `${JSON.stringify({ sources: { en: 'https://ziglang.org/intro/' }, translations: { 'zh-cn': 'translations/intro/' }, assets: sourceAssets }, null, 2)}\n`,
   );
   console.log(`Generated ${pages.length + 1} shared intro pages per locale.`);
 }

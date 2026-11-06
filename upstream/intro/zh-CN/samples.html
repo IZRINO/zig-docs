@@ -1,8 +1,8 @@
-
-
-  
+<!DOCTYPE html><html lang="zh-CN"><head id="head">
     <meta charset="utf-8">
-    <title id="title">精选代码示例 ⚡ Zig 编程语言</title>
+    <title id="title">
+      代码示例 ⚡ Zig 编程语言
+    </title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="light dark">
     <link rel="icon" href="/favicon.png">
@@ -12,8 +12,8 @@
     
   <link type="text/css" rel="stylesheet" href="/css/home.css">
 
-  
-  
+  </head>
+  <body>
     <div class="container">
       <a href="/"><span id="header-image"></span></a>
     </div>
@@ -75,20 +75,13 @@
       
   <div class="container">
     
-      <a id="back" href="/intro/">← 返回 <b>学习</b></a>
+      <a id="back" href="/intro/"> ← 返回<b>入门</b> </a>
     
-    <h1 class="title">精选代码示例</h1>
+    <h1 class="title">代码示例</h1>
     <ul>
-<li><a href="#hello-world">Hello World</a></li>
-<li><a href="#calling-external-library-functions">调用外部动态库函数</a></li>
-<li><a href="#memory-leak-detection">内存泄漏与非法释放检测</a></li>
-<li><a href="#c-interoperability">C 语言互操作性</a></li>
-<li><a href="#zigg-zagg">Zigg Zagg 趣味算法</a></li>
-<li><a href="#generic-types">泛型数据类型</a></li>
-<li><a href="#using-curl-from-zig">在 Zig 中直接调用 libcurl 网络库</a></li>
-</ul>
+<li><a href="#hello">Hello world</a></li><li><a href="#ext">调用外部库函数</a></li><li><a href="#leak">内存泄漏检测</a></li><li><a href="#c-interop">与 C 互操作</a></li><li><a href="#zigg-zagg">Zigg Zagg</a></li><li><a href="#generic">泛型类型</a></li><li><a href="#curl">在 Zig 中使用 cURL</a></li></ul>
     
-    <h1 id="hello">Hello World</h1><p>打印 Hello World 的极简示例：</p><p></p><figure><figcaption class="zig-cap"><cite class="file">hello-world.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
+    <h1 id="hello">Hello world</h1><p>打印 hello world 的最小示例。</p><p></p><figure><figcaption class="zig-cap"><cite class="file">hello-world.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
 <span class="tok-kw">const</span> Io = std.Io;
 
 <span class="tok-kw">pub</span> <span class="tok-kw">fn</span> <span class="tok-fn">main</span>(init: std.process.Init) !<span class="tok-type">void</span> {
@@ -96,7 +89,7 @@
 }</code></pre></figure><figure><figcaption class="shell-cap">Shell</figcaption><pre><samp>$ <kbd>zig build-exe hello-world.zig</kbd>
 $ <kbd>./hello-world</kbd>
 hello world!
-</samp></pre></figure><p></p><h1 id="ext">调用外部动态库函数</h1><p>所有系统原生 API 均可以通过此方式直接调用，无需额外维护第三方绑定库：</p><p></p><figure><figcaption class="zig-cap"><cite class="file">windows-msgbox.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> win = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>).os.windows;
+</samp></pre></figure><p></p><h1 id="ext">调用外部库函数</h1><p>所有系统 API 函数都可以用这种方式调用，无需库绑定就能与它们交互。</p><p></p><figure><figcaption class="zig-cap"><cite class="file">windows-msgbox.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> win = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>).os.windows;
 
 <span class="tok-kw">extern</span> <span class="tok-str">"user32"</span> <span class="tok-kw">fn</span> <span class="tok-fn">MessageBoxA</span>(?win.HWND, [*:<span class="tok-number">0</span>]<span class="tok-kw">const</span> <span class="tok-type">u8</span>, [*:<span class="tok-number">0</span>]<span class="tok-kw">const</span> <span class="tok-type">u8</span>, <span class="tok-type">u32</span>) <span class="tok-kw">callconv</span>(.winapi) <span class="tok-type">i32</span>;
 
@@ -104,7 +97,7 @@ hello world!
     _ = MessageBoxA(<span class="tok-null">null</span>, <span class="tok-str">"world!"</span>, <span class="tok-str">"Hello"</span>, <span class="tok-number">0</span>);
 }</code></pre></figure><figure><figcaption class="shell-cap">Shell</figcaption><pre><samp>$ <kbd>zig test windows-msgbox.zig</kbd>
 All 0 tests passed.
-</samp></pre></figure><p></p><h1 id="leak">内存泄漏与非法释放检测</h1><p>使用 <code>std.heap.DebugAllocator</code>，你可以精准检测并追踪内存重复释放（double free）与内存泄漏：</p><p></p><figure><figcaption class="zig-cap"><cite class="file">memory-leak.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
+</samp></pre></figure><p></p><h1 id="leak">内存泄漏检测</h1><p>使用 <code>std.heap.DebugAllocator</code> 可以追踪重复释放和内存泄漏。</p><p></p><figure><figcaption class="zig-cap"><cite class="file">memory-leak.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
 
 <span class="tok-kw">pub</span> <span class="tok-kw">fn</span> <span class="tok-fn">main</span>() !<span class="tok-type">void</span> {
     <span class="tok-kw">var</span> debug_allocator = std.heap.DebugAllocator(.{}){};
@@ -113,13 +106,13 @@ All 0 tests passed.
     <span class="tok-kw">const</span> gpa = debug_allocator.allocator();
 
     <span class="tok-kw">const</span> u32_ptr = <span class="tok-kw">try</span> gpa.create(<span class="tok-type">u32</span>);
-    _ = u32_ptr; <span class="tok-comment">// 消除未使用变量错误</span>
+    _ = u32_ptr; <span class="tok-comment">// silences unused variable error</span>
 
-    <span class="tok-comment">// 糟糕，我忘记释放内存了！</span>
+    <span class="tok-comment">// oops I forgot to free!</span>
 }</code></pre></figure><figure><figcaption class="shell-cap">Shell</figcaption><pre><samp>$ <kbd>zig build-exe memory-leak.zig</kbd>
 $ <kbd>./memory-leak</kbd>
-error(DebugAllocator): memory address 0x7fe99b600000 leaked:
-/home/ci/.cache/act/37f9154e5a14f94b/hostexecutor/zig-code/samples/memory-leak.zig:9:35: 0x11e87b4 in main (memory-leak.zig)
+error(DebugAllocator): memory address 0x7f5726c40000 leaked:
+/home/ci/.cache/act/801ef91cb8f01710/hostexecutor/zig-code/samples/memory-leak.zig:9:35: 0x11e87b4 in main (memory-leak.zig)
     const u32_ptr = try gpa.create(u32);
                                   ^
 /home/ci/deps/zig-x86_64-linux-0.17.0/lib/std/start.zig:788:64: 0x11e8eb6 in callMain (std.zig)
@@ -129,11 +122,11 @@ error(DebugAllocator): memory address 0x7fe99b600000 leaked:
     asm volatile (switch (native_arch) {
     ^
 
-thread 886916 panic: reached unreachable code
+thread 2642855 panic: reached unreachable code
 /home/ci/deps/zig-x86_64-linux-0.17.0/lib/std/debug.zig:442:14: 0x1029e99 in assert (std.zig)
     if (!ok) unreachable; // assertion failure
              ^
-/home/ci/.cache/act/37f9154e5a14f94b/hostexecutor/zig-code/samples/memory-leak.zig:5:27: 0x11e8866 in main (memory-leak.zig)
+/home/ci/.cache/act/801ef91cb8f01710/hostexecutor/zig-code/samples/memory-leak.zig:5:27: 0x11e8866 in main (memory-leak.zig)
     defer std.debug.assert(debug_allocator.deinit() == .ok);
                           ^
 /home/ci/deps/zig-x86_64-linux-0.17.0/lib/std/start.zig:788:64: 0x11e8eb6 in callMain (std.zig)
@@ -143,7 +136,7 @@ thread 886916 panic: reached unreachable code
     asm volatile (switch (native_arch) {
     ^
 (process terminated by signal)
-</samp></pre></figure><p></p><h1 id="c-interop">C 语言互操作性</h1><p>导入 C 语言头文件并同时链接 libc 与 raylib 游戏图形库的示例：</p><p></p><figure><figcaption class="zig-cap"><cite class="file">c-interop.zig</cite></figcaption><pre><code><span class="tok-comment">// 使用 `zig build-exe c-interop.zig -lc -lraylib` 进行构建</span>
+</samp></pre></figure><p></p><h1 id="c-interop">与 C 互操作</h1><p>导入 C 头文件，并同时链接 libc 和 raylib 的示例。</p><p></p><figure><figcaption class="zig-cap"><cite class="file">c-interop.zig</cite></figcaption><pre><code><span class="tok-comment">// build with `zig build-exe c-interop.zig -lc -lraylib`</span>
 <span class="tok-kw">const</span> ray = <span class="tok-builtin">@cImport</span>({
     <span class="tok-builtin">@cInclude</span>(<span class="tok-str">"raylib.h"</span>);
 });
@@ -164,7 +157,7 @@ thread 886916 panic: reached unreachable code
         ray.ClearBackground(ray.RAYWHITE);
         ray.DrawText(<span class="tok-str">"Hello, World!"</span>, <span class="tok-number">190</span>, <span class="tok-number">200</span>, <span class="tok-number">20</span>, ray.LIGHTGRAY);
     }
-}</code></pre></figure><p></p><h1 id="zigg-zagg">Zigg Zagg 趣味算法</h1><p>Zig 专为技术面试刷题深度优化（开个玩笑）：</p><p></p><figure><figcaption class="zig-cap"><cite class="file">ziggzagg.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
+}</code></pre></figure><p></p><h1 id="zigg-zagg">Zigg Zagg</h1><p>Zig 专为编程面试做了<em>优化</em>（其实并没有）。</p><p></p><figure><figcaption class="zig-cap"><cite class="file">ziggzagg.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
 
 <span class="tok-kw">pub</span> <span class="tok-kw">fn</span> <span class="tok-fn">main</span>() !<span class="tok-type">void</span> {
     <span class="tok-kw">var</span> i: <span class="tok-type">usize</span> = <span class="tok-number">1</span>;
@@ -197,7 +190,7 @@ info: 13
 info: 14
 info: ZiggZagg
 info: 16
-</samp></pre></figure><p></p><h1 id="generic">泛型数据类型</h1><p>在 Zig 中，类型是一等公民的编译期值，我们通过返回类型的普通函数来实现通用泛型数据结构：</p><p></p><figure><figcaption class="zig-cap"><cite class="file">generic-type.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
+</samp></pre></figure><p></p><h1 id="generic">泛型类型</h1><p>在 Zig 中，类型是编译时值，我们通过返回类型的函数来实现泛型算法和数据结构。本例实现了一个简单的泛型队列，并测试它的行为。</p><p></p><figure><figcaption class="zig-cap"><cite class="file">generic-type.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
 
 <span class="tok-kw">pub</span> <span class="tok-kw">fn</span> <span class="tok-fn">Queue</span>(<span class="tok-kw">comptime</span> Child: <span class="tok-type">type</span>) <span class="tok-type">type</span> {
     <span class="tok-kw">return</span> <span class="tok-kw">struct</span> {
@@ -258,7 +251,7 @@ info: 16
 }</code></pre></figure><figure><figcaption class="shell-cap">Shell</figcaption><pre><samp>$ <kbd>zig test generic-type.zig</kbd>
 1/1 generic-type.test.queue...OK
 All 1 tests passed.
-</samp></pre></figure><p></p><h1 id="curl">在 Zig 中直接调用 libcurl 网络库</h1><p></p><figure><figcaption class="zig-cap"><cite class="file">curl.zig</cite></figcaption><pre><code><span class="tok-comment">// 使用 `zig build-exe zig-curl-test.zig --library curl --library c $(pkg-config --cflags libcurl)` 进行编译</span>
+</samp></pre></figure><p></p><h1 id="curl">在 Zig 中使用 cURL</h1><p></p><figure><figcaption class="zig-cap"><cite class="file">curl.zig</cite></figcaption><pre><code><span class="tok-comment">// compile with `zig build-exe zig-curl-test.zig --library curl --library c $(pkg-config --cflags libcurl)`</span>
 <span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
 <span class="tok-kw">const</span> cURL = <span class="tok-builtin">@cImport</span>({
     <span class="tok-builtin">@cInclude</span>(<span class="tok-str">"curl/curl.h"</span>);
@@ -267,32 +260,32 @@ All 1 tests passed.
 <span class="tok-kw">pub</span> <span class="tok-kw">fn</span> <span class="tok-fn">main</span>(init: std.process.Init) !<span class="tok-type">void</span> {
     <span class="tok-kw">const</span> arena = init.arena.allocator();
 
-    <span class="tok-comment">// 全局初始化 curl，失败则退出</span>
+    <span class="tok-comment">// global curl init, or fail</span>
     <span class="tok-kw">if</span> (cURL.curl_global_init(cURL.CURL_GLOBAL_ALL) != cURL.CURLE_OK)
         <span class="tok-kw">return</span> <span class="tok-kw">error</span>.CURLGlobalInitFailed;
     <span class="tok-kw">defer</span> cURL.curl_global_cleanup();
 
-    <span class="tok-comment">// 初始化 curl 简易句柄，失败则退出</span>
+    <span class="tok-comment">// curl easy handle init, or fail</span>
     <span class="tok-kw">const</span> handle = cURL.curl_easy_init() <span class="tok-kw">orelse</span> <span class="tok-kw">return</span> <span class="tok-kw">error</span>.CURLHandleInitFailed;
     <span class="tok-kw">defer</span> cURL.curl_easy_cleanup(handle);
 
     <span class="tok-kw">var</span> response_buffer = std.ArrayList(<span class="tok-type">u8</span>).init(arena);
 
-    <span class="tok-comment">// 当使用 arena 分配器时这步是多余的，但</span>
-    <span class="tok-comment">// 如果将来更换分配器实现，这一步至关重要</span>
+    <span class="tok-comment">// superfluous when using an arena allocator, but</span>
+    <span class="tok-comment">// important if the allocator implementation changes</span>
     <span class="tok-kw">defer</span> response_buffer.deinit();
 
-    <span class="tok-comment">// 配置 curl 选项</span>
+    <span class="tok-comment">// setup curl options</span>
     <span class="tok-kw">if</span> (cURL.curl_easy_setopt(handle, cURL.CURLOPT_URL, <span class="tok-str">"https://ziglang.org"</span>) != cURL.CURLE_OK)
         <span class="tok-kw">return</span> <span class="tok-kw">error</span>.CouldNotSetURL;
 
-    <span class="tok-comment">// 设置写入函数回调</span>
+    <span class="tok-comment">// set write function callbacks</span>
     <span class="tok-kw">if</span> (cURL.curl_easy_setopt(handle, cURL.CURLOPT_WRITEFUNCTION, writeToArrayListCallback) != cURL.CURLE_OK)
         <span class="tok-kw">return</span> <span class="tok-kw">error</span>.CouldNotSetWriteCallback;
     <span class="tok-kw">if</span> (cURL.curl_easy_setopt(handle, cURL.CURLOPT_WRITEDATA, &amp;response_buffer) != cURL.CURLE_OK)
         <span class="tok-kw">return</span> <span class="tok-kw">error</span>.CouldNotSetWriteCallback;
 
-    <span class="tok-comment">// 执行请求</span>
+    <span class="tok-comment">// perform</span>
     <span class="tok-kw">if</span> (cURL.curl_easy_perform(handle) != cURL.CURLE_OK)
         <span class="tok-kw">return</span> <span class="tok-kw">error</span>.FailedToPerformRequest;
 
@@ -337,3 +330,4 @@ All 1 tests passed.
     </div>
   
 
+</body></html>

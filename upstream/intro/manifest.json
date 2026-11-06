@@ -1,7 +1,9 @@
 {
   "sources": {
-    "en": "https://ziglang.org/intro/",
-    "zh-cn": "https://ziglang.org/zh-CN/intro/"
+    "en": "https://ziglang.org/intro/"
+  },
+  "translations": {
+    "zh-cn": "translations/intro/"
   },
   "assets": [
     {
@@ -35,28 +37,33 @@
     },
     {
       "file": "upstream/intro/zh-CN/getting-started.html",
-      "sourceUrl": "https://ziglang.org/zh-CN/intro/getting-started/",
-      "sha256": "a5ad33a72d0fa1505d05dcf4df40c899c98b9ec1c9c7bcb3dd97d6924b8de833"
+      "translatedFrom": "upstream/intro/en/getting-started.html",
+      "translation": "translations/intro/getting-started.zh-cn.json",
+      "sha256": "8c87556e78e38fa04bbd3e4dfb2b9c5ceb3f61146310f3560e9a594d2b5390fa"
     },
     {
       "file": "upstream/intro/zh-CN/overview.html",
-      "sourceUrl": "https://ziglang.org/zh-CN/intro/overview/",
-      "sha256": "feff2a19a5711416f7d12b601727e02d18844fe32c9f51c145d8e0c673503f57"
+      "translatedFrom": "upstream/intro/en/overview.html",
+      "translation": "translations/intro/overview.zh-cn.json",
+      "sha256": "6a68543d5abc66d9b8d8b9210dd7b388a762bd8665d56eea69860ebcdad6f15e"
     },
     {
       "file": "upstream/intro/zh-CN/build-system.html",
-      "sourceUrl": "https://ziglang.org/zh-CN/intro/build-system/",
-      "sha256": "39672f311d3eb06c4de5e40261a44ea01db5af6f056d15b7eecbe738411f5a6f"
+      "translatedFrom": "upstream/intro/en/build-system.html",
+      "translation": "translations/intro/build-system.zh-cn.json",
+      "sha256": "bafa95730a3472c1d9b397f48c9452265218a0806ef3919fd9631d556b1cec33"
     },
     {
       "file": "upstream/intro/zh-CN/samples.html",
-      "sourceUrl": "https://ziglang.org/zh-CN/intro/samples/",
-      "sha256": "928f02154e4952a91db1e6f79e3be08d4083829d6f066307644b97d7cd0d38ae"
+      "translatedFrom": "upstream/intro/en/samples.html",
+      "translation": "translations/intro/samples.zh-cn.json",
+      "sha256": "a978d8fcad6438f8bd18c39ebd589590ef99c25adf5fcaf039af4fdc6e7a9c9a"
     },
     {
       "file": "upstream/intro/zh-CN/why_zig_rust_d_cpp.html",
-      "sourceUrl": "https://ziglang.org/zh-CN/intro/why_zig_rust_d_cpp/",
-      "sha256": "1ae3b38ff1e9200de1bb86073c7459b8d0557eaa56f1e5a354a3e2f8ee3cb62c"
+      "translatedFrom": "upstream/intro/en/why_zig_rust_d_cpp.html",
+      "translation": "translations/intro/why_zig_rust_d_cpp.zh-cn.json",
+      "sha256": "a55ded81aff724c64eac1545f0a3fe367dd18cad02f908acf7227de101f9b110"
     }
   ]
 }

@@ -103,7 +103,7 @@ test('语言根目录默认显示最新版本，旧版概览可显式访问', as
   await expect(page.getByRole('heading', { level: 1 })).toContainText('0.17.0');
 });
 
-test('官方中文入门章节出现在新版概览和侧栏', async ({ page }) => {
+test('中文入门章节出现在新版概览和侧栏', async ({ page }) => {
   const intro = JSON.parse(
     readFileSync(
       new URL('../../content/zh-cn/intro/manifest.json', import.meta.url),
@@ -119,7 +119,7 @@ test('官方中文入门章节出现在新版概览和侧栏', async ({ page }) 
   await expect(page.locator('.document-kind')).toHaveText('入门');
   await expect(page.locator('.document-meta a')).toHaveAttribute(
     'href',
-    'https://ziglang.org/zh-CN/intro/getting-started/',
+    'https://ziglang.org/intro/getting-started/',
   );
   await expect(page.locator('.doc-content .expressive-code')).toHaveCount(12);
   await expect(

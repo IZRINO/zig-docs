@@ -1,0 +1,30 @@
+{
+  "sourceFile": "upstream/intro/en/samples.html",
+  "sourceHash": "dfdb33162cc6158486aebd304436da3935ef9e032600fe5ad209a4886b9ef0e7",
+  "segments": {
+    "Samples ⚡ Zig Programming Language": "代码示例 ⚡ Zig 编程语言",
+    "<0> ← Back to <1>Introduction</1> </0>": "<0> ← 返回<1>入门</1> </0>",
+    "Samples": "代码示例",
+    "<0>Hello world</0>": "<0>Hello world</0>",
+    "<0>Calling external library functions</0>": "<0>调用外部库函数</0>",
+    "<0>Memory leak detection</0>": "<0>内存泄漏检测</0>",
+    "<0>C interoperability</0>": "<0>与 C 互操作</0>",
+    "<0>Zigg Zagg</0>": "<0>Zigg Zagg</0>",
+    "<0>Generic Types</0>": "<0>泛型类型</0>",
+    "<0>Using cURL from Zig</0>": "<0>在 Zig 中使用 cURL</0>",
+    "Hello world": "Hello world",
+    "A minimal example printing hello world.": "打印 hello world 的最小示例。",
+    "Shell": "Shell",
+    "Calling external library functions": "调用外部库函数",
+    "All system API functions can be invoked this way, you do not need library bindings to interface them.": "所有系统 API 函数都可以用这种方式调用，无需库绑定就能与它们交互。",
+    "Memory leak detection": "内存泄漏检测",
+    "Using <0/> you can track double frees and memory leaks.": "使用 <0/> 可以追踪重复释放和内存泄漏。",
+    "C interoperability": "与 C 互操作",
+    "Example of importing a C header file and linking to both libc and raylib.": "导入 C 头文件，并同时链接 libc 和 raylib 的示例。",
+    "Zigg Zagg": "Zigg Zagg",
+    "Zig is <0>optimized</0> for coding interviews (not really).": "Zig 专为编程面试做了<0>优化</0>（其实并没有）。",
+    "Generic Types": "泛型类型",
+    "In Zig types are comptime values and we use functions that return a type to implement generic algorithms and data structures. In this example we implement a simple generic queue and test its behaviour.": "在 Zig 中，类型是编译时值，我们通过返回类型的函数来实现泛型算法和数据结构。本例实现了一个简单的泛型队列，并测试它的行为。",
+    "Using cURL from Zig": "在 Zig 中使用 cURL"
+  }
+}

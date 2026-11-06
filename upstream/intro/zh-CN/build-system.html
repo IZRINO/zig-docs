@@ -1,8 +1,8 @@
-
-
-  
+<!DOCTYPE html><html lang="zh-CN"><head id="head">
     <meta charset="utf-8">
-    <title id="title">Zig 构建系统 ⚡ Zig 编程语言</title>
+    <title id="title">
+      Zig 构建系统 ⚡ Zig 编程语言
+    </title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="light dark">
     <link rel="icon" href="/favicon.png">
@@ -12,8 +12,8 @@
     
   <link type="text/css" rel="stylesheet" href="/css/home.css">
 
-  
-  
+  </head>
+  <body>
     <div class="container">
       <a href="/"><span id="header-image"></span></a>
     </div>
@@ -75,47 +75,17 @@
       
   <div class="container">
     
-      <a id="back" href="/intro/">← 返回 <b>学习</b></a>
+      <a id="back" href="/intro/"> ← 返回<b>入门</b> </a>
     
     <h1 class="title">Zig 构建系统</h1>
     <ul>
-<li><a href="#when-to-bust-out-the-zig-build-system">何时需要使用 Zig 构建系统？</a></li>
-<li><a href="#getting-started">快速上手</a>
-  <ul>
-    <li><a href="#simple-executable">构建简单的可执行文件</a></li>
-    <li><a href="#installing-build-artifacts">安装构建产物</a></li>
-    <li><a href="#adding-a-convenience-step-for-running-the-application">添加用于运行应用程序的便捷构建步骤</a></li>
-  </ul>
-</li>
-<li><a href="#the-basics">核心基础</a>
-  <ul>
-    <li><a href="#user-provided-options">用户自定义配置选项</a></li>
-    <li><a href="#standard-configuration-options">标准配置选项</a></li>
-    <li><a href="#options-for-conditional-compilation">基于选项的条件编译与配置传递</a></li>
-    <li><a href="#static-library">构建静态库</a></li>
-    <li><a href="#dynamic-library">构建共享库（动态链接库）</a></li>
-    <li><a href="#testing">单元测试集成</a></li>
-    <li><a href="#linking-to-system-libraries">查找并链接系统级动态库</a></li>
-  </ul>
-</li>
-<li><a href="#generating-files">代码与资源文件生成</a>
-  <ul>
-    <li><a href="#running-system-tools">运行系统工具生成文件</a></li>
-    <li><a href="#running-the-projects-tools">运行工程自身工具生成代码</a></li>
-    <li><a href="#producing-assets-for-embedfile">生成用于 @embedFile 嵌入的资产</a></li>
-    <li><a href="#generating-zig-source-code">生成 Zig 源代码并作为模块导入</a></li>
-    <li><a href="#dealing-with-one-or-more-generated-files">通过 WriteFiles 统一管理生成的文件</a></li>
-    <li><a href="#mutating-source-files-in-place">就地生成与更新版本控制下的源码文件</a></li>
-  </ul>
-</li>
-<li><a href="#handy-examples">实用构建示例</a>
-  <ul>
-    <li><a href="#build-for-multiple-targets-to-make-a-release">面向多个目标平台批量交叉构建发布包</a></li>
-  </ul>
-</li>
-</ul>
+<li><a href="#build-system">什么时候该用 Zig 构建系统？</a></li><li><a href="#getting-started">快速上手</a><ul><li>
+<a href="#simple">简单的可执行文件</a></li><li><a href="#installing-artifacts">安装构建产物</a></li><li><a href="#run-step">添加运行应用的便捷步骤</a></li></ul></li><li><a href="#basics">基础知识</a><ul><li>
+<a href="#user-options">用户提供的选项</a></li><li><a href="#standard-options">标准配置选项</a></li><li><a href="#conditional-compilation">用于条件编译的选项</a></li><li><a href="#static-library">静态库</a></li><li><a href="#dynamic-library">动态库</a></li><li><a href="#testing">测试</a></li><li><a href="#linking-to-system-libraries">链接系统库</a></li></ul></li><li><a href="#generating-files">生成文件</a><ul><li>
+<a href="#system-tools">运行系统工具</a></li><li><a href="#project-tools">运行项目自带的工具</a></li><li><a href="#embed-file">为 <code>@embedFile</code> 生成资源</a></li><li><a href="#generating-zig">生成 Zig 源代码</a></li><li><a href="#write-files">处理一个或多个生成的文件</a></li><li><a href="#mutating-source">就地修改源文件</a></li></ul></li><li><a href="#examples">实用示例</a><ul><li>
+<a href="#release">为多个目标构建以制作发布版</a></li></ul></li></ul>
     
-    <h1 id="build-system">何时需要使用 Zig 构建系统？</h1><p>基础的命令行调用（例如 <code>zig build-exe</code>、<code>zig build-lib</code>、<code>zig build-obj</code> 和 <code>zig test</code>）对于快速验证概念或小型脚本已经足够实用。然而，随着工程规模的增长，这些基础命令可能会变得力不从心。</p><p>例如，当你的项目面临以下任一情况时：</p><ul><li>命令行参数变得过于冗长繁琐，你希望有一个统一的配置文件来固定这些构建参数。</li><li>你需要同时构建多个产物，或者整个构建流程包含多个相互依赖的复杂步骤。</li><li>你希望充分利用多核心并发执行与细粒度智能缓存，从而显著缩减日常构建耗时。</li><li>你需要为项目对外暴露灵活的编译期配置选项。</li><li>针对不同的目标操作系统、硬件架构或优化级别，项目的编译逻辑需要差异化处理。</li><li>项目依赖了其他外部代码库或第三方依赖包。</li><li>你希望彻底摆脱对 cmake、make、shell 脚本或 msvc 等繁杂外部构建工具链的非必要依赖。</li><li>你希望将自身项目打包发布，供其他第三方开发者方便地作为依赖引入。</li><li>你希望为集成开发环境（IDE）等外部工具提供一套标准化的语义理解接口，便于精准提取包含路径、宏定义及编译器标志。</li></ul><p>如果满足上述任何一种场景，引入 Zig 构建系统都将为项目带来巨大的工程收益。</p><h1 id="getting-started">快速上手</h1><h2 id="simple">构建简单的可执行文件</h2><p>下面的构建脚本将一个包含 <code>main</code> 函数的 Zig 源码文件编译为可执行文件，并将编译产物输出到默认安装目录前缀中：</p><p></p><figure><figcaption class="zig-cap"><cite class="file">hello.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
+    <h1 id="build-system">什么时候该用 Zig 构建系统？</h1><p>基本命令 <code>zig build-exe</code>、<code>zig build-lib</code>、<code>zig build-obj</code> 和 <code>zig test</code> 通常就够用了。不过，有时项目需要再加一层抽象，来管理从源码构建的复杂性。</p><p>例如，可能出现下面这些情况：</p><ul><li>命令行变得太长、难以处理，你希望有个地方把它记下来。</li><li>你想构建很多东西，或者构建过程包含很多步骤。</li><li>你想利用并发和缓存来缩短构建时间。</li><li>你想为项目提供配置选项。</li><li>构建过程因目标系统和其他选项而异。</li><li>你的项目依赖其他项目。</li><li>你想避免对 cmake、make、shell、msvc、python 等不必要的依赖，让更多贡献者能够参与项目。</li><li>你想提供一个供第三方使用的包。</li><li>你想提供一种标准化的方式，让 IDE 等工具能从语义上理解如何构建项目。</li></ul><p>只要符合其中任何一种情况，项目就能从 Zig 构建系统中受益。</p><h1 id="getting-started">快速上手</h1><h2 id="simple">简单的可执行文件</h2><p>这个构建脚本从一个包含公开 <code>main</code> 函数定义的 Zig 文件创建可执行文件。</p><p></p><figure><figcaption class="zig-cap"><cite class="file">hello.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
 
 <span class="tok-kw">pub</span> <span class="tok-kw">fn</span> <span class="tok-fn">main</span>() !<span class="tok-type">void</span> {
     std.debug.print(<span class="tok-str">"Hello World!\n"</span>, .{});
@@ -135,14 +105,14 @@
 Build Summary: 3/3 steps succeeded
 install success
 +- install hello success
-   +- compile exe hello debug native success 894ms MaxRSS:147M
-</samp></pre></figure><p></p><h2 id="installing-artifacts">安装构建产物</h2><p>与绝大多数现代构建系统一样，Zig 构建系统也是基于<strong>有向无环图（Directed Acyclic Graph, DAG）</strong>来对各个构建步骤及其依赖关系进行建模的。</p><p>默认情况下，构建图中的主入口是 <code>Install</code> 步骤。它的职责是将编译好的二进制产物复制到最终的输出目录中。</p><p><strong>Output</strong></p><pre><code>├── build.zig
+   +- compile exe hello debug native success 1s MaxRSS:150M
+</samp></pre></figure><p></p><h2 id="installing-artifacts">安装构建产物</h2><p>和大多数构建系统一样，Zig 构建系统把项目建模为由步骤组成的有向无环图（DAG），这些步骤独立、并发地运行。</p><p>默认情况下，图中的主步骤是 <strong>Install</strong> 步骤，它的作用是把构建产物复制到最终存放的位置。Install 步骤一开始没有任何依赖，因此运行 <code>zig build</code> 时什么也不会发生。项目的构建脚本必须向待安装的内容中添加东西，上面的 <code>installArtifact</code> 函数调用做的就是这件事。</p><p><strong>输出</strong></p><pre><code>├── build.zig
 ├── hello.zig
 ├── .zig-cache
 └── zig-out
     └── bin
         └── hello
-</code></pre><p>在上述命令执行后，项目根目录下会生成两个目录：<code>.zig-cache</code> 和 <code>zig-out</code>。</p><p>其中 <code>zig-out</code> 是<strong>“安装目录前缀”（Installation Prefix）</strong>，它在结构上类似于类 Unix 系统中的 <code>/usr/local</code> 目录。</p><p>作为项目的维护者，你可以完全自由地决定将哪些产物安装到该目录中；终端用户也可以通过 -p / --prefix 参数自定义该安装路径。</p><h2 id="run-step">添加用于运行应用程序的便捷构建步骤</h2><p>在日常开发中，通常会添加一个 <code>run</code> 构建步骤，以便在编译完成后直接启动运行主应用程序：</p><p></p><figure><figcaption class="zig-cap"><cite class="file">hello.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
+</code></pre><p>这次输出中生成了两个目录：<code>.zig-cache</code> 和 <code>zig-out</code>。第一个目录包含能让后续构建更快的文件，但这些文件不应提交到版本控制中，而且这个目录随时可以整个删除，不会有任何影响。</p><p>第二个目录 <code>zig-out</code> 是“安装前缀”。它对应标准文件系统层次结构中的概念。这个目录不是由项目选择的，而是由 <code>zig build</code> 的使用者通过 <code>--prefix</code> 标志（简写为 <code>-p</code>）指定的。</p><p>作为项目维护者，你决定把什么放进这个目录，但由用户决定把它安装到系统中的什么位置。构建脚本不能硬编码输出路径，因为这会破坏缓存、并发和可组合性，还会让最终用户感到烦恼。</p><h2 id="run-step">添加运行应用的便捷步骤</h2><p>通常会添加一个 <strong>Run</strong> 步骤，以便直接通过构建命令运行主应用。</p><p></p><figure><figcaption class="zig-cap"><cite class="file">hello.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
 
 <span class="tok-kw">pub</span> <span class="tok-kw">fn</span> <span class="tok-fn">main</span>() !<span class="tok-type">void</span> {
     std.debug.print(<span class="tok-str">"Hello World!\n"</span>, .{});
@@ -167,9 +137,9 @@ install success
 Hello World!
 Build Summary: 3/3 steps succeeded
 run success
-+- run exe hello success 924us
-   +- compile exe hello debug native success 982ms MaxRSS:151M
-</samp></pre></figure><p></p><h1 id="basics">核心基础</h1><h2 id="user-options">用户自定义配置选项</h2><p>使用 <code>b.option</code> 可以让构建脚本支持由终端用户或上层项目传入自定义配置选项：</p><p></p><figure><figcaption class="zig-cap"><cite class="file">build.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
++- run exe hello success 2ms
+   +- compile exe hello debug native success 887ms MaxRSS:151M
+</samp></pre></figure><p></p><h1 id="basics">基础知识</h1><h2 id="user-options">用户提供的选项</h2><p>使用 <code>b.option</code> 让构建脚本可以由最终用户以及把本项目当作包依赖的其他项目进行配置。</p><p></p><figure><figcaption class="zig-cap"><cite class="file">build.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
 
 <span class="tok-kw">pub</span> <span class="tok-kw">fn</span> <span class="tok-fn">build</span>(b: *std.Build) <span class="tok-type">void</span> {
     <span class="tok-kw">const</span> windows = b.option(<span class="tok-type">bool</span>, <span class="tok-str">"windows"</span>, <span class="tok-str">"Target Microsoft Windows"</span>) <span class="tok-kw">orelse</span> <span class="tok-null">false</span>;
@@ -312,9 +282,9 @@ Advanced Options:
 
 <span class="tok-kw">pub</span> <span class="tok-kw">fn</span> <span class="tok-fn">main</span>() !<span class="tok-type">void</span> {
     std.debug.print(<span class="tok-str">"Hello World!\n"</span>, .{});
-}</code></pre></figure><p></p><p>请留意帮助菜单中的以下几行配置：</p><pre><code>Project-Specific Options:
+}</code></pre></figure><p></p><p>请注意这几行：</p><pre><code>Project-Specific Options:
   -Dwindows=[bool]             Target Microsoft Windows
-</code></pre><p>帮助菜单的这一部分是在执行 <code>build.zig</code> 逻辑时自动生成的。用户可以通过这种方式快速发现并了解构建脚本所提供的配置选项。</p><h2 id="standard-options">标准配置选项</h2><p>在前面的示例中，我们使用了一个布尔标志来表示是否面向 Windows 平台构建。然而，更规范的做法是使用标准的目标配置选项。</p><p>大多数项目都需要支持修改目标平台与优化模式。为了在整个生态中推广统一标准的配置命名约定，Zig 提供了 <code>standardTargetOptions</code> 和 <code>standardOptimizeOption</code> 辅助函数。</p><p><strong>标准目标选项（Standard target options）</strong>允许运行 <code>zig build</code> 的用户自由指定编译的目标 CPU 架构、操作系统和 ABI：</p><p><strong>标准优化选项（Standard optimization options）</strong>则允许用户在性能、安全检查与二进制体积之间进行权衡选择：</p><p></p><figure><figcaption class="zig-cap"><cite class="file">hello.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
+</code></pre><p>帮助菜单的这一部分是根据运行 <code>build.zig</code> 的逻辑自动生成的。用户可以通过这种方式发现构建脚本的配置选项。</p><h2 id="standard-options">标准配置选项</h2><p>前面我们用了一个布尔标志来指示是否为 Windows 构建。不过，还可以做得更好。</p><p>大多数项目都希望能修改目标和优化设置。为了推广这些选项的标准命名约定，Zig 提供了辅助函数 <code>standardTargetOptions</code> 和 <code>standardOptimizeOption</code>。</p><p>标准目标选项让运行 <code>zig build</code> 的人可以选择为哪个目标构建。默认允许任何目标；不作选择时，以宿主系统为目标。此外还有用于限制所支持目标集合的选项。</p><p>标准优化选项让运行 <code>zig build</code> 的人可以在 <code>Debug</code>、<code>ReleaseSafe</code>、<code>ReleaseFast</code> 和 <code>ReleaseSmall</code> 之间选择。默认情况下，构建脚本不会把任何一种发布选项视为首选，用户必须自己作出选择，才能创建发布构建。</p><p></p><figure><figcaption class="zig-cap"><cite class="file">hello.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
 
 <span class="tok-kw">pub</span> <span class="tok-kw">fn</span> <span class="tok-fn">main</span>() !<span class="tok-type">void</span> {
     std.debug.print(<span class="tok-str">"Hello World!\n"</span>, .{});
@@ -337,8 +307,8 @@ Advanced Options:
 Build Summary: 3/3 steps succeeded
 install success
 +- install hello success
-   +- compile exe hello small x86_64-windows success 3s MaxRSS:171M
-</samp></pre></figure><p></p><p>现在，<code>--help</code> 帮助菜单中包含了更丰富的标准选项：</p><pre><code>Project-Specific Options:
+   +- compile exe hello small x86_64-windows success 2s MaxRSS:167M
+</samp></pre></figure><p></p><p>现在，我们的 <code>--help</code> 菜单包含了更多条目：</p><pre><code>Project-Specific Options:
   -Dtarget=[string]            The CPU architecture, OS, and ABI to build for
   -Dcpu=[string]               Target CPU features to add or subtract
   -Doptimize=[enum]            Prioritize performance, safety, or binary size (-O flag)
@@ -347,10 +317,10 @@ install success
                                    ReleaseSafe
                                    ReleaseFast
                                    ReleaseSmall
-</code></pre><p>虽然完全可以直接通过 <code>b.option</code> 创建这些选项，但该 API 为这些常用配置提供了一套通用的命名约定与便捷接口。</p><p>在终端输出中，可以看到我们传递了 <code>-Dtarget=x86_64-windows -Doptimize=ReleaseSmall</code> 参数。与第一个示例相比，现在安装目录前缀中生成了不同的文件：</p><pre><code>zig-out/
+</code></pre><p>完全可以直接通过 <code>b.option</code> 创建这些选项，但这个 API 为这些常用设置提供了一套通用的命名约定。</p><p>在终端输出中可以看到，我们传入了 <code>-Dtarget=x86_64-windows -Doptimize=ReleaseSmall</code>。与第一个示例相比，现在安装前缀中的文件不同了：</p><pre><code>zig-out/
 └── bin
     └── hello.exe
-</code></pre><h2 id="conditional-compilation">基于选项的条件编译与配置传递</h2><p>要将构建脚本中计算或解析出的配置选项传递到项目的 Zig 源代码内部，可以使用 <code>b.addOptions</code>：</p><p></p><figure><figcaption class="zig-cap"><cite class="file">app.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
+</code></pre><h2 id="conditional-compilation">用于条件编译的选项</h2><p>要把选项从构建脚本传入项目的 Zig 代码，可以使用 <code>Options</code> 步骤。</p><p></p><figure><figcaption class="zig-cap"><cite class="file">app.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
 <span class="tok-kw">const</span> config = <span class="tok-builtin">@import</span>(<span class="tok-str">"config"</span>);
 
 <span class="tok-kw">const</span> semver = std.SemanticVersion.parse(config.version) <span class="tok-kw">catch</span> <span class="tok-kw">unreachable</span>;
@@ -395,9 +365,9 @@ install success
 Build Summary: 4/4 steps succeeded
 install success
 +- install app success
-   +- compile exe app debug native success 699ms MaxRSS:149M
+   +- compile exe app debug native success 673ms MaxRSS:149M
       +- options success
-</samp></pre></figure><p></p><p>在此示例中，<code>@import("config")</code> 模块提供的数据在编译期已知（comptime-known），从而避免了触发 <code>@compileError</code>。如果我们传入了 <code>-Dversion=0.2.3</code> 或者省略了该选项，就会看到 <code>app.zig</code> 编译失败并抛出版本“too old”（过旧）的错误。</p><h2 id="static-library">构建静态库</h2><p>下面的构建脚本不仅从 Zig 源码创建静态库，还演示了如何添加一个可执行文件并将其链接到该静态库：</p><p></p><figure><figcaption class="zig-cap"><cite class="file">fizzbuzz.zig</cite></figcaption><pre><code><span class="tok-kw">export</span> <span class="tok-kw">fn</span> <span class="tok-fn">fizzbuzz</span>(n: <span class="tok-type">usize</span>) ?[*:<span class="tok-number">0</span>]<span class="tok-kw">const</span> <span class="tok-type">u8</span> {
+</samp></pre></figure><p></p><p>在这个示例中，<code>@import("config")</code> 提供的数据在编译时已知，因此不会触发 <code>@compileError</code>。如果传入 <code>-Dversion=0.2.3</code> 或省略这个选项，就会看到 <code>app.zig</code> 的编译因“too old”错误而失败。</p><h2 id="static-library">静态库</h2><p>这个构建脚本用 Zig 代码创建一个静态库，再用另一段使用该库的 Zig 代码创建一个可执行文件。</p><p></p><figure><figcaption class="zig-cap"><cite class="file">fizzbuzz.zig</cite></figcaption><pre><code><span class="tok-kw">export</span> <span class="tok-kw">fn</span> <span class="tok-fn">fizzbuzz</span>(n: <span class="tok-type">usize</span>) ?[*:<span class="tok-number">0</span>]<span class="tok-kw">const</span> <span class="tok-type">u8</span> {
     <span class="tok-kw">if</span> (n % <span class="tok-number">5</span> == <span class="tok-number">0</span>) {
         <span class="tok-kw">if</span> (n % <span class="tok-number">3</span> == <span class="tok-number">0</span>) {
             <span class="tok-kw">return</span> <span class="tok-str">"fizzbuzz"</span>;
@@ -463,16 +433,16 @@ install success
 Build Summary: 3/3 steps succeeded
 install success
 +- install fizzbuzz success
-   +- compile lib fizzbuzz debug native success 223ms MaxRSS:96M
-</samp></pre></figure><p></p><p>在默认情况下，只有静态库本身会被安装：</p><pre><code>zig-out/
+   +- compile lib fizzbuzz debug native success 109ms MaxRSS:98M
+</samp></pre></figure><p></p><p>在这种情况下，最终只有静态库会被安装：</p><pre><code>zig-out/
 └── lib
     └── libfizzbuzz.a
-</code></pre><p>但是，仔细观察会发现，构建脚本中包含了一个同时安装 demo 的选项。如果我们额外传入 <code>-Denable-demo</code> 参数，就会在安装目录前缀中看到以下结构：</p><pre><code>zig-out/
+</code></pre><p>不过，仔细看会发现，构建脚本中有一个选项可以同时安装演示程序。如果再传入 <code>-Denable-demo</code>，就会在安装前缀中看到：</p><pre><code>zig-out/
 ├── bin
 │&nbsp;&nbsp; └── demo
 └── lib
     └── libfizzbuzz.a
-</code></pre><p>请注意，尽管代码中无条件调用了 <code>addExecutable</code>，但构建系统实际上并不会浪费时间去编译 <code>demo</code> 可执行文件，除非通过 <code>-Denable-demo</code> 明确请求了该构建产物。这是因为 Zig 构建系统是基于带依赖有向边的有向无环图（DAG）运作的。</p><h2 id="dynamic-library">构建共享库（动态链接库）</h2><p>这里我们保留静态库示例中的所有源码文件，仅将 <code>addStaticLibrary</code> 替换为 <code>addSharedLibrary</code>：</p><p></p><figure><figcaption class="zig-cap"><cite class="file">build.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
+</code></pre><p>注意，尽管无条件地调用了 <code>addExecutable</code>，但除非通过 <code>-Denable-demo</code> 请求，构建系统实际上并不会浪费时间去构建 <code>demo</code> 可执行文件，因为构建系统基于带依赖边的有向无环图。</p><h2 id="dynamic-library">动态库</h2><p>这里所有文件都与<a href="#static-library">静态库</a>示例相同，只是修改了 <code>build.zig</code> 文件。</p><p></p><figure><figcaption class="zig-cap"><cite class="file">build.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
 
 <span class="tok-kw">pub</span> <span class="tok-kw">fn</span> <span class="tok-fn">build</span>(b: *std.Build) <span class="tok-type">void</span> {
     <span class="tok-kw">const</span> target = b.standardTargetOptions(.{});
@@ -494,15 +464,15 @@ install success
 Build Summary: 3/3 steps succeeded
 install success
 +- install fizzbuzz success
-   +- compile lib fizzbuzz debug native success 599ms MaxRSS:150M
-</samp></pre></figure><p></p><p><strong>Output</strong></p><pre><code>zig-out
+   +- compile lib fizzbuzz debug native success 581ms MaxRSS:151M
+</samp></pre></figure><p></p><p><strong>输出</strong></p><pre><code>zig-out
 └── lib
     ├── libfizzbuzz.so -&gt; libfizzbuzz.so.1
     ├── libfizzbuzz.so.1 -&gt; libfizzbuzz.so.1.2.3
     └── libfizzbuzz.so.1.2.3
-</code></pre><p>与静态库示例类似，要让可执行文件链接该动态库，可以使用如下代码：</p><pre><code class="zig"><span class="constant variable_builtin type variable">exe</span><span class="punctuation_delimiter">.</span><span class="type constant variable_builtin function_call variable_member variable">linkLibrary</span><span class="punctuation_bracket">(</span><span class="constant variable_builtin type variable">libfizzbuzz</span><span class="punctuation_bracket">)</span><span class="punctuation_delimiter">;</span>
+</code></pre><p>和静态库示例一样，要让可执行文件链接这个库，可以使用这样的代码：</p><pre><code class="zig"><span class="constant variable_builtin type variable">exe</span><span class="punctuation_delimiter">.</span><span class="type constant variable_builtin function_call variable_member variable">linkLibrary</span><span class="punctuation_bracket">(</span><span class="constant variable_builtin type variable">libfizzbuzz</span><span class="punctuation_bracket">)</span><span class="punctuation_delimiter">;</span>
 </code></pre>
-<h2 id="testing">单元测试集成</h2><p>单个源码文件可以直接使用 <code>zig test foo.zig</code> 进行测试，但对于大型项目，推荐使用构建脚本统一编排测试流程。</p><p>在构建脚本中，单元测试被清晰地拆分为两个不同的构建步骤：编译测试可执行文件与运行测试。</p><p>编译测试步骤可以像普通的可执行文件或库一样进行全面配置（例如添加宏定义、链接库等）。</p><p>运行测试步骤也可以像普通的 Run 步骤一样进行配置，例如传入测试过滤器参数。</p><p>当使用构建系统运行单元测试时，构建执行器（Build Runner）与测试运行器（Test Runner）会通过标准输入（<em>stdin</em>）和标准输出（<em>stdout</em>）进行进程间通信，以便能够并发执行多套测试套件，并以整洁规范的方式汇报测试失败信息，避免不同测试的终端输出相互混杂交织。这就是为什么<a href="https://github.com/ziglang/zig/issues/15091">在单元测试中直接向标准输出打印内容可能会带来问题</a>——它会干扰这一通信通道。另一方面，该通信机制也让一项强大的新特性成为可能：<a href="https://github.com/ziglang/zig/issues/1356">在单元测试中预期并验证 <em>panic</em> 崩溃行为</a>。</p><p></p><figure><figcaption class="zig-cap"><cite class="file">main.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
+<h2 id="testing">测试</h2><p>单个文件可以直接用 <code>zig test foo.zig</code> 测试；更复杂的用例则可以通过构建脚本编排测试来解决。</p><p>使用构建脚本时，单元测试在构建图中分为两个不同的步骤：<strong>Compile</strong> 步骤和 <strong>Run</strong> 步骤。如果不调用 <code>addRunArtifact</code> 在这两个步骤之间建立依赖边，单元测试就不会执行。</p><p><em>Compile</em> 步骤可以像任何可执行文件、库或目标文件一样配置，例如<a href="#linking-to-system-libraries">链接系统库</a>、设置目标选项，或者添加额外的编译单元。</p><p><em>Run</em> 步骤可以像任何 Run 步骤一样配置，例如在宿主机无法执行该二进制文件时跳过执行。</p><p>使用构建系统运行单元测试时，构建运行器和测试运行器通过 <em>stdin</em> 和 <em>stdout</em> 通信，从而并发运行多个单元测试套件，并以有意义的方式报告测试失败，而不会让各自的输出混在一起。这也是<a href="https://github.com/ziglang/zig/issues/15091">在单元测试中写入<em>标准输出</em>会出问题</a>的原因之一：它会干扰这条通信通道。另一方面，这一机制将使一项即将推出的功能成为可能，也就是<a href="https://github.com/ziglang/zig/issues/1356">让单元测试能够预期发生 <em>panic</em></a>。</p><p></p><figure><figcaption class="zig-cap"><cite class="file">main.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
 
 <span class="tok-kw">test</span> <span class="tok-str">"simple test"</span> {
     <span class="tok-kw">var</span> list = std.ArrayList(<span class="tok-type">i32</span>).init(std.testing.allocator);
@@ -541,7 +511,7 @@ install success
 test
 +- run test
    +- compile test debug x86_64-linux 1 errors
-/home/ci/.cache/act/37f9154e5a14f94b/hostexecutor/zig-code/build-system/unit-testing/main.zig:4:34: error: struct 'array_list.Aligned(i32,null)' has no member named 'init'
+/home/ci/.cache/act/801ef91cb8f01710/hostexecutor/zig-code/build-system/unit-testing/main.zig:4:34: error: struct 'array_list.Aligned(i32,null)' has no member named 'init'
     var list = std.ArrayList(i32).init(std.testing.allocator);
                ~~~~~~~~~~~~~~~~~~^~~~~
 /home/ci/deps/zig-x86_64-linux-0.17.0/lib/std/array_list.zig:638:12: note: struct declared here
@@ -553,7 +523,7 @@ failed command: /home/ci/deps/zig-x86_64-linux-0.17.0/zig test -target x86_64-li
 test
 +- run test
    +- compile test debug native 1 errors
-/home/ci/.cache/act/37f9154e5a14f94b/hostexecutor/zig-code/build-system/unit-testing/main.zig:4:34: error: struct 'array_list.Aligned(i32,null)' has no member named 'init'
+/home/ci/.cache/act/801ef91cb8f01710/hostexecutor/zig-code/build-system/unit-testing/main.zig:4:34: error: struct 'array_list.Aligned(i32,null)' has no member named 'init'
     var list = std.ArrayList(i32).init(std.testing.allocator);
                ~~~~~~~~~~~~~~~~~~^~~~~
 /home/ci/deps/zig-x86_64-linux-0.17.0/lib/std/array_list.zig:638:12: note: struct declared here
@@ -565,7 +535,7 @@ failed command: /home/ci/deps/zig-x86_64-linux-0.17.0/zig test -Mroot=../../../z
 test
 +- run test
    +- compile test debug aarch64-macos 1 errors
-/home/ci/.cache/act/37f9154e5a14f94b/hostexecutor/zig-code/build-system/unit-testing/main.zig:4:34: error: struct 'array_list.Aligned(i32,null)' has no member named 'init'
+/home/ci/.cache/act/801ef91cb8f01710/hostexecutor/zig-code/build-system/unit-testing/main.zig:4:34: error: struct 'array_list.Aligned(i32,null)' has no member named 'init'
     var list = std.ArrayList(i32).init(std.testing.allocator);
                ~~~~~~~~~~~~~~~~~~^~~~~
 /home/ci/deps/zig-x86_64-linux-0.17.0/lib/std/array_list.zig:638:12: note: struct declared here
@@ -582,7 +552,7 @@ test transitive failure
 |  +- compile test debug x86_64-linux 1 errors
 +- run test transitive failure
    +- compile test debug aarch64-macos 1 errors
-</samp></pre></figure><p></p><p>在这种情况下，为单元测试开启 <code>skip_foreign_checks</code> 选项是一个不错的调整：</p><pre><code class="diff"><span class="attribute">@@ -23,6 +23,7 @@</span>
+</samp></pre></figure><p></p><p>在这种情况下，为单元测试启用 <code>skip_foreign_checks</code> 可能是个不错的调整：</p><pre><code class="diff"><span class="attribute">@@ -23,6 +23,7 @@</span>
          });
 
          const run_unit_tests = b.addRunArtifact(unit_tests);
@@ -625,7 +595,7 @@ test transitive failure
 <span class="tok-comment">// zig-doctest: build-system --collapseable -- test --summary all</span></code></pre></figure><figure><figcaption class="shell-cap">Shell</figcaption><pre><samp>$ <kbd>zig build --summary all</kbd>
 Build Summary: 1/1 steps succeeded
 install success
-</samp></pre></figure><p></p><h2 id="linking-to-system-libraries">查找并链接系统级动态库</h2><p>在满足第三方库依赖方面，通常有两种途径：</p><ol><li>通过 Zig 构建系统管理这些库（参见包管理器机制）。</li><li>直接使用宿主操作系统已经安装好的系统库文件。</li></ol><p>对于上游开源项目的维护者而言，通过 Zig 构建系统获取并集成这些第三方库阻力最小，同时也把完整的构建配置权交还给了项目维护者。所有使用该方式编译的人都能获得完全一致且可复现的构建结果，它能在所有主流操作系统上无缝工作，并完美支持交叉编译。此外，这还允许项目极其精准地锁定整棵依赖树中所期望构建的绝对版本。在大多数情况下，这都是引入外部依赖库的推荐首选方案。</p><p>然而，对于将软件打包录入 Linux 发行版仓库（如 Debian、Arch 等）的维护者而言，他们更倾向于直接链接系统全局已经安装好的动态共享库。</p><p></p><figure><figcaption class="zig-cap"><cite class="file">build.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
+</samp></pre></figure><p></p><h2 id="linking-to-system-libraries">链接系统库</h2><p>要满足库依赖，有两种选择：</p><ol><li>通过 Zig 构建系统提供这些库（参见“包管理”和<a href="#static-library">静态库</a>）。</li><li>使用宿主系统提供的文件。</li></ol><p>对上游项目维护者来说，通过 Zig 构建系统获取这些库阻力最小，也把配置的权力交到了维护者手中。所有用这种方式构建的人都会得到可重现、彼此一致的结果，而且它在每个操作系统上都能工作，甚至支持交叉编译。此外，项目还可以精确地决定要基于整个依赖树中每个依赖的哪个确切版本来构建。这预计会是依赖外部库时普遍首选的方式。</p><p>不过，如果要把软件打包进 Debian、Homebrew 或 Nix 等软件仓库，就必须链接系统库。因此，构建脚本必须<a href="https://github.com/ziglang/zig/issues/14281">检测构建模式</a>并据此进行配置。</p><p></p><figure><figcaption class="zig-cap"><cite class="file">build.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
 
 <span class="tok-kw">pub</span> <span class="tok-kw">fn</span> <span class="tok-fn">build</span>(b: *std.Build) <span class="tok-type">void</span> {
     <span class="tok-kw">const</span> exe = b.addExecutable(.{
@@ -644,8 +614,8 @@ install success
 Build Summary: 3/3 steps succeeded
 install success
 +- install zip success
-   +- compile exe zip debug native success 659ms MaxRSS:151M
-</samp></pre></figure><p></p><p><code>zig build</code> 的用户可以使用 <code>--search-prefix</code> 参数指定额外的目录，这些目录在查找静态库和动态库时会被视作“系统目录”。</p><h1 id="generating-files">代码与资源文件生成</h1><h2 id="system-tools">运行系统工具生成文件</h2><p>这个版本的 Hello World 程序预期在相同路径下找到一个 <code>word.txt</code> 文件，而我们希望在构建期使用系统工具由 JSON 文件动态生成它。</p><p>请注意：对外部系统工具的依赖会增加项目的构建门槛，因为要求所有编译者的环境中都预先安装好对应的工具。</p><p>接下来的章节将演示如何使用源码树中自带的一个 Zig 小工具来替代 <code>jq</code>，这也是更加推荐的通用做法。</p><p><strong><code>words.json</code></strong></p><pre><code class="json">{
+   +- compile exe zip debug native success 605ms MaxRSS:147M
+</samp></pre></figure><p></p><p><code>zig build</code> 的使用者可以用 <code>--search-prefix</code> 提供额外的目录，在查找静态库和动态库时，这些目录也会被视为“系统目录”。</p><h1 id="generating-files">生成文件</h1><h2 id="system-tools">运行系统工具</h2><p>这个版本的 hello world 需要在同一路径下找到 <code>word.txt</code> 文件，我们想用一个系统工具从 JSON 文件生成它。</p><p>注意，系统依赖会让用户更难构建你的项目。例如，这个构建脚本依赖 <code>jq</code>，而大多数 Linux 发行版默认不带这个工具，Windows 用户也可能不熟悉它。</p><p>下一节会把 <code>jq</code> 换成源码树中自带的一个 Zig 工具，这是更推荐的做法。</p><p><strong><code>words.json</code></strong></p><pre><code class="json">{
   <span class="string_special_key string">"en"</span>: <span class="string">"world"</span>,
   <span class="string_special_key string">"it"</span>: <span class="string">"mondo"</span>,
   <span class="string_special_key string">"ja"</span>: <span class="string">"世界"</span>
@@ -679,7 +649,7 @@ install success
         b.fmt(
             <span class="tok-str">\\.["{s}"]</span>
         , .{lang}),
-        <span class="tok-str">"-r"</span>, <span class="tok-comment">// 使用原始输出以去除所选字符串两边的引号</span>
+        <span class="tok-str">"-r"</span>, <span class="tok-comment">// raw output to omit quotes around the selected string</span>
     });
     tool_run.addFileArg(b.path(<span class="tok-str">"words.json"</span>));
 
@@ -708,11 +678,11 @@ install success
 +- install generated to word.txt success
 |  +- run jq success 3ms
 +- install hello success
-   +- compile exe hello debug native success 780ms MaxRSS:156M
-</samp></pre></figure><p></p><p><strong>Output</strong></p><pre><code>zig-out
+   +- compile exe hello debug native success 531ms MaxRSS:154M
+</samp></pre></figure><p></p><p><strong>输出</strong></p><pre><code>zig-out
 ├── hello
 └── word.txt
-</code></pre><p>请留意 <code>captureStdOut</code> 是如何利用临时文件来保存 <code>jq</code> 调用输出的。</p><h2 id="project-tools">运行工程自身工具生成代码</h2><p>这个版本的 Hello World 程序同样预期在同级路径下找到 <code>word.txt</code>，而这次我们希望在构建期通过直接调用一个针对 JSON 文件执行的 Zig 程序来动态生成它。</p><p><strong><code>tools/words.json</code></strong></p><pre><code class="json">{
+</code></pre><p>注意 <code>captureStdOut</code> 如何用 <code>jq</code> 调用的输出创建一个临时文件。</p><h2 id="project-tools">运行项目自带的工具</h2><p>这个版本的 hello world 需要在同一路径下找到 <code>word.txt</code> 文件，我们想在构建时对一个 JSON 文件调用 Zig 程序来生成它。</p><p><strong><code>tools/words.json</code></strong></p><pre><code class="json">{
   <span class="string_special_key string">"en"</span>: <span class="string">"world"</span>,
   <span class="string_special_key string">"it"</span>: <span class="string">"mondo"</span>,
   <span class="string_special_key string">"ja"</span>: <span class="string">"世界"</span>
@@ -859,14 +829,14 @@ install success
 Build Summary: 6/6 steps succeeded
 install success
 +- install generated to word.txt success
-|  +- run exe word_select (word.txt) success 32ms
-|     +- compile exe word_select debug native success 991ms MaxRSS:156M
+|  +- run exe word_select (word.txt) success 25ms
+|     +- compile exe word_select debug native success 918ms MaxRSS:160M
 +- install hello success
-   +- compile exe hello debug native success 1s MaxRSS:152M
-</samp></pre></figure><p></p><p><strong>Output</strong></p><pre><code>zig-out
+   +- compile exe hello debug native success 859ms MaxRSS:149M
+</samp></pre></figure><p></p><p><strong>输出</strong></p><pre><code>zig-out
 ├── hello
 └── word.txt
-</code></pre><h2 id="embed-file">生成用于 @embedFile 嵌入的资产</h2><p>此示例演示了如何在构建期生成资产，并通过 <code>@embedFile</code> 将其在编译期直接内嵌进二进制文件中：</p><p><strong><code>tools/words.json</code></strong></p><pre><code class="json">{
+</code></pre><h2 id="embed-file">为 <code>@embedFile</code> 生成资源</h2><p>这个版本的 hello world 想要 <code>@embedFile</code> 一个在构建时生成的资源，我们会用一个用 Zig 编写的工具来生成它。</p><p><strong><code>tools/words.json</code></strong></p><pre><code class="json">{
   <span class="string_special_key string">"en"</span>: <span class="string">"world"</span>,
   <span class="string_special_key string">"it"</span>: <span class="string">"mondo"</span>,
   <span class="string_special_key string">"ja"</span>: <span class="string">"世界"</span>
@@ -998,13 +968,13 @@ install success
 Build Summary: 5/5 steps succeeded
 install success
 +- install hello success
-   +- compile exe hello debug native success 612ms MaxRSS:147M
-      +- run exe word_select (word.txt) success 14ms
-         +- compile exe word_select debug native success 742ms MaxRSS:159M
-</samp></pre></figure><p></p><p><strong>Output</strong></p><pre><code>zig-out/
+   +- compile exe hello debug native success 460ms MaxRSS:151M
+      +- run exe word_select (word.txt) success 9ms
+         +- compile exe word_select debug native success 510ms MaxRSS:160M
+</samp></pre></figure><p></p><p><strong>输出</strong></p><pre><code>zig-out/
 └── bin
  &nbsp;&nbsp; └── hello
-</code></pre><h2 id="generating-zig">生成 Zig 源代码并作为模块导入</h2><p>此构建文件使用一个专门的 Zig 程序来动态生成 Zig 源码文件，并将其作为模块暴露给主程序使用：</p><p></p><figure><figcaption class="zig-cap"><cite class="file">main.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
+</code></pre><h2 id="generating-zig">生成 Zig 源代码</h2><p>这个构建文件用一个 Zig 程序生成 Zig 文件，然后把它作为模块依赖提供给主程序。</p><p></p><figure><figcaption class="zig-cap"><cite class="file">main.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
 <span class="tok-kw">const</span> Person = <span class="tok-builtin">@import</span>(<span class="tok-str">"person"</span>).Person;
 
 <span class="tok-kw">pub</span> <span class="tok-kw">fn</span> <span class="tok-fn">main</span>() !<span class="tok-type">void</span> {
@@ -1074,13 +1044,13 @@ install success
 Build Summary: 5/5 steps succeeded
 install success
 +- install hello success
-   +- compile exe hello debug native success 918ms MaxRSS:150M
-      +- run exe generate_struct (person.zig) success 15ms
-         +- compile exe generate_struct debug native success 1s MaxRSS:154M
-</samp></pre></figure><p></p><p><strong>Output</strong></p><pre><code>zig-out/
+   +- compile exe hello debug native success 1s MaxRSS:151M
+      +- run exe generate_struct (person.zig) success 14ms
+         +- compile exe generate_struct debug native success 786ms MaxRSS:149M
+</samp></pre></figure><p></p><p><strong>输出</strong></p><pre><code>zig-out/
 └── bin
  &nbsp;&nbsp; └── hello
-</code></pre><h2 id="write-files">通过 WriteFiles 统一管理生成的文件</h2><p>WriteFiles 构建步骤提供了一种便捷的方式，可以在构建目录中统一生成一个或多个文件：</p><p>该 API 支持向生成目录写入任意字符串内容，也可以将已有文件或之前构建步骤的输出文件拷贝至其中。</p><p></p><figure><figcaption class="zig-cap"><cite class="file">main.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
+</code></pre><h2 id="write-files">处理一个或多个生成的文件</h2><p><strong>WriteFiles</strong> 步骤可以生成一个或多个共享同一父目录的文件。生成的目录位于本地 <code>.zig-cache</code> 中，每个生成的文件都可以单独作为 <code>std.Build.LazyPath</code> 使用。父目录本身也可以作为 <code>LazyPath</code> 使用。</p><p>这个 API 既支持把任意字符串写入生成的目录，也支持把文件复制进去。</p><p></p><figure><figcaption class="zig-cap"><cite class="file">main.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
 
 <span class="tok-kw">pub</span> <span class="tok-kw">fn</span> <span class="tok-fn">main</span>() !<span class="tok-type">void</span> {
     std.debug.print(<span class="tok-str">"hello world\n"</span>, .{});
@@ -1113,12 +1083,12 @@ install success
 Build Summary: 5/5 steps succeeded
 install success
 +- install generated to project.tar.gz success
-   +- run tar (project.tar.gz) success 505ms
+   +- run tar (project.tar.gz) success 352ms
       +- WriteFile project/app success
-         +- compile exe app debug native success 733ms MaxRSS:147M
-</samp></pre></figure><p></p><p><strong>Output</strong></p><pre><code>zig-out/
+         +- compile exe app debug native success 702ms MaxRSS:154M
+</samp></pre></figure><p></p><p><strong>输出</strong></p><pre><code>zig-out/
 └── project.tar.gz
-</code></pre><h2 id="mutating-source">就地生成与更新版本控制下的源码文件</h2><p>在某些特殊场景下，项目可能会选择将自动生成的文件直接提交至版本控制系统（如 Git）。当这些生成文件极少变动，且更新它们需要安装繁重复杂的系统依赖（但<em>仅</em>在更新期间才需要这些依赖）时，这种做法会非常实用。<strong>UpdateSourceFiles</strong> 步骤正是用于实现这一需求。</p><p>请谨慎使用此功能；它不应该在常规构建流程中无条件触发，而应该显式绑定到一个独立的专用构建步骤上（例如 update-protocol）。</p><p></p><figure><figcaption class="zig-cap"><cite class="file">proto_gen.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
+</code></pre><h2 id="mutating-source">就地修改源文件</h2><p>项目把生成的文件提交到版本控制中并不常见，但有时确实会这样做。如果生成的文件很少更新，而更新过程又有繁重的系统依赖（<em>只</em>在更新过程中才有），这样做就很有用。<strong>UpdateSourceFiles</strong> 提供了完成这项任务的方法。</p><p>使用这项功能时要小心：它不应在正常构建过程中使用，而应作为一个工具，由有意更新源文件的开发者运行，更新后的文件随后提交到版本控制中。如果在正常构建过程中这样做，就会导致缓存和并发方面的 bug。</p><p></p><figure><figcaption class="zig-cap"><cite class="file">proto_gen.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
 
 <span class="tok-kw">pub</span> <span class="tok-kw">fn</span> <span class="tok-fn">main</span>() !<span class="tok-type">void</span> {
     <span class="tok-kw">var</span> arena_state = std.heap.ArenaAllocator.init(std.heap.page_allocator);
@@ -1195,7 +1165,7 @@ update-protocol<span class="sgr-32m"> success</span>
    └─ run proto_gen (protocol.zig)<span class="sgr-32m"> success</span><span class="sgr-2m"> 401us</span><span class="sgr-2m"> MaxRSS:1M</span>
       └─ zig build-exe proto_gen Debug native<span class="sgr-32m"> success</span><span class="sgr-2m"> 1s</span><span class="sgr-2m"> MaxRSS:183M</span>
 </code></pre>
-<p>运行该命令后，<code>src/protocol.zig</code> 文件便会被就地更新。</p><h1 id="examples">实用构建示例</h1><h2 id="release">面向多个目标平台批量交叉构建发布包</h2><p>在此示例中，我们将修改 InstallArtifact 步骤的默认行为，从而在一个构建流程中同时为多个不同目标平台生成发布包：</p><p></p><figure><figcaption class="zig-cap"><cite class="file">build.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
+<p>运行这条命令后，<code>src/protocol.zig</code> 会被就地更新。</p><h1 id="examples">实用示例</h1><h2 id="release">为多个目标构建以制作发布版</h2><p>在这个示例中，我们会在创建 <code>InstallArtifact</code> 步骤时修改一些默认设置，把每个目标的构建结果放到安装路径中单独的子目录里。</p><p></p><figure><figcaption class="zig-cap"><cite class="file">build.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
 
 <span class="tok-kw">const</span> targets: []<span class="tok-kw">const</span> std.Target.Query = &amp;.{
     .{ .cpu_arch = .aarch64, .os_tag = .macos },
@@ -1230,20 +1200,20 @@ update-protocol<span class="sgr-32m"> success</span>
 Build Summary: 11/11 steps succeeded
 install success
 +- install hello success
-|  +- compile exe hello safe aarch64-macos success 22s MaxRSS:421M
+|  +- compile exe hello safe aarch64-macos success 18s MaxRSS:424M
 +- install hello success
-|  +- compile exe hello safe aarch64-linux success 24s MaxRSS:498M
+|  +- compile exe hello safe aarch64-linux success 22s MaxRSS:506M
 +- install hello success
-|  +- compile exe hello safe x86_64-linux-gnu success 24s MaxRSS:436M
+|  +- compile exe hello safe x86_64-linux-gnu success 22s MaxRSS:424M
 +- install hello success
-|  +- compile exe hello safe x86_64-linux-musl success 23s MaxRSS:447M
+|  +- compile exe hello safe x86_64-linux-musl success 21s MaxRSS:439M
 +- install hello success
-   +- compile exe hello safe x86_64-windows success 19s MaxRSS:378M
+   +- compile exe hello safe x86_64-windows success 13s MaxRSS:369M
 </samp></pre></figure> <figure><figcaption class="zig-cap"><cite class="file">hello.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> std = <span class="tok-builtin">@import</span>(<span class="tok-str">"std"</span>);
 
 <span class="tok-kw">pub</span> <span class="tok-kw">fn</span> <span class="tok-fn">main</span>() !<span class="tok-type">void</span> {
     std.debug.print(<span class="tok-str">"Hello World!\n"</span>, .{});
-}</code></pre></figure><p></p><p><strong>Output</strong></p><pre><code>zig-out
+}</code></pre></figure><p></p><p><strong>输出</strong></p><pre><code>zig-out
 ├── aarch64-linux
 │&nbsp;&nbsp; └── hello
 ├── aarch64-macos
@@ -1287,3 +1257,4 @@ install success
     </div>
   
 
+</body></html>
